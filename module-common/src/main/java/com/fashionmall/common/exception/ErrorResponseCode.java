@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 public enum ErrorResponseCode {
 
     //공통 코드
-    SUCCESS(HttpStatus.OK, "성공"),
     SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러"),
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "필수 값을 입력해 주세요"),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다"),
