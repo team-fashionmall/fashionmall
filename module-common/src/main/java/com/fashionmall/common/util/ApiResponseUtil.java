@@ -1,9 +1,9 @@
 package com.fashionmall.common.util;
 
 import com.fashionmall.common.response.CommonResponse;
-import com.fashionmall.common.response.CustomResponseCode;
+import com.fashionmall.common.exception.ErrorResponseCode;
 
-import static com.fashionmall.common.response.CustomResponseCode.*;
+import static com.fashionmall.common.exception.ErrorResponseCode.*;
 
 public class ApiResponseUtil {
 
@@ -15,7 +15,7 @@ public class ApiResponseUtil {
         return new CommonResponse<>(SUCCESS.getStatus().value(), SUCCESS.getMessage(), data);
     }
 
-    public static <T>CommonResponse<T> failure(CustomResponseCode errorCode) {
+    public static <T>CommonResponse<T> failure(ErrorResponseCode errorCode) {
         return new CommonResponse<>(errorCode.getStatus().value(), errorCode.getMessage());
     }
 

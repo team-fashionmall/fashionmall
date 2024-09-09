@@ -1,14 +1,13 @@
 package com.fashionmall.common.exception;
 
-import com.fashionmall.common.response.CustomResponseCode;
 import lombok.Getter;
 
 @Getter
 public class CustomException extends RuntimeException {
 
-    private final CustomResponseCode code;
+    private final ErrorResponseCode code;
 
-    public CustomException(CustomResponseCode code) {
+    public CustomException(ErrorResponseCode code) {
         this.code = code;
     }
 }

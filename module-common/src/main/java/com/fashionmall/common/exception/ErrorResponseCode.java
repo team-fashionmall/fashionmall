@@ -1,4 +1,4 @@
-package com.fashionmall.common.response;
+package com.fashionmall.common.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
-public enum CustomResponseCode {
+public enum ErrorResponseCode {
 
     //공통 코드
     SUCCESS(HttpStatus.OK, "성공"),

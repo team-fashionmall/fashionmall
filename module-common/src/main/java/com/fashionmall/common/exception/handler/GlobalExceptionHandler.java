@@ -2,7 +2,7 @@ package com.fashionmall.common.exception.handler;
 
 import com.fashionmall.common.exception.CustomException;
 import com.fashionmall.common.response.CommonResponse;
-import com.fashionmall.common.response.CustomResponseCode;
+import com.fashionmall.common.exception.ErrorResponseCode;
 import com.fashionmall.common.util.ApiResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -20,7 +20,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     protected ResponseEntity<CommonResponse<Object>> handleException(Exception e) {
         log.error("Exception", e);
-        return toErrrorResponseEntity(CustomResponseCode.SERVER_ERROR);
+        return toErrrorResponseEntity(ErrorResponseCode.SERVER_ERROR);
     }
 
     @ExceptionHandler(value = CustomException.class)
@@ -29,7 +29,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return toErrrorResponseEntity(e.getCode());
     }
 
-    protected ResponseEntity<CommonResponse<Object>> toErrrorResponseEntity(CustomResponseCode customResponseCode) {
+    protected ResponseEntity<CommonResponse<Object>> toErrrorResponseEntity(ErrorResponseCode customResponseCode) {
         return ResponseEntity
                 .status(customResponseCode.getStatus())
                 .body(ApiResponseUtil.failure(customResponseCode));
