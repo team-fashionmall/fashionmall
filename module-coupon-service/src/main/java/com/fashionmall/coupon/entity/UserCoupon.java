@@ -1,7 +1,5 @@
 package com.fashionmall.coupon.entity;
 
-import com.fashionmall.common.exception.CustomException;
-import com.fashionmall.common.exception.ErrorResponseCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -24,23 +22,21 @@ public class UserCoupon extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coupon_id")
-    private Coupons couponId;
+    private Coupon couponId;
 
     @Column(name = "is_used", nullable = false)
-    private boolean isUsed = false; //쿠폰 사용 여부
+    private boolean isUsed; //쿠폰 사용 여부
 
     @Column(name = "used_at")
     private LocalDateTime usedAt; //쿠폰 사용 시간
 
-    public UserCoupon(Long userId, Coupons couponId) {
+    public UserCoupon(Long userId, Coupon couponId) {
         this.userId = userId;
         this.couponId = couponId;
+        this.isUsed = false;
     }
 
-    public void UseCoupon() {
-        if (isUsed) {
-            throw new CustomException(ErrorResponseCode.ORDER_NOT_FOUND_COUPON);
-        }
+    public void markAsUsed() {
         isUsed = true;
         usedAt = LocalDateTime.now();
     }

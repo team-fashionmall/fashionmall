@@ -16,8 +16,8 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "coupons")
-public class Coupons extends BaseEntity {
+@Table(name = "coupon")
+public class Coupon extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "coupon_id")
@@ -54,15 +54,15 @@ public class Coupons extends BaseEntity {
     private CouponStatus status; //쿠폰 활성 상태(ACTIVATED: 활성화, INACTIVATED: 비활성화)
 
     @Builder
-    public Coupons(String name,
-                   CouponType couponType,
-                   DiscountType discountType,
-                   int discountValue,
-                   int minPurchasePrice,
-                   Integer maxDiscountPrice,
-                   LocalDateTime startDate,
-                   LocalDateTime endDate,
-                   CouponStatus status) {
+    public Coupon(String name,
+                  CouponType couponType,
+                  DiscountType discountType,
+                  int discountValue,
+                  int minPurchasePrice,
+                  Integer maxDiscountPrice,
+                  LocalDateTime startDate,
+                  LocalDateTime endDate,
+                  CouponStatus status) {
         this.name = name;
         this.couponType = couponType;
         this.discountType = discountType;
@@ -72,7 +72,6 @@ public class Coupons extends BaseEntity {
         this.startDate = startDate;
         this.endDate = endDate;
         this.status = status;
-        validateMaxDiscountPrice();
     }
 
     private void validateMaxDiscountPrice() {
