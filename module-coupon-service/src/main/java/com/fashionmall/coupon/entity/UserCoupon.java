@@ -36,7 +36,7 @@ public class UserCoupon extends BaseEntity {
         this.isUsed = false;
     }
 
-    public void markAsUsed() {
+    public void useCoupon() {
         isUsed = true;
         usedAt = LocalDateTime.now();
     }
