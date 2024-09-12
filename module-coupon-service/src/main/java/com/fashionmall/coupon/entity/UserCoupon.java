@@ -22,7 +22,7 @@ public class UserCoupon extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coupon_id")
-    private Coupon couponId;
+    private Coupon coupon;
 
     @Column(name = "is_used", nullable = false)
     private boolean isUsed; //쿠폰 사용 여부
@@ -30,9 +30,9 @@ public class UserCoupon extends BaseEntity {
     @Column(name = "used_at")
     private LocalDateTime usedAt; //쿠폰 사용 시간
 
-    public UserCoupon(Long userId, Coupon couponId) {
+    public UserCoupon(Long userId, Coupon coupon) {
         this.userId = userId;
-        this.couponId = couponId;
+        this.coupon = coupon;
         this.isUsed = false;
     }
 
