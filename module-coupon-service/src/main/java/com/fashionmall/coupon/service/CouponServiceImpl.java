@@ -122,7 +122,7 @@ public class CouponServiceImpl implements CouponService {
     public Long downloadCoupon(Long userId, Long couponId) {
         Coupon coupon = couponRepository.findById(couponId)
                 .orElseThrow(() -> new CustomException(ErrorResponseCode.NOT_FOUND));
-        validateMaxDiscountPrice(coupon);
+        validateCouponDownloadable(userId, coupon);
         UserCoupon userCoupon = new UserCoupon(userId, coupon);
         UserCoupon saveUserCoupon = userCouponRepository.save(userCoupon);
         return saveUserCoupon.getId();
