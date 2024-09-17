@@ -9,11 +9,10 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @ToString
 public class CouponUpdateRequestDto {
 
+    private Long id;
     private String name;
     private DiscountType discountType;
     private int discountValue;

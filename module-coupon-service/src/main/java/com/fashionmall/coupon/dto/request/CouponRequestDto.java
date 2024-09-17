@@ -11,11 +11,10 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @ToString
 public class CouponRequestDto {
 
+    private Long id;
     private String name;
     private CouponType couponType;
     private DiscountType discountType;
