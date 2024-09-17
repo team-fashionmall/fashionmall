@@ -3,21 +3,23 @@ package com.fashionmall.coupon.service;
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.coupon.dto.request.CouponRequestDto;
 import com.fashionmall.coupon.dto.request.CouponUpdateRequestDto;
-import com.fashionmall.coupon.dto.response.CouponResponseDto;
+import com.fashionmall.coupon.dto.response.AdminCouponResponseDto;
+import com.fashionmall.coupon.dto.response.UserCouponResponseDto;
+import org.springframework.data.domain.Pageable;
 
 public interface CouponService {
 
-    PageInfoResponseDto<CouponResponseDto> getCoupons(int page);
+    PageInfoResponseDto<AdminCouponResponseDto> getCoupons(Pageable pageable);
 
     Long publishCoupon(CouponRequestDto couponRequestDto);
 
-    Long updateCoupon(Long couponId, CouponUpdateRequestDto couponUpdateRequestDto);
+    Long updateCoupon(CouponUpdateRequestDto couponUpdateRequestDto);
 
     Long deleteCoupon(Long couponId);
 
-    PageInfoResponseDto<CouponResponseDto> getUserCoupons(Long userId, int page);
+    PageInfoResponseDto<UserCouponResponseDto> getUserCoupons(Long userId, Pageable pageable);
 
-    PageInfoResponseDto<CouponResponseDto> getDownloadableCoupons(Long userId, int page);
+    PageInfoResponseDto<UserCouponResponseDto> getDownloadableCoupons(Long userId, Pageable pageable);
 
     Long downloadCoupon(Long userId, Long couponId);
 }

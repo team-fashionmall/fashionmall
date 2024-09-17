@@ -5,7 +5,8 @@ import com.fashionmall.common.exception.ErrorResponseCode;
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.coupon.dto.request.CouponRequestDto;
 import com.fashionmall.coupon.dto.request.CouponUpdateRequestDto;
-import com.fashionmall.coupon.dto.response.CouponResponseDto;
+import com.fashionmall.coupon.dto.response.AdminCouponResponseDto;
+import com.fashionmall.coupon.dto.response.UserCouponResponseDto;
 import com.fashionmall.coupon.entity.Coupon;
 import com.fashionmall.coupon.entity.UserCoupon;
 import com.fashionmall.coupon.enums.CouponStatus;
@@ -13,6 +14,7 @@ import com.fashionmall.coupon.enums.DiscountType;
 import com.fashionmall.coupon.repository.CouponRepository;
 import com.fashionmall.coupon.repository.UserCouponRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -28,11 +30,12 @@ public class CouponServiceImpl implements CouponService {
     private final UserCouponRepository userCouponRepository;
 
     @Override
-    public PageInfoResponseDto<CouponResponseDto> getCoupons(int page) {
-        return couponRepository.couponListPaged(page);
+    public PageInfoResponseDto<AdminCouponResponseDto> getCoupons(Pageable pageable) {
+        return couponRepository.couponListPaged(pageable);
     }
 
     @Override
+    @Transactional
     public Long publishCoupon(CouponRequestDto couponRequestDto) {
         Coupon coupon = couponRequestDto.toEntity();
         validateMaxDiscountPrice(coupon);
@@ -42,8 +45,8 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     @Transactional
-    public Long updateCoupon(Long couponId, CouponUpdateRequestDto couponUpdateRequestDto) {
-        Coupon coupon = couponRepository.findById(couponId)
+    public Long updateCoupon(CouponUpdateRequestDto couponUpdateRequestDto) {
+        Coupon coupon = couponRepository.findById(couponUpdateRequestDto.getId())
                 .orElseThrow(() -> new CustomException(ErrorResponseCode.NOT_FOUND));
 
         boolean hasUpdated = false;
@@ -108,13 +111,13 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public PageInfoResponseDto<CouponResponseDto> getUserCoupons(Long userId, int page) {
-        return couponRepository.findUserCouponByUserId(userId, page);
+    public PageInfoResponseDto<UserCouponResponseDto> getUserCoupons(Long userId, Pageable pageable) {
+        return couponRepository.findUserCouponByUserId(userId, pageable);
     }
 
     @Override
-    public PageInfoResponseDto<CouponResponseDto> getDownloadableCoupons(Long userId, int page) {
-        return couponRepository.findDownloadableCoupon(userId, page);
+    public PageInfoResponseDto<UserCouponResponseDto> getDownloadableCoupons(Long userId, Pageable pageable) {
+        return couponRepository.findDownloadableCoupon(userId, pageable);
     }
 
     @Override
@@ -143,7 +146,7 @@ public class CouponServiceImpl implements CouponService {
         }
 
         boolean alreadyDownloadable = userCouponRepository.existsByUserIdAndCouponId(userId, coupon.getId());
-        if (!alreadyDownloadable) {
+        if (alreadyDownloadable) {
             throw new CustomException(ErrorResponseCode.ORDER_NOT_FOUND_COUPON);
         }
     }

@@ -11,27 +11,26 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class CouponResponseDto {
+public class UserCouponResponseDto {
 
-    private Long id;
     private String name;
     private DiscountType discountType;
     private int discountValue;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
     private int minPurchasePrice;
     private Integer maxDiscountPrice;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
 
-    public static CouponResponseDto from(Coupon coupon) {
-        return new CouponResponseDto(
-                coupon.getId(),
+
+    public static UserCouponResponseDto from(Coupon coupon) {
+        return new UserCouponResponseDto(
                 coupon.getName(),
                 coupon.getDiscountType(),
                 coupon.getDiscountValue(),
-                coupon.getStartDate(),
-                coupon.getEndDate(),
                 coupon.getMinPurchasePrice(),
-                coupon.getMaxDiscountPrice()
+                coupon.getMaxDiscountPrice(),
+                coupon.getStartDate(),
+                coupon.getEndDate()
         );
     }
 

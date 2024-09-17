@@ -21,16 +21,16 @@ public class CouponQueryController {
 
     //쿠폰목록조회
     @GetMapping("/coupon")
-    public CommonResponse<PageInfoResponseDto<CouponResponseDto>> getUserCouponList(@RequestParam(defaultValue = "1") int page) {
+    public CommonResponse<PageInfoResponseDto<UserCouponResponseDto>> getUserCouponList(@PageableDefault(page = 0, size = 10) Pageable pageable) {
         Long id = 1L; //임시부여
-        return ApiResponseUtil.success(couponService.getUserCoupons(id, page));
+        return ApiResponseUtil.success(couponService.getUserCoupons(id, pageable));
     }
 
     //다운로드가능쿠폰목록조회
     @GetMapping("/coupon/download")
-    public CommonResponse<PageInfoResponseDto<CouponResponseDto>> getUserCouponDownloadList(@RequestParam(defaultValue = "1") int page) {
+    public CommonResponse<PageInfoResponseDto<UserCouponResponseDto>> getUserCouponDownloadList(@PageableDefault(page = 0, size = 10) Pageable pageable) {
         Long id = 1L; //임시부여
-        return ApiResponseUtil.success(couponService.getDownloadableCoupons(id, page));
+        return ApiResponseUtil.success(couponService.getDownloadableCoupons(id, pageable));
     }
 
     //쿠폰다운로드

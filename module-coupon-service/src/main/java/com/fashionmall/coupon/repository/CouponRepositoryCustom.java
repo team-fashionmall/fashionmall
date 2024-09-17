@@ -1,13 +1,16 @@
 package com.fashionmall.coupon.repository;
 
 import com.fashionmall.common.response.PageInfoResponseDto;
-import com.fashionmall.coupon.dto.response.CouponResponseDto;
+import com.fashionmall.coupon.dto.response.AdminCouponResponseDto;
+import com.fashionmall.coupon.dto.response.UserCouponResponseDto;
+import org.springframework.data.domain.Pageable;
 
 public interface CouponRepositoryCustom {
 
-    PageInfoResponseDto<CouponResponseDto> couponListPaged(int pageNo);
+    PageInfoResponseDto<AdminCouponResponseDto> couponListPaged(Pageable pageable);
 
-    PageInfoResponseDto<CouponResponseDto> findUserCouponByUserId(Long userId, int pageNo);
+    PageInfoResponseDto<UserCouponResponseDto> findUserCouponByUserId(Long userId, Pageable pageable);
 
-    PageInfoResponseDto<CouponResponseDto> findDownloadableCoupon(Long userId, int pageNo);
+    PageInfoResponseDto<UserCouponResponseDto> findDownloadableCoupon(Long userId, Pageable pageable);
+
 }
