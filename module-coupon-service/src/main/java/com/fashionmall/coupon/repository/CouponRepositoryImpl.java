@@ -77,6 +77,7 @@ public class CouponRepositoryImpl implements CouponRepositoryCustom {
                 .join(QUserCoupon.userCoupon.coupon, coupon)
                 .where(QUserCoupon.userCoupon.userId.eq(userId),
                         QUserCoupon.userCoupon.isUsed.eq(false),
+                        coupon.endDate.after(LocalDateTime.now()),
                         coupon.status.eq(CouponStatus.ACTIVATED))
                 .orderBy(coupon.id.desc())
                 .offset(offset)
@@ -89,6 +90,7 @@ public class CouponRepositoryImpl implements CouponRepositoryCustom {
                 .join(QUserCoupon.userCoupon)
                 .where(QUserCoupon.userCoupon.userId.eq(userId),
                         QUserCoupon.userCoupon.isUsed.eq(false),
+                        coupon.endDate.after(LocalDateTime.now()),
                         coupon.status.eq(CouponStatus.ACTIVATED))
                 .fetchOne();
 
@@ -118,6 +120,7 @@ public class CouponRepositoryImpl implements CouponRepositoryCustom {
                         .and(QUserCoupon.userCoupon.userId.eq(userId)))
                 .where(coupon.couponType.eq(CouponType.DOWNLOAD),
                         coupon.status.eq(CouponStatus.ACTIVATED),
+                        coupon.endDate.after(LocalDateTime.now()),
                         QUserCoupon.userCoupon.id.isNull())
                 .orderBy(coupon.id.desc())
                 .offset(offset)
@@ -132,6 +135,7 @@ public class CouponRepositoryImpl implements CouponRepositoryCustom {
                         .and(QUserCoupon.userCoupon.userId.eq(userId)))
                 .where(coupon.couponType.eq(CouponType.DOWNLOAD),
                         coupon.status.eq(CouponStatus.ACTIVATED),
+                        coupon.endDate.after(LocalDateTime.now()),
                         QUserCoupon.userCoupon.id.isNull())
                 .fetchOne();
 

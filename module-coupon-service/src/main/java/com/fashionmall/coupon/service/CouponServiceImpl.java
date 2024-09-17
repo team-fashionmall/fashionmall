@@ -145,6 +145,10 @@ public class CouponServiceImpl implements CouponService {
             throw new CustomException(ErrorResponseCode.ORDER_NOT_FOUND_COUPON);
         }
 
+        if (coupon.getEndDate().isBefore(LocalDateTime.now())) {
+            throw new CustomException(ErrorResponseCode.ORDER_NOT_FOUND_COUPON);
+        }
+
         boolean alreadyDownloadable = userCouponRepository.existsByUserIdAndCouponId(userId, coupon.getId());
         if (alreadyDownloadable) {
             throw new CustomException(ErrorResponseCode.ORDER_NOT_FOUND_COUPON);
