@@ -20,7 +20,8 @@ public enum ErrorResponseCode {
     ORDER_NOT_FOUND_COUPON(HttpStatus.NOT_FOUND, "유효하지 않은 쿠폰입니다"),
     ORDER_NOT_FOUND_BILLING_KEY(HttpStatus.NOT_FOUND, "유효하지 않은 결제 수단 입니다"),
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "이미 존재하는 이메일 입니다."),
-    DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "이미 존재하는 닉네임 입니다.");
+    DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "이미 존재하는 닉네임 입니다."),
+    JWT_NOT_FOUND_TOKEN(HttpStatus.NOT_FOUND, "유효하지 않은 토큰입니다."); // 존재하지 않는 토큰?
 
     private final HttpStatus status;
     private final String message;
