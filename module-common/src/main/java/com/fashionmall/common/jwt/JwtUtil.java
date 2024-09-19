@@ -133,4 +133,9 @@ public class JwtUtil {
         return false;
     }
 
+    // 토큰에서 사용자 정보 가져오기
+    public Claims getUserInfoFromToken (String token) { // 두개 다 들어오는지 확인
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+    }
+
 }
