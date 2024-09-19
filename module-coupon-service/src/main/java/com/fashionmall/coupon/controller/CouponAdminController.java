@@ -18,7 +18,7 @@ public class CouponAdminController {
 
     //(관리자)쿠폰조회
     @GetMapping("/admin/coupon")
-    public CommonResponse<PageInfoResponseDto<AdminCouponResponseDto>> getCouponList(@RequestParam(defaultValue = "0") int pageNo,
+    public CommonResponse<PageInfoResponseDto<AdminCouponResponseDto>> getCouponList(@RequestParam(defaultValue = "1") int pageNo,
                                                                                      @RequestParam(defaultValue = "10") int size) {
         //관리자 인증 관련 추가
         return ApiResponseUtil.success(couponService.getCoupons(pageNo, size));

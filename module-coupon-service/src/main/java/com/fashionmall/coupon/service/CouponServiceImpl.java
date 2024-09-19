@@ -31,7 +31,7 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public PageInfoResponseDto<AdminCouponResponseDto> getCoupons(int pageNo, int size) {
-        PageRequest pageRequest = PageRequest.of(pageNo, size);
+        PageRequest pageRequest = PageRequest.of(pageNo - 1, size);
         return couponRepository.couponListPaged(pageRequest);
     }
 
@@ -113,13 +113,13 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public PageInfoResponseDto<UserCouponResponseDto> getUserCoupons(Long userId, int pageNo, int size) {
-        PageRequest pageRequest = PageRequest.of(pageNo, size);
+        PageRequest pageRequest = PageRequest.of(pageNo - 1, size);
         return couponRepository.findUserCouponByUserId(userId, pageRequest);
     }
 
     @Override
     public PageInfoResponseDto<UserCouponResponseDto> getDownloadableCoupons(Long userId, int pageNo, int size) {
-        PageRequest pageRequest = PageRequest.of(pageNo, size);
+        PageRequest pageRequest = PageRequest.of(pageNo - 1, size);
         return couponRepository.findDownloadableCoupon(userId, pageRequest);
     }
 
