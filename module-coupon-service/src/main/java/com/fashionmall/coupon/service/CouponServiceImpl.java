@@ -14,7 +14,7 @@ import com.fashionmall.coupon.enums.DiscountType;
 import com.fashionmall.coupon.repository.CouponRepository;
 import com.fashionmall.coupon.repository.UserCouponRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -30,8 +30,9 @@ public class CouponServiceImpl implements CouponService {
     private final UserCouponRepository userCouponRepository;
 
     @Override
-    public PageInfoResponseDto<AdminCouponResponseDto> getCoupons(Pageable pageable) {
-        return couponRepository.couponListPaged(pageable);
+    public PageInfoResponseDto<AdminCouponResponseDto> getCoupons(int pageNo, int size) {
+        PageRequest pageRequest = PageRequest.of(pageNo, size);
+        return couponRepository.couponListPaged(pageRequest);
     }
 
     @Override
@@ -111,13 +112,15 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public PageInfoResponseDto<UserCouponResponseDto> getUserCoupons(Long userId, Pageable pageable) {
-        return couponRepository.findUserCouponByUserId(userId, pageable);
+    public PageInfoResponseDto<UserCouponResponseDto> getUserCoupons(Long userId, int pageNo, int size) {
+        PageRequest pageRequest = PageRequest.of(pageNo, size);
+        return couponRepository.findUserCouponByUserId(userId, pageRequest);
     }
 
     @Override
-    public PageInfoResponseDto<UserCouponResponseDto> getDownloadableCoupons(Long userId, Pageable pageable) {
-        return couponRepository.findDownloadableCoupon(userId, pageable);
+    public PageInfoResponseDto<UserCouponResponseDto> getDownloadableCoupons(Long userId, int pageNo, int size) {
+        PageRequest pageRequest = PageRequest.of(pageNo, size);
+        return couponRepository.findDownloadableCoupon(userId, pageRequest);
     }
 
     @Override
