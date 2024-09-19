@@ -9,7 +9,6 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @ToString
 public class CouponRequestDto {
