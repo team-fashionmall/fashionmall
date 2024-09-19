@@ -1,4 +1,4 @@
-package com.fashionmall.coupon;
+package com.fashionmall.common.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
