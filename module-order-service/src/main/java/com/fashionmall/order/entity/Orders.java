@@ -44,4 +44,7 @@ public class Orders extends BaseEntity {
 
     @Column(name = "road_address", nullable = false)
     private String roadAddress;
+
+    @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL)
+    private List<OrderItem> orderItems = new ArrayList<>();
 }
