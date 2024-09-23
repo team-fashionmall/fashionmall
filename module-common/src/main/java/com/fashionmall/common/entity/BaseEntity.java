@@ -1,4 +1,4 @@
-package com.fashionmall.order.entity;
+package com.fashionmall.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;

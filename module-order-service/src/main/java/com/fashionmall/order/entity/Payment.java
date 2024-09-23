@@ -1,5 +1,6 @@
 package com.fashionmall.order.entity;
 
+import com.fashionmall.common.entity.BaseEntity;
 import com.fashionmall.order.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

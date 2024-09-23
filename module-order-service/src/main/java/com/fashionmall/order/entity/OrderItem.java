@@ -1,5 +1,6 @@
 package com.fashionmall.order.entity;
 
+import com.fashionmall.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

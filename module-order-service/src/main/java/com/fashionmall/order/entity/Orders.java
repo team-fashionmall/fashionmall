@@ -1,10 +1,14 @@
 package com.fashionmall.order.entity;
 
+import com.fashionmall.common.entity.BaseEntity;
 import com.fashionmall.order.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
