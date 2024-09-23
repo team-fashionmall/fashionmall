@@ -2,6 +2,7 @@ package com.fashionmall.common.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.message.Message;
 import org.springframework.http.HttpStatus;
 
 @Getter
@@ -21,7 +22,11 @@ public enum ErrorResponseCode {
     ORDER_NOT_FOUND_BILLING_KEY(HttpStatus.NOT_FOUND, "유효하지 않은 결제 수단 입니다"),
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "이미 존재하는 이메일 입니다."),
     DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "이미 존재하는 닉네임 입니다."),
+    UNAUTHORIZED_MEMBER(HttpStatus.UNAUTHORIZED, "권한 정보가 없는 회원입니다."),
+    DUPLICATE_COUPON_NAME(HttpStatus.CONFLICT, "이미 존재하는 쿠폰명 입니다."),
     JWT_NOT_FOUND_TOKEN(HttpStatus.NOT_FOUND, "유효하지 않은 토큰입니다."); // 존재하지 않는 토큰?
+
+
 
     private final HttpStatus status;
     private final String message;
