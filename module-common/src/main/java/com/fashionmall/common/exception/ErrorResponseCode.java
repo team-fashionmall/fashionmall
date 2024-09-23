@@ -2,7 +2,6 @@ package com.fashionmall.common.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.message.Message;
 import org.springframework.http.HttpStatus;
 
 @Getter
@@ -14,7 +13,7 @@ public enum ErrorResponseCode {
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "필수 값을 입력해 주세요"),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다"),
     OUT_OF_STOCK(HttpStatus.CONFLICT, "재고가 부족합니다"),
-    NOT_FOUND(HttpStatus.NOT_FOUND,"해당 요청을 찾을 수 없습니다"),
+    NOT_FOUND(HttpStatus.NOT_FOUND, "해당 요청을 찾을 수 없습니다"),
     FORBIDDEN(HttpStatus.FORBIDDEN, "권한이 없습니다."),
 
     //커스텀 코드
@@ -24,8 +23,7 @@ public enum ErrorResponseCode {
     DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "이미 존재하는 닉네임 입니다."),
     UNAUTHORIZED_MEMBER(HttpStatus.UNAUTHORIZED, "권한 정보가 없는 회원입니다."),
     DUPLICATE_COUPON_NAME(HttpStatus.CONFLICT, "이미 존재하는 쿠폰명 입니다."),
-    JWT_NOT_FOUND_TOKEN(HttpStatus.NOT_FOUND, "유효하지 않은 토큰입니다."); // 존재하지 않는 토큰?
-
+    JWT_NOT_FOUND_TOKEN(HttpStatus.NOT_FOUND, "유효하지 않은 토큰입니다.");
 
 
     private final HttpStatus status;

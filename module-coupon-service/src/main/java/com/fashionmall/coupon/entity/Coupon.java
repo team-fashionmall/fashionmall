@@ -1,7 +1,6 @@
 package com.fashionmall.coupon.entity;
 
-import com.fashionmall.common.exception.CustomException;
-import com.fashionmall.common.exception.ErrorResponseCode;
+import com.fashionmall.common.entity.BaseEntity;
 import com.fashionmall.coupon.enums.CouponStatus;
 import com.fashionmall.coupon.enums.CouponType;
 import com.fashionmall.coupon.enums.DiscountType;
@@ -74,12 +73,39 @@ public class Coupon extends BaseEntity {
         this.status = status;
     }
 
-    private void validateMaxDiscountPrice() {
-        if (this.discountType == DiscountType.RATE && (maxDiscountPrice == null || maxDiscountPrice <= 0)) {
-            throw new CustomException(ErrorResponseCode.BAD_REQUEST);
-        }
-        if (this.discountType == DiscountType.AMOUNT) {
-            this.maxDiscountPrice = null;
-        }
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updateDiscountType(DiscountType discountType) {
+        this.discountType = discountType;
+    }
+
+    public void updateDiscountValue(int discountValue) {
+        this.discountValue = discountValue;
+    }
+
+    public void updateMinPurchasePrice(int minPurchasePrice) {
+        this.minPurchasePrice = minPurchasePrice;
+    }
+
+    public void updateMaxDiscountPrice(Integer maxDiscountPrice) {
+        this.maxDiscountPrice = maxDiscountPrice;
+    }
+
+    public void updateStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
+    }
+
+    public void updateEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
+    }
+
+    public void updateStatus(CouponStatus status) {
+        this.status = status;
+    }
+
+    public void setMaxDiscountPriceNull() {
+        this.maxDiscountPrice = null;
     }
 }
