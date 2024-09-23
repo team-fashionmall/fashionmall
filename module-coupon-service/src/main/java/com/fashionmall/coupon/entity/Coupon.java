@@ -1,5 +1,6 @@
 package com.fashionmall.coupon.entity;
 
+import com.fashionmall.common.entity.BaseEntity;
 import com.fashionmall.coupon.enums.CouponStatus;
 import com.fashionmall.coupon.enums.CouponType;
 import com.fashionmall.coupon.enums.DiscountType;
