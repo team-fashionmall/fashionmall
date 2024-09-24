@@ -73,12 +73,13 @@ public class WebClientUtil {
     public <T> T delete(String uri, Class<T> responseType, Map<String, String> headers) {
         return webClient.delete()
                 .uri(uri)
+                .headers(getHttpHeadersConsumer(headers))
                 .retrieve()
                 .bodyToMono(responseType)
                 .block();
     }
 
-    private static Consumer<HttpHeaders> getHttpHeadersConsumer(Map<String, String> headers) {
+    private Consumer<HttpHeaders> getHttpHeadersConsumer(Map<String, String> headers) {
         return httpHeaders -> {
             if (headers != null) {
                 for (Map.Entry<String, String> entry : headers.entrySet()) {
