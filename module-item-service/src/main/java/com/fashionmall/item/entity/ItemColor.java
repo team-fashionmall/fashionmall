@@ -1,0 +1,37 @@
+package com.fashionmall.item.entity;
+
+import com.fashionmall.common.entity.BaseEntity;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Getter
+@Table (name = "item_color")
+@Slf4j (topic = "의류 색상 테이블")
+@NoArgsConstructor (access = AccessLevel.PROTECTED)
+public class ItemColor extends BaseEntity {
+
+    @Id @Column(name = "item_color_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column (name = "item_color_name", nullable = false)
+    private String color;
+
+    @OneToMany (mappedBy = "itemColor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemDetail> itemDetails = new ArrayList<>();
+
+    @Builder
+    public ItemColor (String color) {
+
+        this.color = color;
+
+    }
+}
