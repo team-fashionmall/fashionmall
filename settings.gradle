@@ -4,4 +4,4 @@ include 'module-common'
 include 'module-item-service'
 include 'module-coupon-service'
 include 'module-order-service'
-
+include 'module-review-service'
