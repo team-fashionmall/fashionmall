@@ -13,7 +13,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "billing_key")
 public class BillingKey extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "billing_key_id")
     private Long id;
 
@@ -34,4 +35,14 @@ public class BillingKey extends BaseEntity {
 
     @Column(name = "card_type")
     private String cardType; //카드유형
+
+    @Builder
+    public BillingKey(Long userId, String customerUid, String cardNickname, String cardName, String cardNumber, String cardType) {
+        this.userId = userId;
+        this.customerUid = customerUid;
+        this.cardNickname = cardNickname;
+        this.cardName = cardName;
+        this.cardNumber = cardNumber;
+        this.cardType = cardType;
+    }
 }
