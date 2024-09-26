@@ -19,10 +19,10 @@ public class UserDetailsImpl implements UserDetails {
     private final String email;
     private final UserRoleEnum role;
     private final Long userId;
-    private final String password;
+    //private final String password;
 
     @Override
-    public String getPassword() { return password; }
+    public String getPassword() { return null; }
 
     @Override
     public String getUsername(){
