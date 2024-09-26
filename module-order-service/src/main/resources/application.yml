@@ -5,3 +5,8 @@ spring:
 
   profiles:
     active: local
+
+portOne:
+  api:
+    key: 5482317358863162
+    secret: pu6XCV2hmrXm1Wt5SK5E8AE5TVuZjspOzkVLvuVFNBQcLmFJdscdfe0lrTISeAg3M1mwXftJhiwCuR71
