@@ -48,6 +48,12 @@ subprojects {
         // Security
         implementation 'org.springframework.boot:spring-boot-starter-security'
 
+
+        //WebFlux 주입
+        implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+        //netty-resolver-dns-native-macos 의존성 주입
+        implementation 'io.netty:netty-resolver-dns-native-macos:4.1.113.Final:osx-aarch_64'
     }
 
     tasks.named('bootJar') {
@@ -117,6 +123,30 @@ project(':module-order-service') {
         implementation project(':module-common')
 
         implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+        runtimeOnly 'com.h2database:h2'
+    }
+}
+
+project(':module-review-service') {
+    dependencies {
+        implementation project(':module-common')
+
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+        runtimeOnly 'com.h2database:h2'
+    }
+}
+
+project(':module-cart-service') {
+    dependencies {
+        implementation project(':module-common')
+
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
         runtimeOnly 'com.h2database:h2'
     }
