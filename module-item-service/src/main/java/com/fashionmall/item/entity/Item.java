@@ -19,18 +19,16 @@ import java.util.List;
 @NoArgsConstructor (access = AccessLevel.PROTECTED)
 public class Item extends BaseEntity {
 
-    @Id @Column (name = "item_id")
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
 
-   /* @Column (name = "user_id", nullable = false)
+   /* @Column (nullable = false)
     private Long userId; // msa 에서 받아오는 사용자 Id*/
 
-    @Column (name = "item_name", nullable = false)
+    @Column (nullable = false)
     private String name;
 
     @Enumerated (EnumType.STRING)
-    @Column (name = "item_status")
     private ItemStatusEnum status = ItemStatusEnum.ACTIVATED;
 
     @OneToMany (mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -44,9 +42,7 @@ public class Item extends BaseEntity {
 
     @Builder
     public Item (String name, ItemStatusEnum status) {
-
         this.name = name;
         this.status = status;
-
     }
 }

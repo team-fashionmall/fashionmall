@@ -3,6 +3,7 @@ package com.fashionmall.item.entity;
 import com.fashionmall.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,16 +15,25 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor (access = AccessLevel.PROTECTED)
 public class ItemCategoryMapping extends BaseEntity {
 
-    @EmbeddedId
-    private ItemCategoryMappingId itemCategoryMappingId;
+    @Id @GeneratedValue (strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    // ItemCategoryMapping 클래스에 item 속성 추가
-    @ManyToOne(fetch = FetchType.LAZY) @MapsId("itemId") // ItemCategoryMappingId의 itemId를 참조
-    @JoinColumn(name = "item_id")
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private Item item;
 
-    @ManyToOne(fetch = FetchType.LAZY) @MapsId("categoryId") // ItemCategoryMappingId의 categoryId를 참조
-    @JoinColumn(name = "category_id")
-    private Category category;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private CategoryMain categoryMain;
+
+    @Column (nullable = false)
+    private Long categorySubId;
+
+    @Builder
+    public ItemCategoryMapping (Item item, CategoryMain mainCategory, Long subCategoryId) {
+        this.item = item;
+        this.categoryMain = mainCategory;
+        this.categorySubId = subCategoryId;
+    }
 
 }

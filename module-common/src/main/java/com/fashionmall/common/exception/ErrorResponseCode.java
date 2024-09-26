@@ -28,7 +28,8 @@ public enum ErrorResponseCode {
     // Item
     BAD_CATEGORY(HttpStatus.BAD_REQUEST, "상위, 하위 카테고리가 맞지 않습니다."),
     NOT_EXIST_PARENT_ID(HttpStatus.NOT_FOUND, "해당 부모 ID가 존재하지 않습니다."),
-    WRONG_PARENT_ID(HttpStatus.BAD_REQUEST, "맞는 카테고리 부모 ID가 아닙니다.");
+    WRONG_PARENT_ID(HttpStatus.BAD_REQUEST, "맞는 카테고리 부모 ID가 아닙니다."),
+    WRONG_STRING(HttpStatus.BAD_REQUEST, "변수명을 다시 확인해주세요");
 
 
     private final HttpStatus status;

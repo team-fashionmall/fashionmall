@@ -1,14 +1,11 @@
 package com.fashionmall.item.dto.request;
 
-import com.fashionmall.item.entity.MainCategoryEnum;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.context.annotation.Primary;
 
 @Getter
 @NoArgsConstructor
@@ -34,12 +31,10 @@ public class ItemRequestDto {
     @NotBlank (message = "상품 전시 상태 여부를 입력해주세요(enum)")
     private String itemDetailState; // 상품 전시 상태
 
-    @NotNull (message = "상위 카테고리를 입력해주세요(enum)")
-    private MainCategoryEnum mainCategory; // 상위 카테고리
+    @NotBlank (message = "상위 카테고리를 입력해주세요(enum)")
+    private String mainCategory; // 상위 카테고리
     @NotBlank (message = "하위 카테고리를 입력해주세요(enum)")
     private String subCategory; // 하위 카테고리
-    @Positive (message = "상위 카테고리 ID를 입력해주세요(DB확인)")
-    private Long parentId; // 상위 카테고리 id
 
     /*// presigned url 후 연결
     private String mainImage;

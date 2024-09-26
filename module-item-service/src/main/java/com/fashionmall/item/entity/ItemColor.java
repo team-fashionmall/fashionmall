@@ -18,11 +18,10 @@ import java.util.List;
 @NoArgsConstructor (access = AccessLevel.PROTECTED)
 public class ItemColor extends BaseEntity {
 
-    @Id @Column(name = "item_color_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column (name = "item_color_name", nullable = false)
+    @Column (nullable = false)
     private String color;
 
     @OneToMany (mappedBy = "itemColor", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -30,8 +29,6 @@ public class ItemColor extends BaseEntity {
 
     @Builder
     public ItemColor (String color) {
-
         this.color = color;
-
     }
 }

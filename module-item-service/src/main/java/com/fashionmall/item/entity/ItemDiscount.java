@@ -14,23 +14,19 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor (access = AccessLevel.PROTECTED)
 public class ItemDiscount extends BaseEntity {
 
-    @Id @Column(name = "item_discount_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn (name = "item_id", nullable = false)
+    @ManyToOne @JoinColumn (name = "item_id", nullable = false)
     private Item item;
 
-    @Enumerated (EnumType.STRING)
-    @Column (name = "item_discount_type", nullable = false)
+    @Enumerated (EnumType.STRING) @Column (nullable = false)
     private ItemDiscountTypeEnum type;
 
     @Column (nullable = false)
-    private int value; // '할인 값(정률: %, 정액: 원)' 유효성 검사
+    private int value; // '할인 값(정률: %, 정액: 원)'
 
     @Enumerated (EnumType.STRING)
-    @Column (name = "item_discount_status")
     private ItemStatusEnum status = ItemStatusEnum.ACTIVATED;
 
 }

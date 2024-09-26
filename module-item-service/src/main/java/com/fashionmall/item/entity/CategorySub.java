@@ -8,27 +8,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Getter
-@Table (name = "item_size")
-@Slf4j (topic = "의류 사이즈 테이블")
+@Table (name = "category_sub")
+@Slf4j (topic = "서브 카테고리")
 @NoArgsConstructor (access = AccessLevel.PROTECTED)
-public class ItemSize extends BaseEntity {
+public class CategorySub extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column (nullable = false)
-    private String size;
+    private String name;
 
-    @OneToMany (mappedBy = "itemSize", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List <ItemDetail> itemDetails = new ArrayList<>();
+    @ManyToOne @JoinColumn (nullable = false)
+    private CategoryMain categoryMain;
 
     @Builder
-    public ItemSize (String size) {
-        this.size = size;
+    public CategorySub (String subCategory) {
+        this.name = subCategory;
     }
+
 }

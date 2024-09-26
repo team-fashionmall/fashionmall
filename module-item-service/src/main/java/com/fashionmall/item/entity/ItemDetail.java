@@ -15,27 +15,22 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor (access = AccessLevel.PROTECTED)
 public class ItemDetail extends BaseEntity {
 
-    @Id @Column(name = "item_detail_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn (name = "item_id", nullable = false)
+    @ManyToOne @JoinColumn (name = "item_id", nullable = false)
     private Item item;
 
-    @ManyToOne
-    @JoinColumn (name = "size_id", nullable = false)
+    @ManyToOne @JoinColumn (name = "size_id", nullable = false)
     private ItemSize itemSize;
 
-    @ManyToOne
-    @JoinColumn (name = "item_color", nullable = false)
+    @ManyToOne @JoinColumn (name = "item_color", nullable = false)
     private ItemColor itemColor;
 
-    @Column (name = "item_detail_name", nullable = false)
+    @Column (nullable = false)
     private String name;
 
     @Enumerated (EnumType.STRING)
-    @Column (name = "item_detail_status")
     private ItemStatusEnum status = ItemStatusEnum.ACTIVATED; // 품절 여부
 
     @Column (nullable = false)
@@ -46,7 +41,6 @@ public class ItemDetail extends BaseEntity {
 
     @Builder
     public ItemDetail (Item item, ItemSize itemSize, ItemColor itemColor, String name, ItemStatusEnum status, int price, int quantity) {
-
         this.item = item;
         this.itemSize = itemSize;
         this.itemColor = itemColor;
@@ -54,7 +48,6 @@ public class ItemDetail extends BaseEntity {
         this.status = status;
         this.price = price;
         this.quantity = quantity;
-
     }
 
 }
