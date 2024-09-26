@@ -1,4 +1,4 @@
-package com.fashionmall.common.response;
+package com.fashionmall.order.dto.response.common;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

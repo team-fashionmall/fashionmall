@@ -1,6 +1,5 @@
 package com.fashionmall.order.service;
 
-import com.fashionmall.common.response.IamPortResponseDto;
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.common.util.WebClientUtil;
 import com.fashionmall.order.dto.request.BillingKeyRequestDto;
@@ -8,6 +7,7 @@ import com.fashionmall.order.dto.request.TokenRequestDto;
 import com.fashionmall.order.dto.response.BillingKeyResponseDto;
 import com.fashionmall.order.dto.response.TokenResponseDto;
 import com.fashionmall.order.dto.response.UserBillingKeyResponseDto;
+import com.fashionmall.order.dto.response.common.IamPortResponseDto;
 import com.fashionmall.order.entity.BillingKey;
 import com.fashionmall.order.repository.BillingKeyRepository;
 import lombok.RequiredArgsConstructor;
