@@ -4,6 +4,7 @@ import com.fashionmall.cart.dto.request.CartRequestDto;
 import com.fashionmall.cart.service.CartService;
 import com.fashionmall.common.response.CommonResponse;
 import com.fashionmall.common.util.ApiResponseUtil;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CartController {
     private final CartService cartService;
     @PostMapping("/cart")
-    public CommonResponse<String> createCart (@RequestBody CartRequestDto cartRequestDto) {
+    public CommonResponse<String> createCart (@Valid @RequestBody CartRequestDto cartRequestDto) {
         return ApiResponseUtil.success(cartService.createCart(cartRequestDto));
     }
 }

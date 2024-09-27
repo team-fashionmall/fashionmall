@@ -19,7 +19,7 @@ public class CartServiceImpl implements CartService{
 
     @Override
     @Transactional
-    public String createCart (@Valid CartRequestDto cartRequestDto) {
+    public String createCart (CartRequestDto cartRequestDto) {
         // 회원 여부 인증
         Cart cart = Cart.builder()
                 .itemId(cartRequestDto.getItemId())
