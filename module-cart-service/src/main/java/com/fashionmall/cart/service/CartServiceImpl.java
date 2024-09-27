@@ -3,7 +3,9 @@ package com.fashionmall.cart.service;
 import com.fashionmall.cart.dto.request.CartRequestDto;
 import com.fashionmall.cart.entity.Cart;
 import com.fashionmall.cart.repository.CartRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +19,7 @@ public class CartServiceImpl implements CartService{
 
     @Override
     @Transactional
-    public String createCart (CartRequestDto cartRequestDto) {
+    public String createCart (@Valid CartRequestDto cartRequestDto) {
         // 회원 여부 인증
         Cart cart = Cart.builder()
                 .itemId(cartRequestDto.getItemId())
@@ -25,6 +27,7 @@ public class CartServiceImpl implements CartService{
                 .colorId(Long.valueOf(cartRequestDto.getItemColor()))
                 .sizeId(Long.valueOf(cartRequestDto.getItemSize()))
                 .cartStatus(cartRequestDto.getCartStatus())
+                .itemName(cartRequestDto.getItemName())
                 .build();
         cartRepository.save(cart);
         return "장바구니에 담겼습니다";

@@ -26,4 +26,6 @@ public class CartRequestDto {
 
     @Positive(message = "상품의 sizeId를 입력해주세요")
     private String itemSize;
+
+    private String itemName; // 추후 상품에서 받아올 예정
 }
