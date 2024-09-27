@@ -28,4 +28,5 @@ public class CartRequestDto {
     private String itemSize;
 
     private String itemName; // 추후 상품에서 받아올 예정
+    private int itemPrice;
 }

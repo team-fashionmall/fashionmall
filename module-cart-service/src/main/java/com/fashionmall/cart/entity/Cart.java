@@ -33,6 +33,9 @@ public class Cart extends BaseEntity {
     @Column (nullable = false)
     private String itemName;
 
+    @Column (nullable = false)
+    private int itemPrice;
+
 //    @Column (nullable = false)
 //    private String itemImage;
 
@@ -43,12 +46,13 @@ public class Cart extends BaseEntity {
     private CartStatusEnum status = CartStatusEnum.INACTIVATED;
 
     @Builder
-    public Cart (Long itemId, Long colorId, Long sizeId,int quantity, CartStatusEnum cartStatus, String itemName) {
+    public Cart (Long itemId, Long colorId, Long sizeId,int quantity, CartStatusEnum cartStatus, String itemName, int itemPrice) {
         this.itemId = itemId;
         this.colorId = colorId;
         this.sizeId = sizeId;
         this.quantity = quantity;
         this.status = cartStatus;
         this.itemName = itemName;
+        this.itemPrice = itemPrice;
     }
 }

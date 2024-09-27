@@ -5,7 +5,6 @@ import com.fashionmall.cart.entity.Cart;
 import com.fashionmall.cart.repository.CartRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j(topic = "cartService")
 @Transactional(readOnly = true)
 public class CartServiceImpl implements CartService{
+
     private final CartRepository cartRepository;
 
     @Override
@@ -28,8 +28,10 @@ public class CartServiceImpl implements CartService{
                 .sizeId(Long.valueOf(cartRequestDto.getItemSize()))
                 .cartStatus(cartRequestDto.getCartStatus())
                 .itemName(cartRequestDto.getItemName())
+                .itemPrice(cartRequestDto.getItemPrice())
                 .build();
         cartRepository.save(cart);
         return "장바구니에 담겼습니다";
     }
+
 }
