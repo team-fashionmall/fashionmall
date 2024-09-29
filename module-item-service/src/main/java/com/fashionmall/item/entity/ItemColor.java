@@ -24,9 +24,6 @@ public class ItemColor extends BaseEntity {
     @Column (nullable = false)
     private String color;
 
-    @OneToMany (mappedBy = "itemColor", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemDetail> itemDetails = new ArrayList<>();
-
     @Builder
     public ItemColor (Long colorId) {
         this.id = colorId;
