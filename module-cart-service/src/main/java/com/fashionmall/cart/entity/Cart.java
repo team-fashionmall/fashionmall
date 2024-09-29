@@ -21,38 +21,19 @@ public class Cart extends BaseEntity {
     //    @Column (name = "user_id", nullable = false)
 //    private Long userId; //  받아오는 사용자 Id
 
-    @Column (nullable = false)
-    private Long itemId; //  받아오는 상품 id
+    @Column (name = "item_detail_id", nullable = false)
+    private Long itemDetailId; //  받아오는 상품 id
 
-    @Column (nullable = false)
-    private Long colorId; //  받아오는  Id
-
-    @Column (nullable = false)
-    private Long sizeId; //  받아오는 Id
-
-    @Column (nullable = false)
-    private String itemName;
-
-    @Column (nullable = false)
-    private int itemPrice;
-
-//    @Column (nullable = false)
-//    private String itemImage;
-
-    @Column (nullable = false)
+    @Column (name = "quantity", nullable = false)
     private int quantity; // 해당 제품의 선택 수량
 
     @Enumerated(EnumType.STRING)
     private CartStatusEnum status = CartStatusEnum.INACTIVATED;
 
     @Builder
-    public Cart (Long itemId, Long colorId, Long sizeId,int quantity, CartStatusEnum cartStatus, String itemName, int itemPrice) {
-        this.itemId = itemId;
-        this.colorId = colorId;
-        this.sizeId = sizeId;
+    public Cart (Long itemDetailId, int quantity, CartStatusEnum status) {
+        this.itemDetailId = itemDetailId;
         this.quantity = quantity;
-        this.status = cartStatus;
-        this.itemName = itemName;
-        this.itemPrice = itemPrice;
+        this.status = status != null ? status : CartStatusEnum.INACTIVATED;
     }
 }

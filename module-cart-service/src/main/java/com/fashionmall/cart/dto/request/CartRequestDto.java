@@ -14,9 +14,9 @@ import lombok.NoArgsConstructor;
 public class CartRequestDto {
 
     @NotNull (message = "상품아이디를 입력해주세요")
-    private Long itemId;
+    private Long itemDetailId;
 
     @NotNull @Positive (message = "해당 상품의 개수를 입력해주세요")
-    private int cartQuantity;
+    private int quantity;
 
 }
