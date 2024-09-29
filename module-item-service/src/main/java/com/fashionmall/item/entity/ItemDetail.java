@@ -1,6 +1,7 @@
 package com.fashionmall.item.entity;
 
 import com.fashionmall.common.entity.BaseEntity;
+import com.fashionmall.item.enums.ItemStatusEnum;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

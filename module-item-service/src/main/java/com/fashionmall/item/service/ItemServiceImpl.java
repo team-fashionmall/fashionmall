@@ -5,6 +5,7 @@ import com.fashionmall.common.exception.ErrorResponseCode;
 import com.fashionmall.item.dto.request.ItemRequestDto;
 import com.fashionmall.item.dto.response.ItemResponseDto;
 import com.fashionmall.item.entity.*;
+import com.fashionmall.item.enums.ItemStatusEnum;
 import com.fashionmall.item.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
