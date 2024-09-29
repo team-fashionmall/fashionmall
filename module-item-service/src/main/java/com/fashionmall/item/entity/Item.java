@@ -1,7 +1,7 @@
 package com.fashionmall.item.entity;
 
 import com.fashionmall.common.entity.BaseEntity;
-import com.fashionmall.item.enums.ItemStatusEnum;
+import com.fashionmall.item.enums.StatusEnum;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -29,7 +29,7 @@ public class Item extends BaseEntity {
     private String name;
 
     @Enumerated (EnumType.STRING)
-    private ItemStatusEnum status = ItemStatusEnum.ACTIVATED;
+    private StatusEnum status = StatusEnum.ACTIVATED;
 
     @OneToMany (mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List <ItemDetail> itemDetails = new ArrayList<>();
@@ -41,7 +41,7 @@ public class Item extends BaseEntity {
     private List <ItemDiscount> itemDiscounts = new ArrayList<>();
 
     @Builder
-    public Item (String name, ItemStatusEnum status) {
+    public Item (String name, StatusEnum status) {
         this.name = name;
         this.status = status;
     }

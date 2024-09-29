@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum ItemStatusEnum {
+public enum StatusEnum {
 
     ACTIVATED ("활성화"), INACTIVATED ("비활성화");
 

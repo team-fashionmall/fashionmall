@@ -1,7 +1,7 @@
 package com.fashionmall.item.entity;
 
 import com.fashionmall.common.entity.BaseEntity;
-import com.fashionmall.item.enums.ItemStatusEnum;
+import com.fashionmall.item.enums.StatusEnum;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -32,7 +32,7 @@ public class ItemDetail extends BaseEntity {
     private String name;
 
     @Enumerated (EnumType.STRING)
-    private ItemStatusEnum status = ItemStatusEnum.ACTIVATED; // 품절 여부
+    private StatusEnum status = StatusEnum.ACTIVATED; // 품절 여부
 
     @Column (nullable = false)
     private int price;
@@ -41,7 +41,7 @@ public class ItemDetail extends BaseEntity {
     private int quantity; // 재고수량
 
     @Builder
-    public ItemDetail (Item item, ItemSize itemSize, ItemColor itemColor, String name, ItemStatusEnum status, int price, int quantity) {
+    public ItemDetail (Item item, ItemSize itemSize, ItemColor itemColor, String name, StatusEnum status, int price, int quantity) {
         this.item = item;
         this.itemSize = itemSize;
         this.itemColor = itemColor;
