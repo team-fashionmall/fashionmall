@@ -3,15 +3,13 @@ package com.fashionmall.order.service;
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.common.util.WebClientUtil;
 import com.fashionmall.order.dto.request.BillingKeyRequestDto;
-import com.fashionmall.order.dto.request.TokenRequestDto;
 import com.fashionmall.order.dto.response.BillingKeyResponseDto;
-import com.fashionmall.order.dto.response.TokenResponseDto;
 import com.fashionmall.order.dto.response.UserBillingKeyResponseDto;
-import com.fashionmall.order.dto.response.common.IamPortResponseDto;
 import com.fashionmall.order.entity.BillingKey;
+import com.fashionmall.order.infra.iamPort.dto.IamPortResponseDto;
+import com.fashionmall.order.infra.iamPort.util.IamPortClient;
 import com.fashionmall.order.repository.BillingKeyRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
@@ -26,23 +24,20 @@ import java.util.UUID;
 @Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
-public class IamPortServiceImpl implements IamPortService {
+public class BillingKeyServiceImpl implements BillingKeyService {
 
     private final WebClientUtil webClientUtil;
     private final BillingKeyRepository billingKeyRepository;
-
-    @Value("${portOne.api.key}")
-    private String key;
-
-    @Value("${portOne.api.secret}")
-    private String secret;
+    private final IamPortClient iamPortClient;
 
     private final String iamPortUrl = "http://api.iamport.kr";
 
+    @Transactional
     @Override
     public Long issueBillingKey(BillingKeyRequestDto billingKeyRequestDto) {
+
         String customerUid = UUID.randomUUID().toString();
-        String accessToken = getAccessToken();
+        String accessToken = iamPortClient.getAccessToken();
 
         Map<String, String> headers = Map.of(
                 HttpHeaders.CONTENT_TYPE, "application/json",
@@ -72,7 +67,7 @@ public class IamPortServiceImpl implements IamPortService {
     public PageInfoResponseDto<UserBillingKeyResponseDto> getUserBillingKeyList(Long userId, int pageNo, int size) {
         PageRequest pageRequest = PageRequest.of(pageNo - 1, size);
 
-        String accessToken = getAccessToken();
+        String accessToken = iamPortClient.getAccessToken();
 
         Map<String, String> headers = Map.of(
                 HttpHeaders.CONTENT_TYPE, "application/json",
@@ -116,9 +111,10 @@ public class IamPortServiceImpl implements IamPortService {
         return iamPortResponse;
     }
 
+    @Transactional
     @Override
     public Long deleteBillingKey(Long billingKeyId) {
-        String accessToken = getAccessToken();
+        String accessToken = iamPortClient.getAccessToken();
 
         Map<String, String> headers = Map.of(
                 HttpHeaders.CONTENT_TYPE, "application/json",
@@ -134,18 +130,5 @@ public class IamPortServiceImpl implements IamPortService {
         billingKeyRepository.deleteById(billingKeyId);
 
         return billingKeyId;
-    }
-
-
-    public String getAccessToken() {
-        TokenRequestDto requestDto = new TokenRequestDto();
-        requestDto.setImpKey(key);
-        requestDto.setImpSecret(secret);
-
-        Map<String, String> headers = Map.of(HttpHeaders.CONTENT_TYPE, "application/json");
-
-        IamPortResponseDto<TokenResponseDto> post = webClientUtil.post(iamPortUrl + "/users/getToken", requestDto, new ParameterizedTypeReference<IamPortResponseDto<TokenResponseDto>>() {
-        }, headers);
-        return post.getResponse().getAccessToken();
     }
 }

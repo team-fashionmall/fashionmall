@@ -1,4 +1,4 @@
-package com.fashionmall.order.dto.response.common;
+package com.fashionmall.order.infra.iamPort.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

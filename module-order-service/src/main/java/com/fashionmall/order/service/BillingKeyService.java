@@ -4,7 +4,7 @@ import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.order.dto.request.BillingKeyRequestDto;
 import com.fashionmall.order.dto.response.UserBillingKeyResponseDto;
 
-public interface IamPortService {
+public interface BillingKeyService {
 
     Long issueBillingKey(BillingKeyRequestDto billingKeyRequestDto);
 

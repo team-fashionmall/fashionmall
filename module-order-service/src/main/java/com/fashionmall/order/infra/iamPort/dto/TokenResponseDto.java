@@ -1,4 +1,4 @@
-package com.fashionmall.order.dto.response;
+package com.fashionmall.order.infra.iamPort.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
