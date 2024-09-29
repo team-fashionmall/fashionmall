@@ -10,10 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Getter
-@Table (name = "category_sub")
+@Table (name = "category2")
 @Slf4j (topic = "서브 카테고리")
 @NoArgsConstructor (access = AccessLevel.PROTECTED)
-public class CategorySub extends BaseEntity {
+public class Category2 extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,11 +22,11 @@ public class CategorySub extends BaseEntity {
     private String name;
 
     @ManyToOne @JoinColumn (nullable = false)
-    private CategoryMain categoryMain;
+    private Category1 category1;
 
     @Builder
-    public CategorySub (String subCategory) {
-        this.name = subCategory;
+    public Category2(Long category2) {
+        this.id = category2;
     }
 
 }

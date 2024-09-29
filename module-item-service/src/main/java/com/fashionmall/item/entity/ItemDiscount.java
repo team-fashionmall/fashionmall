@@ -2,7 +2,7 @@ package com.fashionmall.item.entity;
 
 import com.fashionmall.common.entity.BaseEntity;
 import com.fashionmall.item.enums.ItemDiscountTypeEnum;
-import com.fashionmall.item.enums.ItemStatusEnum;
+import com.fashionmall.item.enums.StatusEnum;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -29,6 +29,6 @@ public class ItemDiscount extends BaseEntity {
     private int value; // '할인 값(정률: %, 정액: 원)'
 
     @Enumerated (EnumType.STRING)
-    private ItemStatusEnum status = ItemStatusEnum.ACTIVATED;
+    private StatusEnum status = StatusEnum.ACTIVATED;
 
 }

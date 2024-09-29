@@ -25,7 +25,8 @@ public enum ErrorResponseCode {
     JWT_NOT_FOUND_TOKEN(HttpStatus.NOT_FOUND, "유효하지 않은 토큰입니다."), // 존재하지 않는 토큰?
 
     // Item
-    WRONG_STRING(HttpStatus.BAD_REQUEST, "변수명을 다시 확인해주세요");
+    WRONG_ITEM_ID(HttpStatus.BAD_REQUEST, "상품 관련 ID를 다시 확인해주세요"),
+    WRONG_CATEGORY_ID(HttpStatus.BAD_REQUEST, "카테고리 관련 ID를 다시 확인해주세요");
 
 
     private final HttpStatus status;

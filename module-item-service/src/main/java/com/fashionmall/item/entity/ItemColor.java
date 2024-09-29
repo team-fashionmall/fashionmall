@@ -28,7 +28,7 @@ public class ItemColor extends BaseEntity {
     private List<ItemDetail> itemDetails = new ArrayList<>();
 
     @Builder
-    public ItemColor (String color) {
-        this.color = color;
+    public ItemColor (Long colorId) {
+        this.id = colorId;
     }
 }

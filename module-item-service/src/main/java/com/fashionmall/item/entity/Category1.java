@@ -13,10 +13,10 @@ import java.util.List;
 
 @Entity
 @Getter
-@Table (name = "category_main")
-@Slf4j (topic = "메인 카테고리 entity")
+@Table (name = "category1")
+@Slf4j (topic = "메인 카테고리")
 @NoArgsConstructor (access = AccessLevel.PROTECTED)
-public class CategoryMain extends BaseEntity {
+public class Category1 extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,14 +24,14 @@ public class CategoryMain extends BaseEntity {
     @Column (nullable = false)
     private String name;
 
-    @OneToMany (mappedBy = "categoryMain", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List <CategorySub> categorySubs = new ArrayList<>();
+    @OneToMany (mappedBy = "category1", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List <Category2> category2s = new ArrayList<>();
 
-    @OneToMany (mappedBy = "categoryMain", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany (mappedBy = "category1", cascade = CascadeType.ALL, orphanRemoval = true)
     private List <ItemCategoryMapping> itemCategoryMappings = new ArrayList<>();
 
     @Builder
-    public CategoryMain (String mainCategory) {
-        this.name = mainCategory;
+    public Category1(Long category1) {
+        this.id = category1;
     }
 }

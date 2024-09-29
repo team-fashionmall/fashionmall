@@ -28,7 +28,7 @@ public class ItemSize extends BaseEntity {
     private List <ItemDetail> itemDetails = new ArrayList<>();
 
     @Builder
-    public ItemSize (String size) {
-        this.size = size;
+    public ItemSize (Long sizeId) {
+        this.id = sizeId;
     }
 }

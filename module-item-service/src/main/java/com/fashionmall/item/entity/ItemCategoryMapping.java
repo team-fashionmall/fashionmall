@@ -24,16 +24,16 @@ public class ItemCategoryMapping extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    private CategoryMain categoryMain;
+    private Category1 category1;
 
     @Column (nullable = false)
-    private Long categorySubId;
+    private Long category2Id;
 
     @Builder
-    public ItemCategoryMapping (Item item, CategoryMain mainCategory, Long subCategoryId) {
+    public ItemCategoryMapping (Item item, Category1 category1, Long category2Id) {
         this.item = item;
-        this.categoryMain = mainCategory;
-        this.categorySubId = subCategoryId;
+        this.category1 = category1;
+        this.category2Id = category2Id;
     }
 
 }
