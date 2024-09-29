@@ -24,9 +24,6 @@ public class ItemSize extends BaseEntity {
     @Column (nullable = false)
     private String size;
 
-    @OneToMany (mappedBy = "itemSize", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List <ItemDetail> itemDetails = new ArrayList<>();
-
     @Builder
     public ItemSize (Long sizeId) {
         this.id = sizeId;
