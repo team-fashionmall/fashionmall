@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Getter
-@Table (name = "carts")
+@Table (name = "cart")
 @Slf4j(topic = "장바구니")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Cart extends BaseEntity {
