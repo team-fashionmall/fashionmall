@@ -14,7 +14,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@Table (name = "items")
+@Table (name = "item")
 @Slf4j (topic = "판매상품 테이블")
 @NoArgsConstructor (access = AccessLevel.PROTECTED)
 public class Item extends BaseEntity {
