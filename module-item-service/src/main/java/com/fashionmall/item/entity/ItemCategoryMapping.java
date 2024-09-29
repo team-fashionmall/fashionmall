@@ -19,11 +19,11 @@ public class ItemCategoryMapping extends BaseEntity {
     private Long id;
 
     @ManyToOne (fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "item_id", nullable = false)
     private Item item;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "category1_id",nullable = false)
     private Category1 category1;
 
     @Column (nullable = false)
