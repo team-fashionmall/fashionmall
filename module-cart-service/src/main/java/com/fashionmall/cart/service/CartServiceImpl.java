@@ -27,7 +27,6 @@ public class CartServiceImpl implements CartService{
         Cart cart = Cart.builder()
                 .itemDetailId(cartRequestDto.getItemDetailId())
                 .quantity(cartRequestDto.getQuantity())
-//                .status(CartStatusEnum.INACTIVATED)
                 .build();
         cartRepository.save(cart);
 
