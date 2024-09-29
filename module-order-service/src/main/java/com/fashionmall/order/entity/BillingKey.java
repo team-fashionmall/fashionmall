@@ -15,7 +15,7 @@ public class BillingKey extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "billing_key_id")
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "user_id")
