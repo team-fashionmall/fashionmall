@@ -24,10 +24,8 @@ public class CartServiceImpl implements CartService{
 
         // 회원 여부 인증
 
-        Cart cart = Cart.builder()
-                .itemDetailId(cartRequestDto.getItemDetailId())
-                .quantity(cartRequestDto.getQuantity())
-                .build();
+        Cart cart = cartRequestDto.toEntity();
+
         cartRepository.save(cart);
 
         return "장바구니에 담겼습니다";

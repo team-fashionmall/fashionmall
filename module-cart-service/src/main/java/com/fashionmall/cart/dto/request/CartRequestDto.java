@@ -1,5 +1,6 @@
 package com.fashionmall.cart.dto.request;
 
+import com.fashionmall.cart.entity.Cart;
 import com.fashionmall.cart.entity.CartStatusEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -18,5 +19,12 @@ public class CartRequestDto {
 
     @NotNull @Positive (message = "해당 상품의 개수를 입력해주세요")
     private int quantity;
+
+    public Cart toEntity() {
+        return Cart.builder()
+                .itemDetailId(this.itemDetailId)
+                .quantity(this.quantity)
+                .build();
+    }
 
 }
