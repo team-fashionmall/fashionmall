@@ -21,7 +21,7 @@ public class Category2 extends BaseEntity {
     @Column (nullable = false)
     private String name;
 
-    @ManyToOne @JoinColumn (nullable = false)
+    @ManyToOne @JoinColumn (name = "category1_id",nullable = false)
     private Category1 category1;
 
     @Builder
