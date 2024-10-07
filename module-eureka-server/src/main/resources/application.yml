@@ -4,13 +4,8 @@ server:
 spring:
   application:
     name: module-eureka-server
-  cloud:
-    discovery:
-      enabled: true
 
 eureka:
-  server:
-    enable-self-preservation: false
   client:
     register-with-eureka: false
     fetch-registry: false
