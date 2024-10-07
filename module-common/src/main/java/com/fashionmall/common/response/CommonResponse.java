@@ -20,4 +20,10 @@ public class CommonResponse<T> {
         this.message = message;
         this.data = null;
     }
+
+    public CommonResponse() {
+        this.status = null;
+        this.message = null;
+        this.data = null;
+    }
 }

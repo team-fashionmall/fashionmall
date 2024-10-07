@@ -6,6 +6,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -17,16 +18,19 @@ public class WebClientUtil {
 
     public <T> T get(String uri, Class<T> responseType, Map<String, String> queryParam, Map<String, String> headers) {
         return webClient.get()
-                .uri(uriBuilder -> {
-                    uriBuilder.path(uri);
-                    if (queryParam != null) {
-                        queryParam.forEach(uriBuilder::queryParam);
-                    }
-                    return uriBuilder.build();
-                })
+                .uri(uri, headers != null ? headers : Collections.emptyMap())
                 .headers(getHttpHeadersConsumer(headers))
                 .retrieve()
                 .bodyToMono(responseType)
+                .block();
+    }
+
+    public <T> T get(String uri, ParameterizedTypeReference<T> elementTypeRef, Map<String, String> queryParam, Map<String, String> headers) {
+        return webClient.get()
+                .uri(uri, headers != null ? headers : Collections.emptyMap())
+                .headers(getHttpHeadersConsumer(headers))
+                .retrieve()
+                .bodyToMono(elementTypeRef)
                 .block();
     }
 
@@ -76,6 +80,15 @@ public class WebClientUtil {
                 .headers(getHttpHeadersConsumer(headers))
                 .retrieve()
                 .bodyToMono(responseType)
+                .block();
+    }
+
+    public <T> T delete(String uri, ParameterizedTypeReference<T> elementTypeRef, Map<String, String> headers) {
+        return webClient.delete()
+                .uri(uri)
+                .headers(getHttpHeadersConsumer(headers))
+                .retrieve()
+                .bodyToMono(elementTypeRef)
                 .block();
     }
 
