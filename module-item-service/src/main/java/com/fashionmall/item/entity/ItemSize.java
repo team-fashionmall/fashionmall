@@ -21,7 +21,7 @@ public class ItemSize extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column (nullable = false)
+    @Column (name = "item_size", nullable = false)
     private String size;
 
     @Builder

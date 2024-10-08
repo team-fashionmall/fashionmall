@@ -25,19 +25,19 @@ public class ItemDetail extends BaseEntity {
     @ManyToOne @JoinColumn (name = "size_id", nullable = false)
     private ItemSize itemSize;
 
-    @ManyToOne @JoinColumn (name = "item_color_id", nullable = false)
+    @ManyToOne @JoinColumn (name = "color_id", nullable = false)
     private ItemColor itemColor;
 
-    @Column (nullable = false)
+    @Column (name = "item_detail_name", nullable = false)
     private String name;
 
     @Enumerated (EnumType.STRING)
     private StatusEnum status = StatusEnum.ACTIVATED; // 품절 여부
 
-    @Column (nullable = false)
+    @Column (name = "item_price", nullable = false)
     private int price;
 
-    @Column (nullable = false)
+    @Column (name = "item_quantity", nullable = false)
     private int quantity; // 재고수량
 
     @Builder

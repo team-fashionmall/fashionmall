@@ -18,7 +18,7 @@ public class Category2 extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column (nullable = false)
+    @Column (name = "category2_name", nullable = false)
     private String name;
 
     @ManyToOne @JoinColumn (name = "category1_id",nullable = false)

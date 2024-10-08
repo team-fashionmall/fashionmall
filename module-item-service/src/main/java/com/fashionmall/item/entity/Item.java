@@ -25,7 +25,7 @@ public class Item extends BaseEntity {
    /* @Column (nullable = false)
     private Long userId; // msa 에서 받아오는 사용자 Id*/
 
-    @Column (nullable = false)
+    @Column (name = "item_name", nullable = false)
     private String name;
 
     @Enumerated (EnumType.STRING)

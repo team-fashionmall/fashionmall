@@ -21,7 +21,7 @@ public class ItemColor extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column (nullable = false)
+    @Column (name = "item_color", nullable = false)
     private String color;
 
     @Builder
