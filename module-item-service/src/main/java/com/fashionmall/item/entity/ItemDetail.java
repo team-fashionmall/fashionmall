@@ -22,10 +22,10 @@ public class ItemDetail extends BaseEntity {
     @ManyToOne @JoinColumn (name = "item_id", nullable = false)
     private Item item;
 
-    @ManyToOne @JoinColumn (name = "size_id", nullable = false)
+    @ManyToOne @JoinColumn (name = "item_size_id", nullable = false)
     private ItemSize itemSize;
 
-    @ManyToOne @JoinColumn (name = "color_id", nullable = false)
+    @ManyToOne @JoinColumn (name = "item_color_id", nullable = false)
     private ItemColor itemColor;
 
     @Column (name = "item_detail_name", nullable = false)

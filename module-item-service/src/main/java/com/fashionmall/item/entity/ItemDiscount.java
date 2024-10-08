@@ -25,7 +25,7 @@ public class ItemDiscount extends BaseEntity {
     @Enumerated (EnumType.STRING) @Column (nullable = false)
     private ItemDiscountTypeEnum type;
 
-    @Column (name = "discount_value", nullable = false)
+    @Column (name = "item_discount_value", nullable = false)
     private int value; // '할인 값(정률: %, 정액: 원)'
 
     @Enumerated (EnumType.STRING)
