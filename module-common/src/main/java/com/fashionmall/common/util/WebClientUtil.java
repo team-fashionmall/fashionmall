@@ -30,6 +30,21 @@ public class WebClientUtil {
                 .block();
     }
 
+    public <T> T get(String uri, ParameterizedTypeReference<T> elementTypeRef, Map<String, String> queryParam, Map<String, String> headers) {
+        return webClient.get()
+                .uri(uriBuilder -> {
+                    uriBuilder.path(uri);
+                    if (queryParam != null) {
+                        queryParam.forEach(uriBuilder::queryParam);
+                    }
+                    return uriBuilder.build();
+                })
+                .headers(getHttpHeadersConsumer(headers))
+                .retrieve()
+                .bodyToMono(elementTypeRef)
+                .block();
+    }
+
     public <T> T post(String uri, Object requestBody, Class<T> responseType, Map<String, String> headers) {
         return webClient.post()
                 .uri(uri)
@@ -76,6 +91,15 @@ public class WebClientUtil {
                 .headers(getHttpHeadersConsumer(headers))
                 .retrieve()
                 .bodyToMono(responseType)
+                .block();
+    }
+
+    public <T> T delete(String uri, ParameterizedTypeReference<T> elementTypeRef, Map<String, String> headers) {
+        return webClient.delete()
+                .uri(uri)
+                .headers(getHttpHeadersConsumer(headers))
+                .retrieve()
+                .bodyToMono(elementTypeRef)
                 .block();
     }
 

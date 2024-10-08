@@ -1,0 +1,8 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: module-gateway-service
+  main:
+    web-application-type: reactive

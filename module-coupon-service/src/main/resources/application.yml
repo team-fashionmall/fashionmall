@@ -1,4 +1,10 @@
+server:
+  port: 8081
+
 spring:
+  application:
+    name: module-coupon-service
+
   jpa:
     hibernate:
       ddl-auto: validate
