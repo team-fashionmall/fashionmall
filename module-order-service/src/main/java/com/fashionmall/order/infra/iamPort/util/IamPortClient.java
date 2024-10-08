@@ -1,6 +1,9 @@
 package com.fashionmall.order.infra.iamPort.util;
 
+import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.common.util.WebClientUtil;
+import com.fashionmall.order.dto.response.BillingKeyResponseDto;
+import com.fashionmall.order.dto.response.UserBillingKeyResponseDto;
 import com.fashionmall.order.infra.iamPort.dto.IamPortResponseDto;
 import com.fashionmall.order.infra.iamPort.dto.TokenRequestDto;
 import com.fashionmall.order.infra.iamPort.dto.TokenResponseDto;
@@ -10,6 +13,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -36,5 +40,29 @@ public class IamPortClient {
         IamPortResponseDto<TokenResponseDto> post = webClientUtil.post(iamPortUrl + "/users/getToken", requestDto, new ParameterizedTypeReference<IamPortResponseDto<TokenResponseDto>>() {
         }, headers);
         return post.getResponse().getAccessToken();
+    }
+
+    public IamPortResponseDto<BillingKeyResponseDto> getBillingKey(String customerUid, Map<String, String> headers, Map<String, String> request) {
+        return webClientUtil.post(
+                iamPortUrl + "/subscribe/customers/" + customerUid,
+                request,
+                new ParameterizedTypeReference<IamPortResponseDto<BillingKeyResponseDto>>() {
+                },
+                headers);
+    }
+
+    public PageInfoResponseDto<UserBillingKeyResponseDto> getUserBillingKey(Map<String, String> headers, HashMap<String, String> queryParam) {
+        return webClientUtil.get(iamPortUrl + "/subscribe/customers",
+                new ParameterizedTypeReference<PageInfoResponseDto<UserBillingKeyResponseDto>>() {
+                },
+                queryParam,
+                headers);
+    }
+
+    public void deleteBillingKey(String customerUid, Map<String, String> headers) {
+        webClientUtil.delete(iamPortUrl + "/subscribe/customers/" + customerUid,
+                new ParameterizedTypeReference<IamPortResponseDto<UserBillingKeyResponseDto>>() {
+                },
+                headers);
     }
 }
