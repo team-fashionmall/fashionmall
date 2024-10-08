@@ -21,7 +21,13 @@ public enum ErrorResponseCode {
     ORDER_NOT_FOUND_BILLING_KEY(HttpStatus.NOT_FOUND, "유효하지 않은 결제 수단 입니다"),
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "이미 존재하는 이메일 입니다."),
     DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "이미 존재하는 닉네임 입니다."),
-    DUPLICATE_COUPON_NAME(HttpStatus.CONFLICT, "이미 존재하는 쿠폰명 입니다.");
+    DUPLICATE_COUPON_NAME(HttpStatus.CONFLICT, "이미 존재하는 쿠폰명 입니다."),
+    JWT_NOT_FOUND_TOKEN(HttpStatus.NOT_FOUND, "유효하지 않은 토큰입니다."),
+
+    // Item
+    WRONG_ITEM_ID(HttpStatus.BAD_REQUEST, "상품 관련 ID를 다시 확인해주세요"),
+    WRONG_CATEGORY_ID(HttpStatus.BAD_REQUEST, "카테고리 관련 ID를 다시 확인해주세요");
+
 
     private final HttpStatus status;
     private final String message;
