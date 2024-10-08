@@ -6,7 +6,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface BillingKeyRepositoryCustom {
 
-    PageInfoResponseDto<UserBillingKeyResponseDto> findBillingKeyDb(Long userId, Pageable pageable);
-
-    String findCustomerUidById(Long id);
+    PageInfoResponseDto<UserBillingKeyResponseDto> findBillingKeyByUserId(Long userId, Pageable pageable);
 }

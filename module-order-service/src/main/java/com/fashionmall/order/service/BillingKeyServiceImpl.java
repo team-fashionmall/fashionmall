@@ -1,7 +1,6 @@
 package com.fashionmall.order.service;
 
 import com.fashionmall.common.response.PageInfoResponseDto;
-import com.fashionmall.common.util.WebClientUtil;
 import com.fashionmall.order.dto.request.BillingKeyRequestDto;
 import com.fashionmall.order.dto.response.BillingKeyResponseDto;
 import com.fashionmall.order.dto.response.UserBillingKeyResponseDto;
@@ -10,7 +9,6 @@ import com.fashionmall.order.infra.iamPort.dto.IamPortResponseDto;
 import com.fashionmall.order.infra.iamPort.util.IamPortClient;
 import com.fashionmall.order.repository.BillingKeyRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -26,11 +24,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class BillingKeyServiceImpl implements BillingKeyService {
 
-    private final WebClientUtil webClientUtil;
     private final BillingKeyRepository billingKeyRepository;
     private final IamPortClient iamPortClient;
-
-    private final String iamPortUrl = "http://api.iamport.kr";
 
     @Transactional
     @Override
@@ -47,12 +42,7 @@ public class BillingKeyServiceImpl implements BillingKeyService {
                 "expiry", billingKeyRequestDto.getExpiry(),
                 "pwd_2digit", billingKeyRequestDto.getPwd2digit());
 
-        IamPortResponseDto<BillingKeyResponseDto> IamPortResponse = webClientUtil.post(
-                iamPortUrl + "/subscribe/customers/" + customerUid,
-                request,
-                new ParameterizedTypeReference<IamPortResponseDto<BillingKeyResponseDto>>() {
-                },
-                headers);
+        IamPortResponseDto<BillingKeyResponseDto> IamPortResponse = iamPortClient.getBillingKey(customerUid, headers, request);
 
         String cardName = IamPortResponse.getResponse().getCardName();
         String cardType = IamPortResponse.getResponse().getCardType();
@@ -74,7 +64,7 @@ public class BillingKeyServiceImpl implements BillingKeyService {
                 HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
 
         //DB에 저장된 billingKey의 id, cardNickname, customerUid 값 받아오기
-        PageInfoResponseDto<UserBillingKeyResponseDto> dbBillingKey = billingKeyRepository.findBillingKeyDb(userId, pageRequest);
+        PageInfoResponseDto<UserBillingKeyResponseDto> dbBillingKey = billingKeyRepository.findBillingKeyByUserId(userId, pageRequest);
 
         //customer_uid 추출
         List<String> customerUids = dbBillingKey.getContent()
@@ -90,11 +80,7 @@ public class BillingKeyServiceImpl implements BillingKeyService {
             }
         }
 
-        PageInfoResponseDto<UserBillingKeyResponseDto> iamPortResponse = webClientUtil.get(iamPortUrl + "/subscribe/customers",
-                new ParameterizedTypeReference<PageInfoResponseDto<UserBillingKeyResponseDto>>() {
-                },
-                queryParam,
-                headers);
+        PageInfoResponseDto<UserBillingKeyResponseDto> iamPortResponse = iamPortClient.getUserBillingKey(headers, queryParam);
 
         //api응답값에 id, cardNickname 삽입
         for (UserBillingKeyResponseDto apiResponse : iamPortResponse.getContent()) {
@@ -122,10 +108,7 @@ public class BillingKeyServiceImpl implements BillingKeyService {
 
         String customerUid = billingKeyRepository.findCustomerUidById(billingKeyId);
 
-        webClientUtil.delete(iamPortUrl + "/subscribe/customers/" + customerUid,
-                new ParameterizedTypeReference<IamPortResponseDto<UserBillingKeyResponseDto>>() {
-                },
-                headers);
+        iamPortClient.deleteBillingKey(customerUid, headers);
 
         billingKeyRepository.deleteById(billingKeyId);
 

@@ -19,7 +19,7 @@ public class BillingKeyRepositoryImpl implements BillingKeyRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
 
-    public PageInfoResponseDto<UserBillingKeyResponseDto> findBillingKeyDb(Long userId, Pageable pageable) {
+    public PageInfoResponseDto<UserBillingKeyResponseDto> findBillingKeyByUserId(Long userId, Pageable pageable) {
 
         int offset = (int) pageable.getOffset();
         int size = pageable.getPageSize();
@@ -45,14 +45,5 @@ public class BillingKeyRepositoryImpl implements BillingKeyRepositoryCustom {
         int totalCount = fetchOne.intValue();
 
         return PageInfoResponseDto.of(pageable, content, totalCount);
-    }
-
-    @Override
-    public String findCustomerUidById(Long id) {
-        return jpaQueryFactory
-                .select(billingKey.customerUid)
-                .from(billingKey)
-                .where(billingKey.id.eq(id))
-                .fetchOne();
     }
 }
