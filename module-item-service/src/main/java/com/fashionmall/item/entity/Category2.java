@@ -24,9 +24,4 @@ public class Category2 extends BaseEntity {
     @ManyToOne @JoinColumn (name = "category1_id",nullable = false)
     private Category1 category1;
 
-    @Builder
-    public Category2(Long category2) {
-        this.id = category2;
-    }
-
 }

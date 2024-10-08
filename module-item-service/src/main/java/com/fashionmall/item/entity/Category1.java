@@ -30,8 +30,4 @@ public class Category1 extends BaseEntity {
     @OneToMany (mappedBy = "category1", cascade = CascadeType.ALL, orphanRemoval = true)
     private List <ItemCategoryMapping> itemCategoryMappings = new ArrayList<>();
 
-    @Builder
-    public Category1(Long category1) {
-        this.id = category1;
-    }
 }
