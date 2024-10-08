@@ -28,7 +28,7 @@ public class CartServiceImpl implements CartService{
 
         cartRepository.save(cart);
 
-        return "장바구니에 담겼습니다";
+        return "cartId :" + cart.getId();
     }
 
 }
