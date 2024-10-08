@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface Category2Repository extends JpaRepository <Category2, Long> {
+    Optional<Category2> findByIdAndCategory1Id(Long category2, Long category1);
 }

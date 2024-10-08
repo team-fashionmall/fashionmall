@@ -47,7 +47,7 @@ public class ItemServiceImpl implements ItemService {
         for (ItemRequestDto.CategoryRequestDto categoryRequestDto : itemRequestDto.getCategoryRequestDtoList()) {
 
             Category1 category1 = findCategory1(categoryRequestDto.getCategory1Id());
-            Category2 category2 = findCategory2(categoryRequestDto.getCategory2Id());
+            Category2 category2 = findCategory2(categoryRequestDto.getCategory2Id(), categoryRequestDto.getCategory1Id());
 
             ItemCategoryMapping itemCategoryMapping = ItemCategoryMapping.builder()
                     .item(item)
@@ -99,8 +99,8 @@ public class ItemServiceImpl implements ItemService {
         return category1Repository.findById (category1).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_CATEGORY_ID));
     }
 
-    private Category2 findCategory2 (Long category2) {
-        return category2Repository.findById (category2).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_CATEGORY_ID));
+    private Category2 findCategory2 (Long category2, Long category1) {
+        return category2Repository.findByIdAndCategory1Id (category2, category1).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_CATEGORY_ID));
     }
 
 }
