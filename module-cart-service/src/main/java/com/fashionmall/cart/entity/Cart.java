@@ -18,8 +18,8 @@ public class Cart extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //    @Column (name = "user_id", nullable = false)
-//    private Long userId; //  받아오는 사용자 Id
+    @Column (name = "user_id", nullable = false)
+    private Long userId; //  받아오는 사용자 Id
 
     @Column (name = "item_detail_id", nullable = false)
     private Long itemDetailId; //  받아오는 상품 id
@@ -31,7 +31,8 @@ public class Cart extends BaseEntity {
     private CartStatusEnum status = CartStatusEnum.INACTIVATED;
 
     @Builder
-    public Cart (Long itemDetailId, int quantity, CartStatusEnum status) {
+    public Cart (Long userId, Long itemDetailId, int quantity, CartStatusEnum status) {
+        this.userId = userId;
         this.itemDetailId = itemDetailId;
         this.quantity = quantity;
         this.status = status != null ? status : CartStatusEnum.INACTIVATED;

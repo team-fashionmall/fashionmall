@@ -20,11 +20,11 @@ public class CartServiceImpl implements CartService{
 
     @Override
     @Transactional
-    public String createCart (CartRequestDto cartRequestDto) {
+    public String createCart (CartRequestDto cartRequestDto, Long userId) {
 
         // 회원 여부 인증
 
-        Cart cart = cartRequestDto.toEntity();
+        Cart cart = cartRequestDto.toEntity(userId);
 
         cartRepository.save(cart);
 

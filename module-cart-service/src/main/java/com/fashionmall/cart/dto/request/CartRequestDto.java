@@ -20,8 +20,9 @@ public class CartRequestDto {
     @NotNull @Positive (message = "해당 상품의 개수를 입력해주세요")
     private int quantity;
 
-    public Cart toEntity() {
+    public Cart toEntity(Long userId) {
         return Cart.builder()
+                .userId(userId)
                 .itemDetailId(this.itemDetailId)
                 .quantity(this.quantity)
                 .build();
