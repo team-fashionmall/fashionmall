@@ -23,7 +23,8 @@ public class ItemAdminController {
 
     @PostMapping("/item")
     public CommonResponse<ItemResponseDto> createItem (@Valid @RequestBody ItemRequestDto itemRequestDto) {
-        return ApiResponseUtil.success(itemService.createItem(itemRequestDto));
+        Long workerId = 1L;
+        return ApiResponseUtil.success(itemService.createItem(itemRequestDto, workerId));
     }
 
 }

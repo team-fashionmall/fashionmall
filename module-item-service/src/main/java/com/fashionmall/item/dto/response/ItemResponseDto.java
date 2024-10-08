@@ -18,6 +18,7 @@ import java.util.List;
 public class ItemResponseDto {
 
     private Long id;
+    private Long workerId;
     private String name;
     private StatusEnum status;
     private List<ItemDetailResponseDto> itemDetailResponseDtoList;
@@ -30,6 +31,7 @@ public class ItemResponseDto {
 
         return ItemResponseDto.builder()
                 .id(item.getId())
+                .workerId(item.getWorkerId())
                 .name(item.getName())
                 .status(item.getStatus())
                 .itemDetailResponseDtoList(itemDetailResponseDtoList)

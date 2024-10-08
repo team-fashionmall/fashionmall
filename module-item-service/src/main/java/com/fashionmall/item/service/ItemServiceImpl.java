@@ -30,12 +30,13 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public ItemResponseDto createItem (ItemRequestDto itemRequestDto) {
+    public ItemResponseDto createItem (ItemRequestDto itemRequestDto, Long workerId) {
 
         // 유저 검증 코드 (관리자) -> 추후 연결
 
         // 상품 등록
         Item item = Item.builder()
+                .workerId(workerId)
                 .name(itemRequestDto.getName())
                 .status(itemRequestDto.getState())
                 .build();

@@ -22,8 +22,8 @@ public class Item extends BaseEntity {
     @Id @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
 
-   /* @Column (nullable = false)
-    private Long userId; // msa 에서 받아오는 사용자 Id*/
+    @Column (name = "worker_userId", nullable = false)
+    private Long workerId; // msa 에서 받아오는 사용자 Id
 
     @Column (name = "item_name", nullable = false)
     private String name;
@@ -41,7 +41,8 @@ public class Item extends BaseEntity {
     private List <ItemDiscount> itemDiscounts = new ArrayList<>();
 
     @Builder
-    public Item (String name, StatusEnum status) {
+    public Item (Long workerId, String name, StatusEnum status) {
+        this.workerId = workerId;
         this.name = name;
         this.status = status;
     }
