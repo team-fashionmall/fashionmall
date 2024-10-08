@@ -29,6 +29,6 @@ public class ItemDiscount extends BaseEntity {
     private int value; // '할인 값(정률: %, 정액: 원)'
 
     @Enumerated (EnumType.STRING)
-    private StatusEnum status = StatusEnum.ACTIVATED;
+    private StatusEnum status;
 
 }
