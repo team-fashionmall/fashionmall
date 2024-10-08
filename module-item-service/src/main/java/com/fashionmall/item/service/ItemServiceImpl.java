@@ -46,8 +46,8 @@ public class ItemServiceImpl implements ItemService {
         // 카테고리 등록
         for (ItemRequestDto.CategoryRequestDto categoryRequestDto : itemRequestDto.getCategoryRequestDtoList()) {
 
-            Category1 category1 = matchCategory1(categoryRequestDto.getCategory1Id());
-            Category2 category2 = matchCategory2(categoryRequestDto.getCategory2Id());
+            Category1 category1 = findCategory1(categoryRequestDto.getCategory1Id());
+            Category2 category2 = findCategory2(categoryRequestDto.getCategory2Id());
 
             ItemCategoryMapping itemCategoryMapping = ItemCategoryMapping.builder()
                     .item(item)
@@ -62,8 +62,8 @@ public class ItemServiceImpl implements ItemService {
         // 상품 상세 등록
         for (ItemRequestDto.ItemDetailRequestDto itemDetailRequestDto : itemRequestDto.getItemDetailRequestDtoList()) {
 
-            ItemSize itemSize = matchSizeId(itemDetailRequestDto.getSizeId());
-            ItemColor itemColor = matchColorId(itemDetailRequestDto.getColorId());
+            ItemSize itemSize = findSizeId(itemDetailRequestDto.getSizeId());
+            ItemColor itemColor = findColorId(itemDetailRequestDto.getColorId());
 
             // 상품 상세 등록 저장
             ItemDetail itemDetail = ItemDetail.builder()
@@ -85,21 +85,21 @@ public class ItemServiceImpl implements ItemService {
     }
 
     // 색 찾기
-    private ItemColor matchColorId (Long colorId) {
+    private ItemColor findColorId (Long colorId) {
         return itemColorRepository.findById(colorId).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
     }
 
     // 사이즈 찾기
-    private ItemSize matchSizeId (Long sizeId) {
+    private ItemSize findSizeId (Long sizeId) {
         return itemSizeRepository.findById(sizeId).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
     }
 
     // 카테고리 찾기
-    private Category1 matchCategory1 (Long category1) {
+    private Category1 findCategory1 (Long category1) {
         return category1Repository.findById (category1).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_CATEGORY_ID));
     }
 
-    private Category2 matchCategory2 (Long category2) {
+    private Category2 findCategory2 (Long category2) {
         return category2Repository.findById (category2).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_CATEGORY_ID));
     }
 
