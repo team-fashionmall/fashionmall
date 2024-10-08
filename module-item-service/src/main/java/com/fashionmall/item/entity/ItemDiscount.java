@@ -5,6 +5,7 @@ import com.fashionmall.item.enums.ItemDiscountTypeEnum;
 import com.fashionmall.item.enums.StatusEnum;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,4 +32,11 @@ public class ItemDiscount extends BaseEntity {
     @Enumerated (EnumType.STRING)
     private StatusEnum status;
 
+    @Builder
+    public ItemDiscount (Item item, ItemDiscountTypeEnum type, int value, StatusEnum status) {
+        this.item = item;
+        this.type = type;
+        this.value = value;
+        this.status = status;
+    }
 }

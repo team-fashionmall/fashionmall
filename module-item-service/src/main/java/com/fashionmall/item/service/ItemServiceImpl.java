@@ -2,7 +2,9 @@ package com.fashionmall.item.service;
 
 import com.fashionmall.common.exception.CustomException;
 import com.fashionmall.common.exception.ErrorResponseCode;
+import com.fashionmall.item.dto.request.ItemDiscountRequestDto;
 import com.fashionmall.item.dto.request.ItemRequestDto;
+import com.fashionmall.item.dto.response.ItemDiscountResponseDto;
 import com.fashionmall.item.dto.response.ItemResponseDto;
 import com.fashionmall.item.entity.*;
 import com.fashionmall.item.enums.StatusEnum;
@@ -27,6 +29,7 @@ public class ItemServiceImpl implements ItemService {
     private final Category1Repository category1Repository;
     private final Category2Repository category2Repository;
     private final ItemCategoryMappingRepository itemCategoryMappingRepository;
+    private final ItemDiscountRepository itemDiscountRepository;
 
     @Override
     @Transactional
@@ -101,6 +104,29 @@ public class ItemServiceImpl implements ItemService {
 
     private Category2 findCategory2 (Long category2, Long category1) {
         return category2Repository.findByIdAndCategory1Id (category2, category1).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_CATEGORY_ID));
+    }
+
+    @Override
+    @Transactional
+    public ItemDiscountResponseDto createItemDiscount (ItemDiscountRequestDto itemDiscountRequestDto, Long workerId) {
+
+        // 본인 인증
+        // 해당 아이템이 있는지 확인하기
+        Item item = itemRepository.findById(itemDiscountRequestDto.getId())
+                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
+
+        for (ItemDiscountRequestDto.ItemDiscountDtos itemDiscountDtos : itemDiscountRequestDto.getItemDiscountRequestDtoList()) {
+
+            ItemDiscount itemDiscount = ItemDiscount.builder()
+                    .item(item)
+                    .type(itemDiscountDtos.getType())
+                    .value(itemDiscountDtos.getValue())
+                    .status(itemDiscountDtos.getStatus())
+                    .build();
+            itemDiscountRepository.save(itemDiscount);
+        }
+
+        return ItemDiscountResponseDto.from(item);
     }
 
 }

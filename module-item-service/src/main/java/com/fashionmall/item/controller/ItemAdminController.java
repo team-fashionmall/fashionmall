@@ -2,7 +2,9 @@ package com.fashionmall.item.controller;
 
 import com.fashionmall.common.response.CommonResponse;
 import com.fashionmall.common.util.ApiResponseUtil;
+import com.fashionmall.item.dto.request.ItemDiscountRequestDto;
 import com.fashionmall.item.dto.request.ItemRequestDto;
+import com.fashionmall.item.dto.response.ItemDiscountResponseDto;
 import com.fashionmall.item.dto.response.ItemResponseDto;
 import com.fashionmall.item.service.ItemService;
 import jakarta.validation.Valid;
@@ -25,6 +27,12 @@ public class ItemAdminController {
     public CommonResponse<ItemResponseDto> createItem (@Valid @RequestBody ItemRequestDto itemRequestDto) {
         Long workerId = 1L;
         return ApiResponseUtil.success(itemService.createItem(itemRequestDto, workerId));
+    }
+
+    @PostMapping ("/itemDiscount")
+    public CommonResponse<ItemDiscountResponseDto> createItemDiscount (@Valid @RequestBody ItemDiscountRequestDto itemDiscountRequestDto) {
+        Long workerId = 1L;
+        return ApiResponseUtil.success(itemService.createItemDiscount(itemDiscountRequestDto, workerId));
     }
 
 }
