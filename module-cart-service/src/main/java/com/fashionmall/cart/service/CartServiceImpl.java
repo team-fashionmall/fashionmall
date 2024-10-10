@@ -20,7 +20,7 @@ public class CartServiceImpl implements CartService{
 
     @Override
     @Transactional
-    public String createCart (CartRequestDto cartRequestDto, Long userId) {
+    public String createCart (CartRequestDto cartRequestDto, Long userId, int price) {
 
         // 회원 여부 인증
         Cart checkCart = cartRepository.findByItemDetailIdAndUserId(cartRequestDto.getItemDetailId(), userId);
@@ -28,7 +28,8 @@ public class CartServiceImpl implements CartService{
             throw new CustomException(ErrorResponseCode.BAD_REQUEST);
         }
 
-        Cart cart = cartRequestDto.toEntity(userId);
+        // price는 Msa로 가져올 예정
+        Cart cart = cartRequestDto.toEntity(userId, price);
 
         cartRepository.save(cart);
 

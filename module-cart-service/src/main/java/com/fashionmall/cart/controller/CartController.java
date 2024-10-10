@@ -19,6 +19,7 @@ public class CartController {
     @PostMapping("/cart")
     public CommonResponse<String> createCart (@Valid @RequestBody CartRequestDto cartRequestDto) {
         Long userId = 1L;
-        return ApiResponseUtil.success(cartService.createCart(cartRequestDto, userId));
+        int price = 48600;
+        return ApiResponseUtil.success(cartService.createCart(cartRequestDto, userId, price));
     }
 }

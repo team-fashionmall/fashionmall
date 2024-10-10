@@ -27,14 +27,18 @@ public class Cart extends BaseEntity {
     @Column (name = "quantity", nullable = false)
     private int quantity; // 해당 제품의 선택 수량
 
+    @Column (name = "price", nullable = false)
+    private int price;
+
     @Column (name = "is_selected", nullable = false)
     private boolean isSelected = false;
 
     @Builder
-    public Cart (Long userId, Long itemDetailId, int quantity, boolean isSelected) {
+    public Cart (Long userId, Long itemDetailId, int quantity, int price, boolean isSelected) {
         this.userId = userId;
         this.itemDetailId = itemDetailId;
         this.quantity = quantity;
+        this.price = price;
         this.isSelected = isSelected;
     }
 }

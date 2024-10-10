@@ -23,11 +23,12 @@ public class CartRequestDto {
     @NotNull (message = "장바구니 선택 여부를 입력해주세요")
     private boolean isSelected;
 
-    public Cart toEntity(Long userId) {
+    public Cart toEntity(Long userId, int price) {
         return Cart.builder()
                 .userId(userId)
                 .itemDetailId(this.itemDetailId)
                 .quantity(this.quantity)
+                .price(price)
                 .isSelected(this.isSelected)
                 .build();
     }
