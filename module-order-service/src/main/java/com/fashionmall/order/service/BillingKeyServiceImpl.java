@@ -10,7 +10,6 @@ import com.fashionmall.order.infra.iamPort.util.IamPortClient;
 import com.fashionmall.order.repository.BillingKeyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,17 +31,12 @@ public class BillingKeyServiceImpl implements BillingKeyService {
     public Long issueBillingKey(BillingKeyRequestDto billingKeyRequestDto) {
 
         String customerUid = UUID.randomUUID().toString();
-        String accessToken = iamPortClient.getAccessToken();
-
-        Map<String, String> headers = Map.of(
-                HttpHeaders.CONTENT_TYPE, "application/json",
-                HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
 
         Map<String, String> request = Map.of("card_number", billingKeyRequestDto.getCardNumber(),
                 "expiry", billingKeyRequestDto.getExpiry(),
                 "pwd_2digit", billingKeyRequestDto.getPwd2digit());
 
-        IamPortResponseDto<BillingKeyResponseDto> IamPortResponse = iamPortClient.getBillingKey(customerUid, headers, request);
+        IamPortResponseDto<BillingKeyResponseDto> IamPortResponse = iamPortClient.getBillingKey(customerUid, request);
 
         String cardName = IamPortResponse.getResponse().getCardName();
         String cardType = IamPortResponse.getResponse().getCardType();
@@ -56,12 +50,6 @@ public class BillingKeyServiceImpl implements BillingKeyService {
     @Override
     public PageInfoResponseDto<UserBillingKeyResponseDto> getUserBillingKeyList(Long userId, int pageNo, int size) {
         PageRequest pageRequest = PageRequest.of(pageNo - 1, size);
-
-        String accessToken = iamPortClient.getAccessToken();
-
-        Map<String, String> headers = Map.of(
-                HttpHeaders.CONTENT_TYPE, "application/json",
-                HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
 
         //DB에 저장된 billingKey의 id, cardNickname, customerUid 값 받아오기
         PageInfoResponseDto<UserBillingKeyResponseDto> dbBillingKey = billingKeyRepository.findBillingKeyByUserId(userId, pageRequest);
@@ -80,7 +68,7 @@ public class BillingKeyServiceImpl implements BillingKeyService {
             }
         }
 
-        PageInfoResponseDto<UserBillingKeyResponseDto> iamPortResponse = iamPortClient.getUserBillingKey(headers, queryParam);
+        PageInfoResponseDto<UserBillingKeyResponseDto> iamPortResponse = iamPortClient.getUserBillingKey(queryParam);
 
         //api응답값에 id, cardNickname 삽입
         for (UserBillingKeyResponseDto apiResponse : iamPortResponse.getContent()) {
@@ -100,15 +88,10 @@ public class BillingKeyServiceImpl implements BillingKeyService {
     @Transactional
     @Override
     public Long deleteBillingKey(Long billingKeyId) {
-        String accessToken = iamPortClient.getAccessToken();
-
-        Map<String, String> headers = Map.of(
-                HttpHeaders.CONTENT_TYPE, "application/json",
-                HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
 
         String customerUid = billingKeyRepository.findCustomerUidById(billingKeyId);
 
-        iamPortClient.deleteBillingKey(customerUid, headers);
+        iamPortClient.deleteBillingKey(customerUid);
 
         billingKeyRepository.deleteById(billingKeyId);
 

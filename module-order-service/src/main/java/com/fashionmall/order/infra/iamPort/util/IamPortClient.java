@@ -2,7 +2,9 @@ package com.fashionmall.order.infra.iamPort.util;
 
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.common.util.WebClientUtil;
+import com.fashionmall.order.dto.request.PaymentRequestDto;
 import com.fashionmall.order.dto.response.BillingKeyResponseDto;
+import com.fashionmall.order.dto.response.PaymentResponseDto;
 import com.fashionmall.order.dto.response.UserBillingKeyResponseDto;
 import com.fashionmall.order.infra.iamPort.dto.IamPortResponseDto;
 import com.fashionmall.order.infra.iamPort.dto.TokenRequestDto;
@@ -30,7 +32,7 @@ public class IamPortClient {
 
     private final String iamPortUrl = "http://api.iamport.kr";
 
-    public String getAccessToken() {
+    public Map<String, String> getAccessToken() {
         TokenRequestDto requestDto = new TokenRequestDto();
         requestDto.setImpKey(key);
         requestDto.setImpSecret(secret);
@@ -39,30 +41,38 @@ public class IamPortClient {
 
         IamPortResponseDto<TokenResponseDto> post = webClientUtil.post(iamPortUrl + "/users/getToken", requestDto, new ParameterizedTypeReference<IamPortResponseDto<TokenResponseDto>>() {
         }, headers);
-        return post.getResponse().getAccessToken();
+
+        String accessToken = post.getResponse().getAccessToken();
+
+        return Map.of(
+                HttpHeaders.CONTENT_TYPE, "application/json",
+                HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
     }
 
-    public IamPortResponseDto<BillingKeyResponseDto> getBillingKey(String customerUid, Map<String, String> headers, Map<String, String> request) {
+    public IamPortResponseDto<BillingKeyResponseDto> getBillingKey(String customerUid, Map<String, String> request) {
+        Map<String, String> accessToken = getAccessToken();
         return webClientUtil.post(
                 iamPortUrl + "/subscribe/customers/" + customerUid,
                 request,
                 new ParameterizedTypeReference<IamPortResponseDto<BillingKeyResponseDto>>() {
                 },
-                headers);
+                accessToken);
     }
 
-    public PageInfoResponseDto<UserBillingKeyResponseDto> getUserBillingKey(Map<String, String> headers, HashMap<String, String> queryParam) {
+    public PageInfoResponseDto<UserBillingKeyResponseDto> getUserBillingKey(HashMap<String, String> queryParam) {
+        Map<String, String> accessToken = getAccessToken();
         return webClientUtil.get(iamPortUrl + "/subscribe/customers",
                 new ParameterizedTypeReference<PageInfoResponseDto<UserBillingKeyResponseDto>>() {
                 },
                 queryParam,
-                headers);
+                accessToken);
     }
 
-    public void deleteBillingKey(String customerUid, Map<String, String> headers) {
+    public void deleteBillingKey(String customerUid) {
+        Map<String, String> accessToken = getAccessToken();
         webClientUtil.delete(iamPortUrl + "/subscribe/customers/" + customerUid,
                 new ParameterizedTypeReference<IamPortResponseDto<UserBillingKeyResponseDto>>() {
                 },
-                headers);
+                accessToken);
     }
 }
