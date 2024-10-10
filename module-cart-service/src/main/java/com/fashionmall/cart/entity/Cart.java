@@ -27,14 +27,14 @@ public class Cart extends BaseEntity {
     @Column (name = "quantity", nullable = false)
     private int quantity; // 해당 제품의 선택 수량
 
-    @Enumerated(EnumType.STRING)
-    private CartStatusEnum status = CartStatusEnum.INACTIVATED;
+    @Column (name = "is_selected", nullable = false)
+    private boolean isSelected = false;
 
     @Builder
-    public Cart (Long userId, Long itemDetailId, int quantity, CartStatusEnum status) {
+    public Cart (Long userId, Long itemDetailId, int quantity, boolean isSelected) {
         this.userId = userId;
         this.itemDetailId = itemDetailId;
         this.quantity = quantity;
-        this.status = status != null ? status : CartStatusEnum.INACTIVATED;
+        this.isSelected = isSelected;
     }
 }
