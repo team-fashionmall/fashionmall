@@ -10,7 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 @PropertySource(
-        value = {"classpath:application-common-${spring.profiles.active}.yml"},
+    value = {"classpath:application-common-${spring.profiles.active}.yml"},
     factory = YmlPropertySourceFactory.class)
 @RequiredArgsConstructor
 public class AppConfig {
