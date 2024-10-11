@@ -1,4 +1,9 @@
+server:
+  port: 8084
+
 spring:
+  application:
+    name: module-review-service
   jpa:
     hibernate:
       ddl-auto: validate
