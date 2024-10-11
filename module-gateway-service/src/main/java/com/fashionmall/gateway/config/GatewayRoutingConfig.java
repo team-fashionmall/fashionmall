@@ -10,34 +10,19 @@ public class GatewayRoutingConfig {
 
     @Bean
     public RouteLocator routeLocator(RouteLocatorBuilder builder) {
-        //eureka 서버 연결용
-//        return builder.routes()
-//                .route("CART-SERVICE", r -> r.path("/api/cart/**")
-//                        .uri("lb://module-cart-service"))
-//                .route("COUPON-SERVICE", r -> r.path("/api/coupon/**")
-//                        .uri("lb://module-coupon-service"))
-//                .route("ITEM-SERVICE", r -> r.path("/api/item/**")
-//                        .uri("lb://module-item-service"))
-//                .route("ORDER-SERVICE", r -> r.path("/api/order/**")
-//                        .uri("lb://module-order-service"))
-//                .route("REVIEW-SERVICE", r -> r.path("/api/review/**")
-//                        .uri("lb://module-review-service"))
-//                .route("USER-SERVICE", r -> r.path("/api/user/**")
-//                        .uri("lb://module-user-service"))
-//                .build();
         return builder.routes()
                 .route("CART-SERVICE", r -> r.path("/api/cart/**")
-                        .uri("http://localhost:8080"))
+                        .uri("lb://module-cart-service"))
                 .route("COUPON-SERVICE", r -> r.path("/api/coupon/**")
-                        .uri("http://localhost:8081"))
+                        .uri("lb://module-coupon-service"))
                 .route("ITEM-SERVICE", r -> r.path("/api/item/**")
-                        .uri("http://localhost:8082"))
+                        .uri("lb://module-item-service"))
                 .route("ORDER-SERVICE", r -> r.path("/api/order/**")
-                        .uri("http://localhost:8083"))
+                        .uri("lb://module-order-service"))
                 .route("REVIEW-SERVICE", r -> r.path("/api/review/**")
-                        .uri("http://localhost:8084"))
+                        .uri("lb://module-review-service"))
                 .route("USER-SERVICE", r -> r.path("/api/user/**")
-                        .uri("http://localhost:8085"))
+                        .uri("lb://module-user-service"))
                 .build();
     }
 
