@@ -1,6 +1,8 @@
 package com.fashionmall.cart.service;
 
 import com.fashionmall.cart.dto.request.CartRequestDto;
+import com.fashionmall.cart.dto.request.CartUpdateRequestDto;
+import com.fashionmall.cart.dto.response.CartUpdateResponseDto;
 import com.fashionmall.cart.entity.Cart;
 import com.fashionmall.cart.repository.CartRepository;
 import com.fashionmall.common.exception.CustomException;
@@ -25,7 +27,7 @@ public class CartServiceImpl implements CartService{
         // 회원 여부 인증
         Cart checkCart = cartRepository.findByItemDetailIdAndUserId(cartRequestDto.getItemDetailId(), userId);
         if (checkCart != null) {
-            throw new CustomException(ErrorResponseCode.BAD_REQUEST);
+            throw new CustomException(ErrorResponseCode.DUPLICATE_CART_DETAIL_ID);
         }
 
         // price는 Msa로 가져올 예정
@@ -34,6 +36,26 @@ public class CartServiceImpl implements CartService{
         cartRepository.save(cart);
 
         return "cartId : " + cart.getId();
+    }
+
+    @Override
+    @Transactional
+    public CartUpdateResponseDto updateCart (Long cartId, CartUpdateRequestDto cartUpdateRequestDto, Long userId) {
+
+        // 회원 여부
+        Cart cart = cartRepository.findByIdAndUserId(cartId, userId)
+                .orElseThrow(()-> new CustomException (ErrorResponseCode.WRONG_CART_ID));
+
+
+        if (cartUpdateRequestDto.getQuantity() > 0) {
+            cart.updateQuantity(cartUpdateRequestDto.getQuantity());
+        }
+
+        if (cartUpdateRequestDto.getIsSelected() != null) {
+            cart.updateIsSelected(cartUpdateRequestDto.getIsSelected());
+        }
+
+        return CartUpdateResponseDto.from(cart);
     }
 
 }

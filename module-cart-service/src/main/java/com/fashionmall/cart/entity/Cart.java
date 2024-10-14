@@ -31,7 +31,7 @@ public class Cart extends BaseEntity {
     private int price;
 
     @Column (name = "is_selected", nullable = false)
-    private boolean isSelected = false;
+    private boolean isSelected ;
 
     @Builder
     public Cart (Long userId, Long itemDetailId, int quantity, int price, boolean isSelected) {
@@ -41,4 +41,13 @@ public class Cart extends BaseEntity {
         this.price = price;
         this.isSelected = isSelected;
     }
+
+    public void updateQuantity (int itemQuantity) {
+        this.quantity = itemQuantity;
+    }
+
+    public void updateIsSelected (boolean isSelected) {
+        this.isSelected = isSelected;
+    }
+
 }

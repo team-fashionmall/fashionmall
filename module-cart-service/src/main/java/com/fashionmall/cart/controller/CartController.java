@@ -24,4 +24,11 @@ public class CartController {
         int price = 48600;
         return ApiResponseUtil.success(cartService.createCart(cartRequestDto, userId, price));
     }
+
+    @PatchMapping ("/cart/{cartId}")
+    public CommonResponse <CartUpdateResponseDto> updateCart (@PathVariable  Long cartId,
+                                                              @Valid @RequestBody CartUpdateRequestDto cartUpdateRequestDto) {
+        Long userId = 1L;
+        return ApiResponseUtil.success(cartService.updateCart(cartId, cartUpdateRequestDto, userId));
+    }
 }
