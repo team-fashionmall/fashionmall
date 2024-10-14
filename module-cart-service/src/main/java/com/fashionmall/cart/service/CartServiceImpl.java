@@ -43,9 +43,7 @@ public class CartServiceImpl implements CartService{
     public CartUpdateResponseDto updateCart (Long cartId, CartUpdateRequestDto cartUpdateRequestDto, Long userId) {
 
         // 회원 여부
-        Cart cart = cartRepository.findByIdAndUserId(cartId, userId)
-                .orElseThrow(()-> new CustomException (ErrorResponseCode.WRONG_CART_ID));
-
+        Cart cart = findByIdAndUserId(cartId, userId);
 
         if (cartUpdateRequestDto.getQuantity() > 0) {
             cart.updateQuantity(cartUpdateRequestDto.getQuantity());
@@ -58,4 +56,19 @@ public class CartServiceImpl implements CartService{
         return CartUpdateResponseDto.from(cart);
     }
 
+    @Override
+    @Transactional
+    public String deleteCart(Long cartId, Long userId) {
+
+        // 회원 인증
+        Cart cart = findByIdAndUserId(cartId, userId);
+        cartRepository.deleteById(cart.getId());
+
+        return "해당 상품이 삭제되었습니다. cartId : " + cartId;
+
+    }
+
+    public Cart findByIdAndUserId (Long cartId, Long userId) {
+        return cartRepository.findByIdAndUserId(cartId, userId).orElseThrow(()-> new CustomException (ErrorResponseCode.WRONG_CART_ID));
+    }
 }

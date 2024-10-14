@@ -31,4 +31,10 @@ public class CartController {
         Long userId = 1L;
         return ApiResponseUtil.success(cartService.updateCart(cartId, cartUpdateRequestDto, userId));
     }
+
+    @DeleteMapping ("/cart/{cartId}")
+    public CommonResponse <String> deleteCart (@PathVariable Long cartId) {
+        Long userId=1L;
+        return ApiResponseUtil.success(cartService.deleteCart(cartId, userId));
+    }
 }
