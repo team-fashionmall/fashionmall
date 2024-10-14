@@ -26,8 +26,10 @@ public enum ErrorResponseCode {
 
     // Item
     WRONG_ITEM_ID(HttpStatus.BAD_REQUEST, "상품 관련 ID를 다시 확인해주세요"),
-    WRONG_CATEGORY_ID(HttpStatus.BAD_REQUEST, "카테고리 관련 ID를 다시 확인해주세요");
+    WRONG_CATEGORY_ID(HttpStatus.BAD_REQUEST, "카테고리 관련 ID를 다시 확인해주세요"),
 
+    // cart
+    DUPLICATE_CART_DETAIL_ID(HttpStatus.BAD_REQUEST, "이미 존재하는 itemDetail Id 입니다.");
 
     private final HttpStatus status;
     private final String message;
