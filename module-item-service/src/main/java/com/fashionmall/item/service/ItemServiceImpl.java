@@ -237,4 +237,18 @@ public class ItemServiceImpl implements ItemService {
         return ItemUpdateResponseDto.from(item, updatedCategoryMappings, updatedItemDetails, updatedItemDiscounts);
     }
 
+    @Override
+    @Transactional
+    public String deleteItem (Long itemId, Long workerId) {
+
+        // 관리자 확인
+        // 상품 아이디가 맞는지 확인 & 해당 관리자인지 확인 (추후)
+        itemRepository.findByIdAndWorkerId(itemId, workerId).orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ITEM_ID)); // 유저까지 넣으면 메서드로 빼기
+
+        // 상품 삭제
+        itemRepository.deleteById(itemId);
+
+        return "상품 삭제가 완료되었습니다.";
+    }
+
 }

@@ -40,4 +40,10 @@ public class ItemAdminController {
         return ApiResponseUtil.success(itemService.updateItem(itemId, itemUpdateRequestDto, workerId));
     }
 
+    @DeleteMapping ("/item/{itemId}")
+    public CommonResponse <String> deleteItem (@PathVariable Long itemId) {
+        Long workerId = 1L;
+        return ApiResponseUtil.success(itemService.deleteItem(itemId, workerId));
+    }
+
 }
