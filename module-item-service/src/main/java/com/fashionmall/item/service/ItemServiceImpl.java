@@ -115,8 +115,7 @@ public class ItemServiceImpl implements ItemService {
 
         // 본인 인증
         // 해당 아이템이 있는지 확인하기
-        Item item = itemRepository.findById(itemDiscountRequestDto.getId())
-                .orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
+        Item item = findByIdAndWorkerId(itemDiscountRequestDto.getId(), workerId);
 
         for (ItemDiscountRequestDto.ItemDiscountDtos itemDiscountDtos : itemDiscountRequestDto.getItemDiscountRequestDtoList()) {
 
@@ -140,8 +139,7 @@ public class ItemServiceImpl implements ItemService {
 
         // 관리자 확인
         // 어떤 사람의 데이터를 수정해야하는걸까? & 해당 관리자인지 검증 -> 추후
-        Item item = itemRepository.findByIdAndWorkerId(itemId, workerId)
-                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
+        Item item = findByIdAndWorkerId(itemId, workerId);
 
         // 검증 및 데이터 수정
         List<ItemCategoryMapping> updatedCategoryMappings = new ArrayList<>();
@@ -246,7 +244,7 @@ public class ItemServiceImpl implements ItemService {
 
         // 관리자 확인
         // 상품 아이디가 맞는지 확인 & 해당 관리자인지 확인 (추후)
-        itemRepository.findByIdAndWorkerId(itemId, workerId).orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ITEM_ID)); // 유저까지 넣으면 메서드로 빼기
+        findByIdAndWorkerId(itemId,workerId);
 
         // 상품 삭제
         itemRepository.deleteById(itemId);
@@ -254,7 +252,10 @@ public class ItemServiceImpl implements ItemService {
         return "상품 삭제가 완료되었습니다.";
     }
 
-    // 정률 정액 체크 -> 이거 지금 안쓰고 있는데 확인하기
+    private Item findByIdAndWorkerId (Long itemId, Long workerId) {
+        return itemRepository.findByIdAndWorkerId(itemId, workerId).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
+    }
+
     private void validateItemDiscountValue (ItemDiscountTypeEnum type, int value) {
 
         if (type == ItemDiscountTypeEnum.RATE) {
