@@ -51,4 +51,19 @@ public class ItemDetail extends BaseEntity {
         this.quantity = quantity;
     }
 
+    public void updateName (String nName) {
+        this.name = name;
+    }
+    public void updatePrice (int price) {
+        this.price = price;
+    }
+    public void updateQuantity (int quantity) {
+        this.quantity = quantity;
+    }
+    public void updateState (StatusEnum state) {
+        this.status = state;
+    }
+    public void updateSize (ItemSize itemSize) { this.itemSize = itemSize;}
+    public void updateColor (ItemColor itemColor) { this.itemColor = itemColor;}
+
 }

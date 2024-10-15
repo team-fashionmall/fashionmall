@@ -5,15 +5,18 @@ import com.fashionmall.common.exception.ErrorResponseCode;
 import com.fashionmall.item.dto.request.ItemDiscountRequestDto;
 import com.fashionmall.item.dto.request.ItemRequestDto;
 import com.fashionmall.item.dto.response.ItemDiscountResponseDto;
+import com.fashionmall.item.dto.request.ItemUpdateRequestDto;
 import com.fashionmall.item.dto.response.ItemResponseDto;
+import com.fashionmall.item.dto.response.ItemUpdateResponseDto;
 import com.fashionmall.item.entity.*;
-import com.fashionmall.item.enums.StatusEnum;
+import com.fashionmall.item.enums.ItemDiscountTypeEnum;
 import com.fashionmall.item.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -79,7 +82,7 @@ public class ItemServiceImpl implements ItemService {
                     .status(itemDetailRequestDto.getStatus())
                     .build();
             itemDetailRepository.save(itemDetail);
-            item.getItemDetails().add(itemDetail); // item 객체의 itemDetails 컬렉션에 itemDetail 객체 추가
+            item.getItemDetails().add(itemDetail);
             log.info("상품 상세 등록: {}", itemDetail);
 
         }
@@ -113,7 +116,7 @@ public class ItemServiceImpl implements ItemService {
         // 본인 인증
         // 해당 아이템이 있는지 확인하기
         Item item = itemRepository.findById(itemDiscountRequestDto.getId())
-                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
+                .orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
 
         for (ItemDiscountRequestDto.ItemDiscountDtos itemDiscountDtos : itemDiscountRequestDto.getItemDiscountRequestDtoList()) {
 
@@ -127,6 +130,111 @@ public class ItemServiceImpl implements ItemService {
         }
 
         return ItemDiscountResponseDto.from(item);
+    }
+
+    @Override
+    @Transactional
+    public ItemUpdateResponseDto updateItem (Long itemId, ItemUpdateRequestDto itemUpdateRequestDto, Long workerId) {
+
+        // 관리자 확인
+        // 어떤 사람의 데이터를 수정해야하는걸까? & 해당 관리자인지 검증 -> 추후
+        Item item = itemRepository.findByIdAndWorkerId(itemId, workerId)
+                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
+
+        // 검증 및 데이터 수정
+        List<ItemCategoryMapping> updatedCategoryMappings = new ArrayList<>();
+        List<ItemDetail> updatedItemDetails = new ArrayList<>();
+        List<ItemDiscount> updatedItemDiscounts = new ArrayList<>();
+
+        // 검증 null "" // 데이터 수정하기
+        if (!itemUpdateRequestDto.getName().isEmpty()) {
+            item.updateItemName (itemUpdateRequestDto.getName());
+        }
+
+        item.updateItemState(itemUpdateRequestDto.getState());
+
+        // 카테고리
+        for (ItemUpdateRequestDto.CategoryRequestDto categoryDto : itemUpdateRequestDto.getCategoryRequestDtoList()) {
+
+            if (categoryDto.getId() != null) {
+                ItemCategoryMapping itemCategoryMapping = itemCategoryMappingRepository.findByIdAndItemId(categoryDto.getId(), itemId)
+                        .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
+
+                if (categoryDto.getCategory1Id() != null) {
+                    Category1 category1 = findCategory1(categoryDto.getCategory1Id());
+
+                    if (categoryDto.getCategory2Id() != null) { // 둘 다 수정해야하는 경우
+                        Category2 category2 = findCategory2(categoryDto.getCategory2Id(), categoryDto.getCategory1Id());
+                        itemCategoryMapping.updateCategories(category1, category2.getId());
+                    } else { // category 1만 수정하는 경우
+                        itemCategoryMapping.updateCategory1(category1);
+                    }
+                }
+                if (categoryDto.getCategory2Id() != null) {
+                    Category2 category2 = findCategory2(categoryDto.getCategory2Id(), categoryDto.getCategory1Id());
+                    itemCategoryMapping.updateCategory2(category2.getId());
+                }
+                updatedCategoryMappings.add(itemCategoryMapping);
+            }
+        }
+
+        // Itemdetail
+        for (ItemUpdateRequestDto.ItemDetailRequestDto itemDetailDto : itemUpdateRequestDto.getItemDetailRequestDtoList()) {
+
+            if (itemDetailDto.getId() != null) {
+                ItemDetail itemDetail = itemDetailRepository.findByIdAndItemId(itemDetailDto.getId(), itemId)
+                        .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
+
+                if (itemDetailDto.getName() != null) {
+                    itemDetail.updateName(itemDetailDto.getName());
+                }
+
+                itemDetail.updateState(itemDetailDto.getStatus());
+
+                if (itemDetailDto.getPrice() > 0) {
+                    itemDetail.updatePrice(itemDetailDto.getPrice());
+                }
+
+                if (itemDetailDto.getQuantity() > 0) {
+                    itemDetail.updateQuantity(itemDetailDto.getQuantity());
+                }
+
+                if (itemDetailDto.getSizeId() != 0) {
+                    ItemSize itemSize = findSizeId(itemDetailDto.getSizeId());
+                    itemDetail.updateSize(itemSize);
+                }
+
+                if (itemDetailDto.getColorId() != 0) {
+                    ItemColor itemColor = findColorId(itemDetailDto.getColorId());
+                    itemDetail.updateColor(itemColor);
+                }
+                updatedItemDetails.add(itemDetail);
+            }
+        }
+
+        // ItemDiscount
+        for (ItemUpdateRequestDto.ItemDiscountRequestDto itemDiscountDto : itemUpdateRequestDto.getItemDiscountRequestDtoList()) {
+
+            if (itemDiscountDto.getId() != null) {
+                ItemDiscount itemDiscount = itemDiscountRepository.findByIdAndItemId(itemDiscountDto.getId(),itemId)
+                        .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
+
+                if (itemDiscountDto.getType() != null) {
+                    itemDiscount.updateItemDiscountType(itemDiscountDto.getType());
+                }
+
+                if (itemDiscountDto.getValue() > 0) {
+                    itemDiscount.updateValue(itemDiscountDto.getValue());
+                }
+
+                if (itemDiscountDto.getStatus() != null) {
+                    itemDiscount.updateStatus(itemDiscountDto.getStatus());
+                }
+                updatedItemDiscounts.add(itemDiscount);
+            }
+        }
+
+        return ItemUpdateResponseDto.from(item, updatedCategoryMappings, updatedItemDetails, updatedItemDiscounts);
     }
 
 }
