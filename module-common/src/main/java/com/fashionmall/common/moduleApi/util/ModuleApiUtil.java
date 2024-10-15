@@ -38,8 +38,9 @@ public class ModuleApiUtil {
     public List<DeliveryAddressDto> getUserDeliveryAddressApi(Long userId) {
         Map<String, String> headers = Map.of(
                 HttpHeaders.CONTENT_TYPE, "application/json");
-        return webClientUtil.get(userApi + "/DeliveryAddressApi/" + userId, new ParameterizedTypeReference<List<DeliveryAddressDto>>() {
+        CommonResponse<List<DeliveryAddressDto>> listCommonResponse = webClientUtil.get(userApi + "/DeliveryAddressApi/" + userId, new ParameterizedTypeReference<CommonResponse<List<DeliveryAddressDto>>>() {
         }, null, headers);
+        return listCommonResponse.getData();
     }
 
     /**
@@ -52,16 +53,18 @@ public class ModuleApiUtil {
     public List<ItemDetailDto> getItemDetailFromCartApi(Long userId) {
         Map<String, String> headers = Map.of(
                 HttpHeaders.CONTENT_TYPE, "application/json");
-        return webClientUtil.get(cartApi + "/ItemDetailApi/" + userId, new ParameterizedTypeReference<List<ItemDetailDto>>() {
+        CommonResponse<List<ItemDetailDto>> listCommonResponse = webClientUtil.get(cartApi + "/ItemDetailApi/" + userId, new ParameterizedTypeReference<CommonResponse<List<ItemDetailDto>>>() {
         }, null, headers);
+        return listCommonResponse.getData();
     }
 
     //은미님께 요청
     public int getItemQuantityApi(Long itemId) {
         Map<String, String> headers = Map.of(
                 HttpHeaders.CONTENT_TYPE, "application/json");
-        return webClientUtil.get(itemApi + "/ItemQuantityApi", new ParameterizedTypeReference<Integer>() {
+        CommonResponse<Integer> integerCommonResponse = webClientUtil.get(itemApi + "/ItemQuantityApi", new ParameterizedTypeReference<CommonResponse<Integer>>() {
         }, null, headers);
+        return integerCommonResponse.getData();
     }
 
     //은미님께 요청
