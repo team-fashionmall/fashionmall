@@ -75,4 +75,24 @@ public class IamPortClient {
                 },
                 accessToken);
     }
+
+    public IamPortResponseDto<PaymentResponseDto> onetimePayment(PaymentRequestDto paymentRequestDto) {
+        Map<String, String> accessToken = getAccessToken();
+        return webClientUtil.post(
+                iamPortUrl + "/subscribe/payments/onetime",
+                paymentRequestDto,
+                new ParameterizedTypeReference<IamPortResponseDto<PaymentResponseDto>>() {
+                },
+                accessToken);
+    }
+
+    public IamPortResponseDto<PaymentResponseDto> cancelPayment(PaymentRequestDto paymentRequestDto) {
+        Map<String, String> accessToken = getAccessToken();
+        return webClientUtil.post(
+                iamPortUrl + "/payments/cancel",
+                paymentRequestDto,
+                new ParameterizedTypeReference<IamPortResponseDto<PaymentResponseDto>>() {
+                },
+                accessToken);
+    }
 }
