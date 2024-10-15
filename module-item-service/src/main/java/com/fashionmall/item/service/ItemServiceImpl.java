@@ -120,6 +120,8 @@ public class ItemServiceImpl implements ItemService {
 
         for (ItemDiscountRequestDto.ItemDiscountDtos itemDiscountDtos : itemDiscountRequestDto.getItemDiscountRequestDtoList()) {
 
+            validateItemDiscountValue(itemDiscountDtos.getType(), itemDiscountDtos.getValue());
+
             ItemDiscount itemDiscount = ItemDiscount.builder()
                     .item(item)
                     .type(itemDiscountDtos.getType())
@@ -224,6 +226,7 @@ public class ItemServiceImpl implements ItemService {
                 }
 
                 if (itemDiscountDto.getValue() > 0) {
+                    validateItemDiscountValue(itemDiscountDto.getType(), itemDiscountDto.getValue());
                     itemDiscount.updateValue(itemDiscountDto.getValue());
                 }
 
@@ -249,6 +252,20 @@ public class ItemServiceImpl implements ItemService {
         itemRepository.deleteById(itemId);
 
         return "상품 삭제가 완료되었습니다.";
+    }
+
+    // 정률 정액 체크 -> 이거 지금 안쓰고 있는데 확인하기
+    private void validateItemDiscountValue (ItemDiscountTypeEnum type, int value) {
+
+        if (type == ItemDiscountTypeEnum.RATE) {
+            if (value < 0 || value > 100) {
+                throw new CustomException(ErrorResponseCode.WRONG_RATE); // "정률(%)에 맞는 값을 입력해주세요."
+            }
+        } else if (type == ItemDiscountTypeEnum.AMOUNT) {
+            if (value < 0) {
+                throw new CustomException(ErrorResponseCode.WRONG_AMOUNT); // "정액(원)에 맞는 값을 입력해주세요."
+            }
+        }
     }
 
 }
