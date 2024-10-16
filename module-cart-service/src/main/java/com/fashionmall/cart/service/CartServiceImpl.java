@@ -28,7 +28,7 @@ public class CartServiceImpl implements CartService{
 
     @Override
     @Transactional
-    public List<String> createCart (CartRequestDto cartRequestDto, Long userId, int price, String itemDetailName) {
+    public List<String> createCart (CartRequestDto cartRequestDto, Long userId) {
 
         // 회원 여부 인증
         //카트에 들어있는지 확인
@@ -40,8 +40,9 @@ public class CartServiceImpl implements CartService{
                 throw new CustomException(ErrorResponseCode.DUPLICATE_CART_DETAIL_ID);
             }
 
-            // price는 Msa로 가져올 예정
-            Cart cart = cartRequestDtoList.toEntity(userId, price, itemDetailName);
+            ItemDetailResponseDto itemDetail = moduleApiUtil.getItemDetail(cartRequestDtoList.getItemDetailId());
+
+            Cart cart = cartRequestDtoList.toEntity(userId, itemDetail.getPrice(), itemDetail.getName());
 
             cartRepository.save(cart);
 
