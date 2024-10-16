@@ -23,7 +23,9 @@ public class CartController {
     @PostMapping("/cart")
     public CommonResponse<List<String>> createCart (@Valid @RequestBody CartRequestDto cartRequestDto) {
         Long userId = 1L;
-        return ApiResponseUtil.success(cartService.createCart(cartRequestDto, userId));
+        int price = 48600;
+        String itemDetailName = "상품 이름";
+        return ApiResponseUtil.success(cartService.createCart(cartRequestDto, userId, price, itemDetailName));
     }
 
     @PatchMapping ("/cart/{cartId}")
