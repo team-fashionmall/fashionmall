@@ -5,6 +5,7 @@ import com.fashionmall.cart.dto.request.CartUpdateRequestDto;
 import com.fashionmall.cart.dto.response.CartUpdateResponseDto;
 import com.fashionmall.cart.entity.Cart;
 import com.fashionmall.cart.repository.CartRepository;
+import com.fashionmall.common.moduleApi.dto.ItemDetailDto;
 import com.fashionmall.common.moduleApi.dto.ItemDetailResponseDto;
 import com.fashionmall.common.exception.CustomException;
 import com.fashionmall.common.exception.ErrorResponseCode;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -85,4 +87,23 @@ public class CartServiceImpl implements CartService{
     public Cart findByIdAndUserId (Long cartId, Long userId) {
         return cartRepository.findByIdAndUserId(cartId, userId).orElseThrow(()-> new CustomException (ErrorResponseCode.WRONG_CART_ID));
     }
+
+    @Override
+    @Transactional
+    public List <ItemDetailDto> getItemDetailFromCartApi (Long userId) {
+
+        List<Cart> cart = cartRepository.findByUserId(userId);
+
+        List<ItemDetailDto> itemDetailList = cart.stream().map(cartItem -> {
+            return new ItemDetailDto(
+                    cartItem.getItemDetailId(),
+                    cartItem.getItemDetailName(),
+                    cartItem.getPrice(),
+                    cartItem.getQuantity()
+            );
+        }).collect(Collectors.toList());
+
+        return itemDetailList;
+    }
+
 }
