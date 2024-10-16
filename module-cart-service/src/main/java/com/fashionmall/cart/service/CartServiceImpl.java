@@ -91,19 +91,7 @@ public class CartServiceImpl implements CartService{
     @Override
     @Transactional
     public List <ItemDetailDto> getItemDetailFromCartApi (Long userId) {
-
-        List<Cart> cart = cartRepository.findByUserId(userId);
-
-        List<ItemDetailDto> itemDetailList = cart.stream().map(cartItem -> {
-            return new ItemDetailDto(
-                    cartItem.getItemDetailId(),
-                    cartItem.getItemDetailName(),
-                    cartItem.getPrice(),
-                    cartItem.getQuantity()
-            );
-        }).collect(Collectors.toList());
-
-        return itemDetailList;
+        return cartRepository.getItemDetailFromCartApi(userId);
     }
 
 }
