@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j(topic = "cart controller")
 @RestController
 @RequiredArgsConstructor
@@ -19,7 +21,7 @@ public class CartController {
     private final CartService cartService;
 
     @PostMapping("/cart")
-    public CommonResponse<String> createCart (@Valid @RequestBody CartRequestDto cartRequestDto) {
+    public CommonResponse<List<String>> createCart (@Valid @RequestBody CartRequestDto cartRequestDto) {
         Long userId = 1L;
         int price = 48600;
         String itemDetailName = "상품 이름";

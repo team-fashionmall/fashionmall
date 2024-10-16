@@ -5,12 +5,17 @@ import com.fashionmall.cart.dto.request.CartUpdateRequestDto;
 import com.fashionmall.cart.dto.response.CartUpdateResponseDto;
 import com.fashionmall.cart.entity.Cart;
 import com.fashionmall.cart.repository.CartRepository;
+import com.fashionmall.common.moduleApi.dto.ItemDetailResponseDto;
 import com.fashionmall.common.exception.CustomException;
 import com.fashionmall.common.exception.ErrorResponseCode;
+import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -19,23 +24,31 @@ import org.springframework.transaction.annotation.Transactional;
 public class CartServiceImpl implements CartService{
 
     private final CartRepository cartRepository;
+    private final ModuleApiUtil moduleApiUtil;
 
     @Override
     @Transactional
-    public String createCart (CartRequestDto cartRequestDto, Long userId, int price, String itemDetailName) {
+    public List<String> createCart (CartRequestDto cartRequestDto, Long userId, int price, String itemDetailName) {
 
         // 회원 여부 인증
-        Cart checkCart = cartRepository.findByItemDetailIdAndUserId(cartRequestDto.getItemDetailId(), userId);
-        if (checkCart != null) {
-            throw new CustomException(ErrorResponseCode.DUPLICATE_CART_DETAIL_ID);
+        //카트에 들어있는지 확인
+        List<String> cartIds = new ArrayList<>();
+
+        for (CartRequestDto.CartRequestDtoList cartRequestDtoList : cartRequestDto.getCartRequestDtoList()) {
+            Cart checkCart = cartRepository.findByItemDetailIdAndUserId(cartRequestDtoList.getItemDetailId(), userId);
+            if (checkCart != null) {
+                throw new CustomException(ErrorResponseCode.DUPLICATE_CART_DETAIL_ID);
+            }
+
+            // price는 Msa로 가져올 예정
+            Cart cart = cartRequestDtoList.toEntity(userId, price, itemDetailName);
+
+            cartRepository.save(cart);
+
+            cartIds.add("cartId : " + cart.getId());
         }
 
-        // price는 Msa로 가져올 예정
-        Cart cart = cartRequestDto.toEntity(userId, price, itemDetailName);
-
-        cartRepository.save(cart);
-
-        return "cartId : " + cart.getId();
+        return cartIds;
     }
 
     @Override
