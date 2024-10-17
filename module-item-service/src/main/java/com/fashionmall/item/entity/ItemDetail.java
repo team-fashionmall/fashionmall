@@ -60,6 +60,9 @@ public class ItemDetail extends BaseEntity {
     public void updateQuantity (int quantity) {
         this.quantity = quantity;
     }
+    public void deductQuantity (int quantity) {
+        this.quantity -= quantity;
+    }
     public void updateState (StatusEnum state) {
         this.status = state;
     }

@@ -1,5 +1,6 @@
 package com.fashionmall.item.controller;
 
+import com.fashionmall.common.moduleApi.dto.OrderItemDto;
 import com.fashionmall.common.response.CommonResponse;
 import com.fashionmall.common.util.ApiResponseUtil;
 import com.fashionmall.item.service.ItemService;
@@ -22,6 +23,12 @@ public class ItemApiController {
     @GetMapping ("/ItemQuantityApi/{itemDetailId}")
     public CommonResponse <Integer> getItemQuantityApi (@PathVariable Long itemDetailId) {
         return ApiResponseUtil.success(itemService.getItemQuantityApi(itemDetailId));
+    }
+
+    @PatchMapping ("/DeductItemApi")
+    public void deductItemQuantityApi (@RequestBody List<OrderItemDto> orderItemDto) {
+        Long workerId = 1L;
+        itemService.deductItemQuantityApi(orderItemDto, workerId);
     }
 
 }

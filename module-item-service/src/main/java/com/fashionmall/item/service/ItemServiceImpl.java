@@ -2,6 +2,7 @@ package com.fashionmall.item.service;
 
 import com.fashionmall.common.exception.CustomException;
 import com.fashionmall.common.exception.ErrorResponseCode;
+import com.fashionmall.common.moduleApi.dto.OrderItemDto;
 import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
 import com.fashionmall.item.dto.request.ItemDiscountRequestDto;
 import com.fashionmall.item.dto.request.ItemRequestDto;
@@ -277,6 +278,27 @@ public class ItemServiceImpl implements ItemService {
                 .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID)); // 수정하기
 
         return itemDetail.getQuantity();
+    }
+
+    @Override
+    @Transactional
+    public void deductItemQuantityApi (List<OrderItemDto> orderItemDto, Long workerId) {
+        // 본인 확인
+
+        for (OrderItemDto orderItemDtoList : orderItemDto) {
+            ItemDetail itemDetail = findByItemDetailIdAndWorkerId(orderItemDtoList.getItemDetailId(), workerId);
+
+            if (itemDetail.getQuantity() >= orderItemDtoList.getQuantity()) {
+                itemDetail.deductQuantity(orderItemDtoList.getQuantity());
+            } else {
+                throw new CustomException(ErrorResponseCode.BAD_DEDUCT_QUANTITY);
+            }
+        }
+    }
+
+    private ItemDetail findByItemDetailIdAndWorkerId (Long itemDetailId, Long workerId) {
+        return itemDetailRepository.findByIdAndItem_WorkerId(itemDetailId, workerId)
+                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_DETAIL_ID));
     }
 
 }

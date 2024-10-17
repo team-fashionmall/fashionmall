@@ -1,5 +1,6 @@
 package com.fashionmall.common.moduleApi.util;
 
+import com.fashionmall.common.moduleApi.dto.OrderItemDto;
 import com.fashionmall.common.response.CommonResponse;
 import com.fashionmall.common.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,15 @@ public class ModuleApiUtil {
         );
 
         return integerCommonResponse.getData();
+    }
+
+    public void deductItemQuantityApi(List<OrderItemDto> orderItemDto) {
+
+        webClientUtil.patch(
+                itemApi + "/DeductItemApi",
+                orderItemDto,
+                new ParameterizedTypeReference<Void>() {},
+                headers());
     }
 
     private Map<String, String> headers (){

@@ -1,11 +1,14 @@
 package com.fashionmall.item.service;
 
+import com.fashionmall.common.moduleApi.dto.OrderItemDto;
 import com.fashionmall.item.dto.request.ItemDiscountRequestDto;
 import com.fashionmall.item.dto.request.ItemRequestDto;
 import com.fashionmall.item.dto.response.ItemDiscountResponseDto;
 import com.fashionmall.item.dto.request.ItemUpdateRequestDto;
 import com.fashionmall.item.dto.response.ItemResponseDto;
 import com.fashionmall.item.dto.response.ItemUpdateResponseDto;
+
+import java.util.List;
 
 public interface ItemService {
     ItemResponseDto createItem (ItemRequestDto itemRequestDto, Long workerId);
@@ -15,4 +18,5 @@ public interface ItemService {
 
     int getItemQuantityApi (Long itemDetailId);
 
+    void deductItemQuantityApi (List<OrderItemDto> orderItemDto, Long workerId);
 }

@@ -8,4 +8,6 @@ import java.util.Optional;
 
 public interface ItemDetailRepository extends JpaRepository <ItemDetail, Long> {
     Optional<ItemDetail> findByIdAndItemId(Long id, Long itemId);
+    Optional<ItemDetail> findByIdAndItem_WorkerId(Long itemDetailId, Long workerId);
+
 }

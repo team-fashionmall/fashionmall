@@ -26,9 +26,11 @@ public enum ErrorResponseCode {
 
     // Item
     WRONG_ITEM_ID(HttpStatus.BAD_REQUEST, "상품 관련 ID를 다시 확인해주세요"),
+    WRONG_ITEM_DETAIL_ID(HttpStatus.BAD_REQUEST, "item detail 아이디를 다시 확인해주세요"),
     WRONG_CATEGORY_ID(HttpStatus.BAD_REQUEST, "카테고리 관련 ID를 다시 확인해주세요"),
     WRONG_RATE(HttpStatus.BAD_REQUEST, "정률(%)에 맞는 값을 입력해주세요."),
-    WRONG_AMOUNT(HttpStatus.BAD_REQUEST, "정액(원)에 맞는 값을 입력해주세요.");
+    WRONG_AMOUNT(HttpStatus.BAD_REQUEST, "정액(원)에 맞는 값을 입력해주세요."),
+    BAD_DEDUCT_QUANTITY(HttpStatus.BAD_REQUEST, "재고 수량보다 더 큰 수량 입니다. 수량을 다시 확인해주세요");
 
 
     private final HttpStatus status;
