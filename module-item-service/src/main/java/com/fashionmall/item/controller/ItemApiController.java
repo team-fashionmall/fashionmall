@@ -19,7 +19,8 @@ public class ItemApiController {
 
     @GetMapping ("/itemDetail/{itemDetailId}")
     public CommonResponse <ItemDetailResponseDto> getItemDetail (@PathVariable Long itemDetailId) {
-        return ApiResponseUtil.success(itemService.getItemDetail(itemDetailId));
+        Long workerId = 1L;
+        return ApiResponseUtil.success(itemService.getItemDetail(itemDetailId, workerId));
     }
 
 }

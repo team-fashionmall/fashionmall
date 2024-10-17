@@ -11,5 +11,5 @@ public interface ItemService {
 
     ItemDiscountResponseDto createItemDiscount (ItemDiscountRequestDto itemDiscountRequestDto, Long workerId);
 
-    ItemDetailResponseDto getItemDetail (Long itemDetailId);
+    ItemDetailResponseDto getItemDetail (Long itemDetailId, Long workerId);
 }

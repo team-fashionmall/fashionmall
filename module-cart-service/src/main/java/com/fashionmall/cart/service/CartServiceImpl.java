@@ -91,6 +91,7 @@ public class CartServiceImpl implements CartService{
     @Override
     @Transactional
     public List <ItemDetailDto> getItemDetailFromCartApi (Long userId) {
+        // 유저 검증
         return cartRepository.getItemDetailFromCartApi(userId);
     }
 

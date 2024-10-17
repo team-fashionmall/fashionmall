@@ -35,7 +35,8 @@ public class ModuleApiUtil {
 
     public List<ItemDetailDto> getItemDetailFromCartApi(Long userId) {
 
-        CommonResponse<List<ItemDetailDto>> listCommonResponse = webClientUtil.get(cartApi + "/ItemDetailApi/" + userId,
+        CommonResponse<List<ItemDetailDto>> listCommonResponse = webClientUtil.get(
+                cartApi + "/ItemDetailApi/" + userId,
                 new ParameterizedTypeReference<CommonResponse<List<ItemDetailDto>>>() {},
                 null,
                 headers()

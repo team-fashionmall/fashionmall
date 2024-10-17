@@ -129,15 +129,20 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public ItemDetailResponseDto getItemDetail (Long itemDetailId) {
+    public ItemDetailResponseDto getItemDetail (Long itemDetailId, Long workerId) {
+        // 본인인증
 
-        ItemDetail itemDetail = itemDetailRepository.findById(itemDetailId)
-                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEMDETAIL_ID));
+        ItemDetail itemDetail = findByItemDetailIdAndWorkerId(itemDetailId, workerId);
 
         return ItemDetailResponseDto.builder()
                 .name(itemDetail.getName())
                 .price(itemDetail.getPrice())
                 .build();
+    }
+
+    private ItemDetail findByItemDetailIdAndWorkerId (Long itemDetailId, Long workerId) {
+        return itemDetailRepository.findByIdAndItem_WorkerId(itemDetailId, workerId)
+                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_DETAIL_ID));
     }
 
 }
