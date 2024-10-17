@@ -2,6 +2,7 @@ package com.fashionmall.item.service;
 
 import com.fashionmall.common.exception.CustomException;
 import com.fashionmall.common.exception.ErrorResponseCode;
+import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
 import com.fashionmall.item.dto.request.ItemDiscountRequestDto;
 import com.fashionmall.item.dto.request.ItemRequestDto;
 import com.fashionmall.item.dto.response.ItemDiscountResponseDto;
@@ -16,8 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -267,6 +267,16 @@ public class ItemServiceImpl implements ItemService {
                 throw new CustomException(ErrorResponseCode.WRONG_AMOUNT); // "정액(원)에 맞는 값을 입력해주세요."
             }
         }
+    }
+
+    @Override
+    @Transactional
+    public int getItemQuantityApi (Long itemDetailId) {
+
+        ItemDetail itemDetail = itemDetailRepository.findById(itemDetailId)
+                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID)); // 수정하기
+
+        return itemDetail.getQuantity();
     }
 
 }

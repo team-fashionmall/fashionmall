@@ -12,4 +12,7 @@ public interface ItemService {
     ItemDiscountResponseDto createItemDiscount (ItemDiscountRequestDto itemDiscountRequestDto, Long workerId);
     ItemUpdateResponseDto updateItem (Long itemId, ItemUpdateRequestDto itemUpdateRequestDto, Long workerId);
     String deleteItem (Long itemId, Long workerId);
+
+    int getItemQuantityApi (Long itemDetailId);
+
 }
