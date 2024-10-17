@@ -19,4 +19,5 @@ public interface ItemService {
     int getItemQuantityApi (Long itemDetailId);
 
     void deductItemQuantityApi (List<OrderItemDto> orderItemDto, Long workerId);
+    void restoreItemApi (List<OrderItemDto> orderItemDto, Long workerId);
 }

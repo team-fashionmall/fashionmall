@@ -296,6 +296,25 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
+
+    @Override
+    @Transactional
+    public void restoreItemApi (List<OrderItemDto> orderItemDto, Long workerId){
+        //본인확인
+
+        for (OrderItemDto orderItemDtoList : orderItemDto) {
+
+            ItemDetail itemDetail = findByItemDetailIdAndWorkerId(orderItemDtoList.getItemDetailId(), workerId);
+
+            if (orderItemDtoList.getQuantity() > 0){
+                itemDetail.restoreQuantity(orderItemDtoList.getQuantity());
+            } else {
+                throw new CustomException(ErrorResponseCode.BAD_RESTORE_QUANTITY);
+            }
+        }
+
+    }
+
     private ItemDetail findByItemDetailIdAndWorkerId (Long itemDetailId, Long workerId) {
         return itemDetailRepository.findByIdAndItem_WorkerId(itemDetailId, workerId)
                 .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_DETAIL_ID));

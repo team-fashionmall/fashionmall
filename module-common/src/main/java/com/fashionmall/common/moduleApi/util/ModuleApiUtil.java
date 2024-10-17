@@ -43,6 +43,15 @@ public class ModuleApiUtil {
                 headers());
     }
 
+    public void restoreItemQuantityApi(List<OrderItemDto> orderItemDto) {
+
+        webClientUtil.patch(
+                itemApi + "/RestoreItemApi",
+                orderItemDto,
+                new ParameterizedTypeReference<Void>() {},
+                headers());
+    }
+
     private Map<String, String> headers (){
         return Map.of (HttpHeaders.CONTENT_TYPE, "application/json");
     }
