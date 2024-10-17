@@ -16,7 +16,7 @@ public interface ItemService {
     ItemUpdateResponseDto updateItem (Long itemId, ItemUpdateRequestDto itemUpdateRequestDto, Long workerId);
     String deleteItem (Long itemId, Long workerId);
 
-    int getItemQuantityApi (Long itemDetailId);
+    int getItemQuantityApi (Long itemDetailId, Long workerId);
 
     void deductItemQuantityApi (List<OrderItemDto> orderItemDto, Long workerId);
     void restoreItemApi (List<OrderItemDto> orderItemDto, Long workerId);

@@ -22,7 +22,8 @@ public class ItemApiController {
 
     @GetMapping ("/ItemQuantityApi/{itemDetailId}")
     public CommonResponse <Integer> getItemQuantityApi (@PathVariable Long itemDetailId) {
-        return ApiResponseUtil.success(itemService.getItemQuantityApi(itemDetailId));
+        Long workerId = 1L;
+        return ApiResponseUtil.success(itemService.getItemQuantityApi(itemDetailId, workerId));
     }
 
     @PatchMapping ("/DeductItemApi")

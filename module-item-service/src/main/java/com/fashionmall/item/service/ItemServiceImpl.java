@@ -272,10 +272,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public int getItemQuantityApi (Long itemDetailId) {
+    public int getItemQuantityApi (Long itemDetailId, Long workerId) {
 
-        ItemDetail itemDetail = itemDetailRepository.findById(itemDetailId)
-                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID)); // 수정하기
+        ItemDetail itemDetail = findByItemDetailIdAndWorkerId(itemDetailId, workerId);
 
         return itemDetail.getQuantity();
     }
@@ -295,7 +294,6 @@ public class ItemServiceImpl implements ItemService {
             }
         }
     }
-
 
     @Override
     @Transactional
