@@ -36,4 +36,16 @@ public class ItemCategoryMapping extends BaseEntity {
         this.category2Id = category2Id;
     }
 
+    public void updateCategories (Category1 category1Id, Long category2Id) {
+        this.category1 = category1Id;
+        this.category2Id = category2Id;
+    }
+
+    public void updateCategory1 (Category1 category1Id) {
+        this.category1 = category1Id;
+    }
+    public void updateCategory2 (Long category2Id) {
+        this.category2Id = category2Id;
+    }
+
 }

@@ -46,4 +46,11 @@ public class Item extends BaseEntity {
         this.name = name;
         this.status = status;
     }
+
+    public void updateItemName (String itemName) {
+        this.name = itemName;
+    }
+    public void updateItemState (StatusEnum Status) {
+        this.status = Status;
+    }
 }
