@@ -1,5 +1,6 @@
 package com.fashionmall.coupon.repository;
 
+import com.fashionmall.common.moduleApi.dto.CouponDto;
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.coupon.dto.response.AdminCouponResponseDto;
 import com.fashionmall.coupon.dto.response.UserCouponResponseDto;
@@ -59,7 +60,7 @@ public class CouponRepositoryImpl implements CouponRepositoryCustom {
     }
 
     @Override
-    public PageInfoResponseDto<UserCouponResponseDto> findUserCouponByUserId(Long userId, Pageable pageable) {
+    public PageInfoResponseDto<UserCouponResponseDto> findUserCouponByUserIdToApi(Long userId, Pageable pageable) {
 
         int offset = (int) pageable.getOffset();
         int size = pageable.getPageSize();
@@ -142,5 +143,27 @@ public class CouponRepositoryImpl implements CouponRepositoryCustom {
         int totalCount = fetchOne.intValue();
 
         return PageInfoResponseDto.of(pageable, content, totalCount);
+    }
+
+    @Override
+    public List<CouponDto> findUserCouponByUserIdToApi(Long userId) {
+        return queryFactory
+                .select(Projections.constructor(CouponDto.class,
+                        coupon.id,
+                        coupon.name,
+                        coupon.discountType.stringValue(),
+                        coupon.discountValue,
+                        coupon.minPurchasePrice,
+                        coupon.maxDiscountPrice,
+                        coupon.startDate,
+                        coupon.endDate))
+                .from(userCoupon)
+                .join(userCoupon.coupon, coupon)
+                .where(userCoupon.userId.eq(userId),
+                        userCoupon.isUsed.eq(false),
+                        coupon.endDate.after(LocalDateTime.now()),
+                        coupon.status.eq(CouponStatus.ACTIVATED))
+                .orderBy(coupon.id.desc())
+                .fetch();
     }
 }

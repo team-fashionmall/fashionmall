@@ -15,31 +15,16 @@ public class UserBillingKeyResponseDto {
     @JsonProperty("card_nickname")
     private String cardNickname;
 
-    @JsonProperty("customer_uid")
-    private String customerUid;
-
-    @JsonProperty("pg_provider")
-    private String pgProvider;
-
-    @JsonProperty("pg_id")
-    private String pgId;
-
     @JsonProperty("card_name")
     private String cardName;
 
     @JsonProperty("card_type")
     private String cardType;
 
-    @JsonProperty("inserted")
-    private int inserted;
-
-    @JsonProperty("updated")
-    private int updated;
-
-    public UserBillingKeyResponseDto(Long id, String cardNickname, String customerUid) {
+    public UserBillingKeyResponseDto(Long id, String cardNickname, String cardName, String cardType) {
         this.id = id;
         this.cardNickname = cardNickname;
-        this.customerUid = customerUid;
+        this.cardName = cardName;
+        this.cardType = cardType;
     }
-
 }
