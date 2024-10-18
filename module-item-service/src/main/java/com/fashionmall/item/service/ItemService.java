@@ -9,6 +9,7 @@ import com.fashionmall.item.dto.response.ItemResponseDto;
 import com.fashionmall.item.dto.response.ItemUpdateResponseDto;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ItemService {
     ItemResponseDto createItem (ItemRequestDto itemRequestDto, Long workerId);
@@ -18,6 +19,10 @@ public interface ItemService {
 
     int getItemQuantityApi (Long itemDetailId, Long workerId);
 
+    Map<Long, String> getItemDetailNameApi (List<Long> itemDetailIds);
+
     void deductItemQuantityApi (List<OrderItemDto> orderItemDto, Long workerId);
+
     void restoreItemApi (List<OrderItemDto> orderItemDto, Long workerId);
+
 }

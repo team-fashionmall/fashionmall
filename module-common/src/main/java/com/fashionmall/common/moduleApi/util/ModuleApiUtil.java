@@ -7,12 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
-import java.sql.SQLOutput;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -32,6 +30,22 @@ public class ModuleApiUtil {
         );
 
         return integerCommonResponse.getData();
+    }
+
+    public Map<Long, String> getItemDetailNameApi(List<Long> itemDetailIds) {
+
+        String ids = itemDetailIds.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
+
+        CommonResponse<Map<Long, String>> mapCommonResponse = webClientUtil.get(
+                itemApi + "/ItemDetailNameApi?itemDetailIds=" + ids,
+                new ParameterizedTypeReference<CommonResponse<Map<Long, String>>>() {},
+                null,
+                headers()
+        );
+
+        return mapCommonResponse.getData();
     }
 
     public void deductItemQuantityApi(List<OrderItemDto> orderItemDto) {

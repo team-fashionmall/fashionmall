@@ -3,7 +3,6 @@ package com.fashionmall.item.service;
 import com.fashionmall.common.exception.CustomException;
 import com.fashionmall.common.exception.ErrorResponseCode;
 import com.fashionmall.common.moduleApi.dto.OrderItemDto;
-import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
 import com.fashionmall.item.dto.request.ItemDiscountRequestDto;
 import com.fashionmall.item.dto.request.ItemRequestDto;
 import com.fashionmall.item.dto.response.ItemDiscountResponseDto;
@@ -277,6 +276,24 @@ public class ItemServiceImpl implements ItemService {
         ItemDetail itemDetail = findByItemDetailIdAndWorkerId(itemDetailId, workerId);
 
         return itemDetail.getQuantity();
+    }
+
+    @Override
+    @Transactional
+    public Map<Long, String> getItemDetailNameApi (List<Long> itemDetailIds) {
+
+        Map<Long, String> itemDetailNames = new HashMap<>();
+
+        for (Long itemDetailId : itemDetailIds) {
+
+            ItemDetail itemDetail = itemDetailRepository.findById(itemDetailId)
+                    .orElseThrow(()-> new CustomException(ErrorResponseCode.BAD_REQUEST)); // findNameById 메서드는 예시입니다.
+
+            itemDetailNames.put(itemDetailId, itemDetail.getName());
+        }
+
+        return itemDetailNames;
+
     }
 
     @Override

@@ -7,11 +7,8 @@ import com.fashionmall.item.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +21,11 @@ public class ItemApiController {
     public CommonResponse <Integer> getItemQuantityApi (@PathVariable Long itemDetailId) {
         Long workerId = 1L;
         return ApiResponseUtil.success(itemService.getItemQuantityApi(itemDetailId, workerId));
+    }
+
+    @GetMapping ("/ItemDetailNameApi")
+    public CommonResponse <Map<Long, String>> getItemDetailNameApi (@RequestParam List<Long> itemDetailIds) {
+        return ApiResponseUtil.success(itemService.getItemDetailNameApi(itemDetailIds));
     }
 
     @PatchMapping ("/DeductItemApi")
