@@ -17,6 +17,7 @@ public class OrdersRequestDto {
     private Long couponId;
     // 직접 입력시 Null
     private Long deliveryAddressId;
+    private Long billingKeyId;
 
     private String zipcode;
     private String roadAddress;

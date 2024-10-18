@@ -4,6 +4,7 @@ import com.fashionmall.common.response.CommonResponse;
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.common.util.ApiResponseUtil;
 import com.fashionmall.order.dto.request.OrdersRequestDto;
+import com.fashionmall.order.dto.response.OrderCreateDto;
 import com.fashionmall.order.dto.response.OrdersCompleteResponseDto;
 import com.fashionmall.order.dto.response.OrdersDetailResponseDto;
 import com.fashionmall.order.dto.response.OrdersResponseDto;
@@ -20,7 +21,7 @@ public class OrderController {
     private final PaymentService paymentService;
 
     @PostMapping("/order")
-    public CommonResponse<Long> createOrder(@RequestBody OrdersRequestDto ordersRequestDto) {
+    public CommonResponse<OrderCreateDto> createOrder(@RequestBody OrdersRequestDto ordersRequestDto) {
 
         return ApiResponseUtil.success(ordersService.createOrder(ordersRequestDto));
     }

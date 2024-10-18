@@ -8,6 +8,4 @@ public interface PaymentService {
     PaymentResponseDto createPayment(PaymentRequestDto paymentRequestDto);
 
     PaymentResponseDto cancelPayment(Long orderId);
-
-    PaymentResponseDto testPayment();
 }

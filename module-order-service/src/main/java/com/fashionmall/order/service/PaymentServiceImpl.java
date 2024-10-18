@@ -4,11 +4,13 @@ import com.fashionmall.common.exception.CustomException;
 import com.fashionmall.common.exception.ErrorResponseCode;
 import com.fashionmall.order.dto.request.PaymentRequestDto;
 import com.fashionmall.order.dto.response.PaymentResponseDto;
+import com.fashionmall.order.entity.BillingKey;
 import com.fashionmall.order.entity.Orders;
 import com.fashionmall.order.entity.Payment;
 import com.fashionmall.order.enums.PaymentStatus;
 import com.fashionmall.order.infra.iamPort.dto.IamPortResponseDto;
 import com.fashionmall.order.infra.iamPort.util.IamPortClient;
+import com.fashionmall.order.repository.BillingKeyRepository;
 import com.fashionmall.order.repository.OrdersRepository;
 import com.fashionmall.order.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final OrdersRepository ordersRepository;
+    private final BillingKeyRepository billingKeyRepository;
 
     private final IamPortClient iamPortClient;
 
@@ -35,6 +38,11 @@ public class PaymentServiceImpl implements PaymentService {
     public PaymentResponseDto createPayment(PaymentRequestDto paymentRequestDto) {
 
         Long orderId = paymentRequestDto.getOrderId();
+        Long billingKeyId = paymentRequestDto.getBillingKeyId();
+
+        BillingKey billingKey = billingKeyRepository.findById(billingKeyId)
+                .orElseThrow(() -> new CustomException(ErrorResponseCode.ORDER_NOT_FOUND_BILLING_KEY));
+        paymentRequestDto.setCustomerUid(billingKey.getCustomerUid());
 
         String merchantUid = createMerchantUid(orderId);
         paymentRequestDto.setMerchantUid(merchantUid);
@@ -45,14 +53,15 @@ public class PaymentServiceImpl implements PaymentService {
         paymentRequestDto.setAmount(orders.getPaymentPrice());
 
         //비인증 일회성 결제
-        IamPortResponseDto<PaymentResponseDto> post = iamPortClient.onetimePayment(paymentRequestDto);
+        //IamPortResponseDto<PaymentResponseDto> post = iamPortClient.onetimePayment(paymentRequestDto);
+        IamPortResponseDto<PaymentResponseDto> post = iamPortClient.billingKeyPayment(paymentRequestDto);
 
 
         String impUid = post.getResponse().getImpUid();
         long unixPaidAt = (long) post.getResponse().getPaidAt();
         LocalDateTime paidAt = LocalDateTime.ofInstant(Instant.ofEpochSecond(unixPaidAt), ZoneId.systemDefault());
 
-        Payment payment = paymentRequestDto.toPayment(orders, impUid, paidAt);
+        Payment payment = paymentRequestDto.toPayment(orders, billingKey, impUid, paidAt);
 
         paymentRepository.save(payment);
 
@@ -81,44 +90,7 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setCancelReason(paymentRequestDto.getCancelReason());
         payment.setStatus(PaymentStatus.CANCELED);
 
-        String impUid = post.getResponse().getImpUid();
-        long unixPaidAt = (long) post.getResponse().getPaidAt();
-        LocalDateTime paidAt = LocalDateTime.ofInstant(Instant.ofEpochSecond(unixPaidAt), ZoneId.systemDefault());
-
         return post.getResponse();
-    }
-
-    @Override
-    public PaymentResponseDto testPayment() {
-        PaymentRequestDto requestDto = new PaymentRequestDto();
-        requestDto.setUserId(1L);
-        requestDto.setOrderId(100L);
-        requestDto.setAmount(10000); // 결제 금액
-        requestDto.setCardNumber("1111-2222-3333-4444"); // 테스트 카드 번호 (포트원에서 제공하는 샌드박스 카드 번호)
-        requestDto.setExpiry("2029-12"); // 카드 유효기간
-        requestDto.setPwd2digit("12"); // 카드 비밀번호 앞 2자리
-        requestDto.setCardQuota(0);
-        requestDto.setMerchantUid(createMerchantUid(100L));
-        
-        IamPortResponseDto<PaymentResponseDto> response = iamPortClient.onetimePayment(requestDto);
-        if (response != null) {
-            System.out.println("IamPort Response: " + response);  // 전체 응답 출력
-            if (response.getResponse() != null) {
-                System.out.println("IamPort Payment Response: " + response.getResponse());
-            } else {
-                System.out.println("No payment response received");
-            }
-        } else {
-            System.out.println("No response from IamPort");
-        }
-
-        if (response.getCode() != 0) { // 0이 아닐 경우 오류
-            System.out.println("Payment error code: " + response.getCode());
-            System.out.println("Payment error message: " + response.getMessage());
-            return null; // 오류인 경우 null 반환
-        }
-
-        return response != null ? response.getResponse() : null;
     }
 
     public String createMerchantUid(Long orderId) {

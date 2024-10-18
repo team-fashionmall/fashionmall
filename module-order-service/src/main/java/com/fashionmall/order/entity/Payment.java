@@ -59,9 +59,10 @@ public class Payment extends BaseEntity {
     private String cancelReason; //결제 취소 사유
 
     @Builder
-    public Payment(Long userId, Orders orders, String merchantUid, int cardQuota, String impUid, int price, LocalDateTime paidAt) {
+    public Payment(Long userId, Orders orders, BillingKey billingKey, String merchantUid, int cardQuota, String impUid, int price, LocalDateTime paidAt) {
         this.userId = userId;
         this.orders = orders;
+        this.billingKey = billingKey;
         this.merchantUid = merchantUid;
         this.cardQuota = cardQuota;
         this.impUid = impUid;

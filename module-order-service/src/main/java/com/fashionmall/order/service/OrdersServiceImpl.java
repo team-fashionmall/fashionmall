@@ -10,13 +10,12 @@ import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.order.dto.request.OrderItemRequestDto;
 import com.fashionmall.order.dto.request.OrdersRequestDto;
-import com.fashionmall.order.dto.response.OrderItemDetailResponseDto;
-import com.fashionmall.order.dto.response.OrdersCompleteResponseDto;
-import com.fashionmall.order.dto.response.OrdersDetailResponseDto;
-import com.fashionmall.order.dto.response.OrdersResponseDto;
+import com.fashionmall.order.dto.response.*;
+import com.fashionmall.order.entity.BillingKey;
 import com.fashionmall.order.entity.Orders;
 import com.fashionmall.order.entity.Payment;
 import com.fashionmall.order.enums.OrderStatus;
+import com.fashionmall.order.repository.BillingKeyRepository;
 import com.fashionmall.order.repository.OrdersRepository;
 import com.fashionmall.order.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,18 +34,21 @@ public class OrdersServiceImpl implements OrdersService {
     private final ModuleApiUtil moduleApiUtil;
     private final OrdersRepository ordersRepository;
     private final PaymentRepository paymentRepository;
+    private final BillingKeyRepository billingKeyRepository;
 
     @Transactional
     @Override
-    public Long createOrder(OrdersRequestDto ordersRequestDto) {
+    public OrderCreateDto createOrder(OrdersRequestDto ordersRequestDto) {
         Long userId = ordersRequestDto.getUserId();
         Long couponId = ordersRequestDto.getCouponId();
         Long deliveryAddressId = ordersRequestDto.getDeliveryAddressId();
+        Long billingKeyId = ordersRequestDto.getBillingKeyId();
 
-        //API 데이터 가져오기
+        //데이터 가져오기
         List<CouponDto> userCouponApi = moduleApiUtil.getUserCouponApi(userId);
         List<DeliveryAddressDto> userDeliveryAddressApi = moduleApiUtil.getUserDeliveryAddressApi(userId);
         List<ItemDetailDto> itemDetailApi = moduleApiUtil.getItemDetailFromCartApi(userId);
+        List<BillingKey> billingKeys = billingKeyRepository.findByUserId(userId);
 
         //주문 항목 생성
         List<OrderItemRequestDto> orderItems = itemDetailApi.stream()
@@ -109,14 +111,23 @@ public class OrdersServiceImpl implements OrdersService {
 
         int paymentPrice = totalPrice - discountPrice;
 
+        //billingKey 검증
+        if (billingKeys.isEmpty()) {
+            throw new CustomException(ErrorResponseCode.ORDER_NOT_FOUND_BILLING_KEY);
+        }
+
+        if (billingKeyId != null && !billingKeyRepository.existsById(billingKeyId)) {
+            throw new CustomException(ErrorResponseCode.NOT_FOUND);
+        }
+
         //DTO 정보 입력
         ordersRequestDto.setTotalPrice(totalPrice);
         ordersRequestDto.setDiscountPrice(discountPrice);
         ordersRequestDto.setPaymentPrice(paymentPrice);
 
-        Orders orders = ordersRequestDto.toOrders();
+        Long orderId = ordersRepository.save(ordersRequestDto.toOrders()).getId();
 
-        return ordersRepository.save(orders).getId();
+        return new OrderCreateDto(orderId, billingKeyId);
     }
 
     @Override
