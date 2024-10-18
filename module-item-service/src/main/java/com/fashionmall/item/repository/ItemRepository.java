@@ -3,6 +3,8 @@ package com.fashionmall.item.repository;
 import com.fashionmall.item.entity.Item;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ItemRepository extends JpaRepository <Item, Long> {
+import java.util.Optional;
 
+public interface ItemRepository extends JpaRepository <Item, Long> {
+    Optional<Item> findByIdAndWorkerId (Long itemId, Long workerId);
 }
