@@ -59,7 +59,7 @@ public class ModuleApiUtil {
     }
 
     //은미님께 요청
-    public int getItemQuantityApi(Long itemId) {
+    public int getItemQuantityApi(Long itemDetailId) {
         Map<String, String> headers = Map.of(
                 HttpHeaders.CONTENT_TYPE, "application/json");
         CommonResponse<Integer> integerCommonResponse = webClientUtil.get(itemApi + "/ItemQuantityApi", new ParameterizedTypeReference<CommonResponse<Integer>>() {
@@ -71,7 +71,7 @@ public class ModuleApiUtil {
     public void deductItemQuantityApi(List<OrderItemDto> orderItemDto) {
         Map<String, String> headers = Map.of(
                 HttpHeaders.CONTENT_TYPE, "application/json");
-        webClientUtil.post(itemApi + "Deduct Item Api", orderItemDto, new ParameterizedTypeReference<Void>() {
+        webClientUtil.patch(itemApi + "Deduct Item Api", orderItemDto, new ParameterizedTypeReference<Void>() {
         }, headers);
     }
 
@@ -79,7 +79,7 @@ public class ModuleApiUtil {
     public void restoreItemQuantityApi(List<OrderItemDto> orderItemDto) {
         Map<String, String> headers = Map.of(
                 HttpHeaders.CONTENT_TYPE, "application/json");
-        webClientUtil.post(itemApi + "restore Item Api", orderItemDto, new ParameterizedTypeReference<Void>() {
+        webClientUtil.patch(itemApi + "restore Item Api", orderItemDto, new ParameterizedTypeReference<Void>() {
         }, headers);
     }
 

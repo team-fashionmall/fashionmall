@@ -74,6 +74,16 @@ public class WebClientUtil {
                 .block();
     }
 
+    public <T> void patch(String uri, Object requestBody, ParameterizedTypeReference<T> elementTypeRef, Map<String, String> headers) {
+        webClient.patch()
+                .uri(uri)
+                .headers(getHttpHeadersConsumer(headers))
+                .bodyValue(requestBody)
+                .retrieve()
+                .bodyToMono(elementTypeRef)
+                .block();
+    }
+
     public <T> T delete(String uri, Class<T> responseType, Map<String, String> headers) {
         return webClient.delete()
                 .uri(uri)
