@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: module-item-service
+    name: module-image-service
   jpa:
     hibernate:
       ddl-auto: validate
