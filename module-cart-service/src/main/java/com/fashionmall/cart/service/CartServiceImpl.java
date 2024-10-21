@@ -74,13 +74,13 @@ public class CartServiceImpl implements CartService{
 
     @Override
     @Transactional
-    public String deleteCart(Long cartId, Long userId) {
+    public Long deleteCart(Long cartId, Long userId) {
 
         // 회원 인증
         Cart cart = findByIdAndUserId(cartId, userId);
         cartRepository.deleteById(cart.getId());
 
-        return "해당 상품이 삭제되었습니다. cartId : " + cartId;
+        return cartId;
 
     }
 
