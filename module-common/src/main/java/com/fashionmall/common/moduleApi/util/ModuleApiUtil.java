@@ -96,21 +96,19 @@ public class ModuleApiUtil {
                 headers());
     private final String imageApi = "http://localhost:8000/api/image";
 
-    public List<ImageDataDto> getImageApi (List<Long> imageId) {
-        // referenceIds를 쿼리 파라미터로 변환
+    public List <Long> deleteImageApi (List<Long> imageId) {
+
         String imageIdParam = imageId.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(","));
 
-        // API 호출
-        CommonResponse<List<ImageDataDto>> getImageApi = webClientUtil.get(
-                imageApi + "/getImageApi?imageId=" + imageIdParam,
-                new ParameterizedTypeReference<CommonResponse<List<ImageDataDto>>>() {},
-                null, // 쿼리 파라미터는 URL에 포함되므로 null
+        CommonResponse <List<Long>> deleteImageApi = webClientUtil.delete(
+                imageApi + "/deleteImageApi?imageId=" + imageIdParam,
+                new ParameterizedTypeReference<CommonResponse<List<Long>>>() {},
                 headers()
         );
 
-        return getImageApi.getData();
+        return deleteImageApi.getData();
     }
 
     private Map<String, String> headers (){

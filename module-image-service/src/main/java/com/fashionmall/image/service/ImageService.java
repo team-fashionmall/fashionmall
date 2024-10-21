@@ -14,6 +14,5 @@ import java.util.Map;
 
 public interface ImageService {
 
-    List<ImageDataDto> getImageApi (List<Long> imageId, Long workerId);
-
+    List<Long> deleteImageApi (List<Long> imageId, Long workerId);
 }

@@ -48,25 +48,23 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     @Transactional
-    public List<ImageDataDto> getImageApi (List<Long> imageId, Long workerId) {
-        // 본인 인증
-
-        List<ImageDataDto> imageDataDtoList = new ArrayList<>();
+    public List<Long> deleteImageApi (List<Long> imageId, Long workerId) {
+        // 본인인증
 
         for (Long imageIds : imageId) {
-
             Image image = imageRepository.findById(imageIds)
-                    .orElseThrow(()-> new CustomException(ErrorResponseCode.BAD_REQUEST));
+                    .orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ID));
 
-            ImageDataDto imageDataDto = ImageDataDto.builder()
-                    .id(image.getId())
-                    .url(image.getUrl())
+            DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(image.getUniqueFileName())
                     .build();
+            s3Client.deleteObject(deleteObjectRequest);
 
-            imageDataDtoList.add(imageDataDto);
+            imageRepository.deleteById(imageIds);
         }
 
-        return imageDataDtoList;
+        return imageId;
     }
 
 }
