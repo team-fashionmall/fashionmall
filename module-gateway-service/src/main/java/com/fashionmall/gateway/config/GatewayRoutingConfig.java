@@ -15,6 +15,8 @@ public class GatewayRoutingConfig {
                         .uri("lb://module-cart-service"))
                 .route("COUPON-SERVICE", r -> r.path("/api/coupon/**")
                         .uri("lb://module-coupon-service"))
+                .route("IMAGE-SERVICE", r -> r.path("/api/image/**")
+                        .uri("lb://module-image-service"))
                 .route("ITEM-SERVICE", r -> r.path("/api/item/**")
                         .uri("lb://module-item-service"))
                 .route("ORDER-SERVICE", r -> r.path("/api/order/**")
