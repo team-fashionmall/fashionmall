@@ -209,5 +209,9 @@ project(':module-image-service') {
         runtimeOnly 'com.h2database:h2'
 
         implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+
+        // Spring Cloud AWS
+        implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
+        implementation 'software.amazon.awssdk:s3:2.20.20' // AWS S3 SDK
     }
 }
