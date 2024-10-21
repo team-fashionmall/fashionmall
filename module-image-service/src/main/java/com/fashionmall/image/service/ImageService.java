@@ -14,6 +14,6 @@ import java.util.Map;
 
 public interface ImageService {
 
-    Map<Long,String> uploadImageApi (List<ImageUploadDto> imageUploadDto, Long workerId);
+    List<ImageDataDto> getImageApi (List<Long> imageId, Long workerId);
 
 }

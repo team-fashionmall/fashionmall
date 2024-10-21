@@ -48,56 +48,25 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     @Transactional
-    public Map<Long,String> uploadImageApi (List<ImageUploadDto> imageUploadDto, Long workerId) {
-        // 사용자 검증
+    public List<ImageDataDto> getImageApi (List<Long> imageId, Long workerId) {
+        // 본인 인증
 
-        Map<Long,String> response = new HashMap<>();
+        List<ImageDataDto> imageDataDtoList = new ArrayList<>();
 
-        for (ImageUploadDto uploadInfo : imageUploadDto ) {
+        for (Long imageIds : imageId) {
 
-            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+            Image image = imageRepository.findById(imageIds)
+                    .orElseThrow(()-> new CustomException(ErrorResponseCode.BAD_REQUEST));
 
-            String uniqueFileName = String.format("%s/%s/profile_%s_%s_%s",
-                    uploadInfo.getReferenceType(),
-                    uploadInfo.getImageType(),
-                    timestamp,
-                    uploadInfo.getFileName(),
-                    UUID.randomUUID()
-            );
-
-            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                    .bucket(bucketName)
-                    .key(uniqueFileName)
+            ImageDataDto imageDataDto = ImageDataDto.builder()
+                    .id(image.getId())
+                    .url(image.getUrl())
                     .build();
 
-            PutObjectPresignRequest putObjectPresignRequest = PutObjectPresignRequest.builder()
-                    .signatureDuration(Duration.ofMinutes(10))
-                    .putObjectRequest(putObjectRequest)
-                    .build();
-
-            PresignedPutObjectRequest presignedPutObjectRequest = s3Presigner.presignPutObject(putObjectPresignRequest);
-
-            Image image = Image.builder()
-                    .url(String.valueOf(presignedPutObjectRequest.url()))
-                    .uniqueFileName(uniqueFileName)
-                    .build();
-            imageRepository.save(image);
-
-            ImageMapping imageMapping = ImageMapping.builder()
-                    .image(image)
-                    .referenceType(uploadInfo.getReferenceType())
-                    .referenceId(uploadInfo.getReferenceId())
-                    .imageType(uploadInfo.getImageType())
-                    .build();
-            imageMappingRepository.save(imageMapping);
-            image.getImageMappings().add(imageMapping);
-
-            response.put(image.getId(), image.getUrl());
-
+            imageDataDtoList.add(imageDataDto);
         }
 
-        return response;
-
+        return imageDataDtoList;
     }
 
 }

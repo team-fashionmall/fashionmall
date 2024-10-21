@@ -22,15 +22,21 @@ public class ModuleApiUtil {
 
     private final String imageApi = "http://localhost:8000/api/image";
 
-    public Map <Long, String> uploadImageApi(List<ImageUploadDto> imageUploadDto) {
-        CommonResponse<Map<Long, String>> uploadImageApi = webClientUtil.post(
-                imageApi + "/uploadImageApi",
-                imageUploadDto,
-                new ParameterizedTypeReference<CommonResponse<Map<Long,String>>>() {}, // 응답 타입 명시
+    public List<ImageDataDto> getImageApi (List<Long> imageId) {
+        // referenceIds를 쿼리 파라미터로 변환
+        String imageIdParam = imageId.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
+
+        // API 호출
+        CommonResponse<List<ImageDataDto>> getImageApi = webClientUtil.get(
+                imageApi + "/getImageApi?imageId=" + imageIdParam,
+                new ParameterizedTypeReference<CommonResponse<List<ImageDataDto>>>() {},
+                null, // 쿼리 파라미터는 URL에 포함되므로 null
                 headers()
         );
 
-        return uploadImageApi.getData();
+        return getImageApi.getData();
     }
 
     private Map<String, String> headers (){
