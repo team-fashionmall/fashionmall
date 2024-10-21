@@ -43,7 +43,7 @@ public class OrderController {
         return ApiResponseUtil.success(ordersService.getOrderDetail(userId, ordersId));
     }
 
-    @PatchMapping("/order/{orderId}")
+    @PatchMapping("/order/{orderId}/cancel")
     public CommonResponse<Long> cancelOrder(@PathVariable Long orderId) {
         Long userId = 1L;
         paymentService.cancelPayment(orderId);
