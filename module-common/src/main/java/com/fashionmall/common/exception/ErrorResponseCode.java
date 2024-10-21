@@ -24,9 +24,13 @@ public enum ErrorResponseCode {
     DUPLICATE_COUPON_NAME(HttpStatus.CONFLICT, "이미 존재하는 쿠폰명 입니다."),
     JWT_NOT_FOUND_TOKEN(HttpStatus.NOT_FOUND, "유효하지 않은 토큰입니다."),
 
+    WRONG_ID(HttpStatus.BAD_REQUEST, "아이디를 다시 확인해주세요"),
     // Item
     WRONG_ITEM_ID(HttpStatus.BAD_REQUEST, "상품 관련 ID를 다시 확인해주세요"),
-    WRONG_CATEGORY_ID(HttpStatus.BAD_REQUEST, "카테고리 관련 ID를 다시 확인해주세요");
+    WRONG_CATEGORY_ID(HttpStatus.BAD_REQUEST, "카테고리 관련 ID를 다시 확인해주세요"),
+
+    // Image
+    NOT_FOUND_S3(HttpStatus.NOT_FOUND, "이미지가 S3에 존재하지 않습니다.");
 
 
     private final HttpStatus status;

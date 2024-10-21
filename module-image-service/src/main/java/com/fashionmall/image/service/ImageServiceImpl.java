@@ -48,23 +48,39 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     @Transactional
-    public List<Long> deleteImageApi (List<Long> imageId, Long workerId) {
-        // 본인인증
+    public List<ImageDataDto> getImageApi (List<Long> imageId, Long workerId) {
+        // 본인 인증
+
+        List<ImageDataDto> imageDataDtoList = new ArrayList<>();
 
         for (Long imageIds : imageId) {
+
             Image image = imageRepository.findById(imageIds)
-                    .orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ID));
+                    .orElseThrow(()-> new CustomException(ErrorResponseCode.BAD_REQUEST));
 
-            DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+            ListObjectsV2Request listObjectsRequest = ListObjectsV2Request.builder()
                     .bucket(bucketName)
-                    .key(image.getUniqueFileName())
                     .build();
-            s3Client.deleteObject(deleteObjectRequest);
 
-            imageRepository.deleteById(imageIds);
+            List <String> s3ImageKey = s3Client.listObjectsV2(listObjectsRequest)
+                    .contents()
+                    .stream()
+                    .map(S3Object::key)
+                    .collect(Collectors.toList());
+
+            if (!s3ImageKey.contains(image.getUniqueFileName())) {
+                throw new CustomException(ErrorResponseCode.NOT_FOUND_S3);
+            }
+
+            ImageDataDto imageDataDto = ImageDataDto.builder()
+                    .id(image.getId())
+                    .url(image.getUrl())
+                    .build();
+
+            imageDataDtoList.add(imageDataDto);
         }
 
-        return imageId;
+        return imageDataDtoList;
     }
 
 }
