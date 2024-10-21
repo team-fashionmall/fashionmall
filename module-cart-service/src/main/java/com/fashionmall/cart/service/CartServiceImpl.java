@@ -30,11 +30,11 @@ public class CartServiceImpl implements CartService{
 
     @Override
     @Transactional
-    public List<String> createCart (CartRequestDto cartRequestDto, Long userId) {
+    public List<Long> createCart (CartRequestDto cartRequestDto, Long userId) {
 
         // 회원 여부 인증
         //카트에 들어있는지 확인
-        List<String> cartIds = new ArrayList<>();
+        List<Long> cartIds = new ArrayList<>();
 
         for (CartRequestDto.CartRequestDtoList cartRequestDtoList : cartRequestDto.getCartRequestDtoList()) {
             Cart checkCart = cartRepository.findByItemDetailIdAndUserId(cartRequestDtoList.getItemDetailId(), userId);
@@ -48,7 +48,7 @@ public class CartServiceImpl implements CartService{
 
             cartRepository.save(cart);
 
-            cartIds.add("cartId : " + cart.getId());
+            cartIds.add(cart.getId());
         }
 
         return cartIds;

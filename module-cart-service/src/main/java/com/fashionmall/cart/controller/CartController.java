@@ -21,7 +21,7 @@ public class CartController {
     private final CartService cartService;
 
     @PostMapping("/cart")
-    public CommonResponse<List<String>> createCart (@Valid @RequestBody CartRequestDto cartRequestDto) {
+    public CommonResponse<List<Long>> createCart (@Valid @RequestBody CartRequestDto cartRequestDto) {
         Long userId = 1L;
         return ApiResponseUtil.success(cartService.createCart(cartRequestDto, userId));
     }
