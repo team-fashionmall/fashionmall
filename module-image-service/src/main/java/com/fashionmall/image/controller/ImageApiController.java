@@ -20,10 +20,10 @@ public class ImageApiController {
     private final ImageService imageService;
     private final ModuleApiUtil moduleApiUtil;
 
-    @GetMapping ("/getImageApi")
-    public CommonResponse<List<ImageDataDto>> getImageApi (@RequestParam List<Long> imageId) {
+    @DeleteMapping ("/deleteImageApi")
+    public CommonResponse <List<Long>> deleteImageApi (@RequestParam List<Long> imageId) {
         Long workerId = 1L;
-        return ApiResponseUtil.success(imageService.getImageApi(imageId, workerId));
+        return ApiResponseUtil.success(imageService.deleteImageApi(imageId, workerId));
     }
 
 }
