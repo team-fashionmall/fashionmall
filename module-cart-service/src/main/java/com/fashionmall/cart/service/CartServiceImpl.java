@@ -51,7 +51,7 @@ public class CartServiceImpl implements CartService{
 
             ItemDetailResponseDto itemDetail = moduleApiUtil.getItemDetail(cartRequestDtoList.getItemDetailId());
 
-            Cart cart = cartRequestDtoList.toEntity(userId,itemDetail.getImageId(), itemDetail.getPrice(), itemDetail.getName());
+            Cart cart = cartRequestDtoList.toEntity(userId, itemDetail.getImageId(), itemDetail.getPrice(), itemDetail.getName());
 
             cartRepository.save(cart);
 
@@ -105,9 +105,19 @@ public class CartServiceImpl implements CartService{
     @Override
     @Transactional
     public PageInfoResponseDto<CartResponseDto> getCartList(int pageNo, int size, Long userId) {
+
         // 회원 여부 인증
+
+        List<Cart> carts = cartRepository.findByUserId(userId);
+        Cart cart = carts.get(0);
+
         PageRequest pageRequest = PageRequest.of(pageNo - 1, size);
-        return cartRepository.getCartList(pageRequest, userId);
+
+        // gateway로 연결예정
+//        String imageUrl = moduleApiUtil.getImageApi(cart.getImageId());
+        String imageUrl = "이미지 Id / Url 중 뭐가 필요할까?";
+
+        return cartRepository.getCartList(pageRequest, userId, imageUrl);
     }
 
     @Override
