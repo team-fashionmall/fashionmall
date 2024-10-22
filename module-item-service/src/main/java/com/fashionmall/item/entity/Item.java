@@ -44,12 +44,16 @@ public class Item extends BaseEntity {
     private List <ItemDiscount> itemDiscounts = new ArrayList<>();
 
     @Builder
-    public Item (Long workerId, String name, StatusEnum status) {
+    public Item (Long workerId, Long imageId, String name, StatusEnum status) {
         this.workerId = workerId;
+        this.imageId = imageId;
         this.name = name;
         this.status = status;
     }
 
+    public void updateImageId (Long imageId) {
+        this.imageId = imageId;
+    }
     public void updateItemName (String itemName) {
         this.name = itemName;
     }

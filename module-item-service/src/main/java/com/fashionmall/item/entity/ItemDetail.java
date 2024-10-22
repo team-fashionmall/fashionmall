@@ -31,6 +31,9 @@ public class ItemDetail extends BaseEntity {
     @Column (name = "image_description_id", nullable = false)
     private Long imageId;
 
+    @Column (name = "image_description_url", nullable = false)
+    private String imageUrl;
+
     @Column (name = "item_detail_name", nullable = false)
     private String name;
 
@@ -44,10 +47,12 @@ public class ItemDetail extends BaseEntity {
     private int quantity; // 재고수량
 
     @Builder
-    public ItemDetail (Item item, ItemSize itemSize, ItemColor itemColor, String name, StatusEnum status, int price, int quantity) {
+    public ItemDetail (Item item, ItemSize itemSize, ItemColor itemColor, Long imageId, String imageUrl, String name, StatusEnum status, int price, int quantity) {
         this.item = item;
         this.itemSize = itemSize;
         this.itemColor = itemColor;
+        this.imageId = imageId;
+        this.imageUrl = imageUrl;
         this.name = name;
         this.status = status;
         this.price = price;
@@ -71,6 +76,12 @@ public class ItemDetail extends BaseEntity {
     }
     public void updateState (StatusEnum state) {
         this.status = state;
+    }
+    public void updateImageId (Long imageId) {
+        this.imageId = imageId;
+    }
+    public void updateImageUrl (String imageUrl) {
+        this.imageUrl = imageUrl;
     }
     public void updateSize (ItemSize itemSize) { this.itemSize = itemSize;}
     public void updateColor (ItemColor itemColor) { this.itemColor = itemColor;}

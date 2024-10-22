@@ -20,6 +20,8 @@ public class ItemRequestDto {
     private String name; // 상품명
     @NotNull (message = "상품 활성화 여부를 입력해주세요(enum)")
     private StatusEnum state; // 상품 재고 현황
+    @NotNull (message = "사진의 이름을 입력해주세요")
+    private String imageFileName;
 
     @NotNull (message = "상품의 카테고리를 입력해주세요")
     private List<CategoryRequestDto> categoryRequestDtoList;
@@ -53,6 +55,8 @@ public class ItemRequestDto {
         @NotNull @Min (value = 0, message = "재고 수량을 입력해주세요")
         private int quantity; // 재고 현황
 
+        @NotNull (message = "사진의 이름을 입력해주세요")
+        private String imageFileName;
         @NotNull @Min(value = 1, message = "사이즈 ID는 1 이상의 값이어야 합니다.")
         private Long sizeId;
         @NotNull @Min(value = 1, message = "색상 ID는 1 이상의 값이어야 합니다.")

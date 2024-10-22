@@ -2,7 +2,9 @@ package com.fashionmall.item.service;
 
 import com.fashionmall.common.exception.CustomException;
 import com.fashionmall.common.exception.ErrorResponseCode;
+import com.fashionmall.common.moduleApi.dto.CouponDto;
 import com.fashionmall.common.moduleApi.dto.OrderItemDto;
+import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
 import com.fashionmall.item.dto.request.ItemDiscountRequestDto;
 import com.fashionmall.item.dto.request.ItemRequestDto;
 import com.fashionmall.item.dto.response.ItemDiscountResponseDto;
@@ -11,13 +13,16 @@ import com.fashionmall.item.dto.response.ItemResponseDto;
 import com.fashionmall.item.dto.response.ItemUpdateResponseDto;
 import com.fashionmall.item.entity.*;
 import com.fashionmall.item.enums.ItemDiscountTypeEnum;
+import com.fashionmall.item.enums.StatusEnum;
 import com.fashionmall.item.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +38,7 @@ public class ItemServiceImpl implements ItemService {
     private final Category2Repository category2Repository;
     private final ItemCategoryMappingRepository itemCategoryMappingRepository;
     private final ItemDiscountRepository itemDiscountRepository;
+    private final ModuleApiUtil moduleApiUtil;
 
     @Override
     @Transactional
@@ -43,10 +49,21 @@ public class ItemServiceImpl implements ItemService {
         // 상품 등록
         Item item = Item.builder()
                 .workerId(workerId)
+                .imageId(0L)
                 .name(itemRequestDto.getName())
                 .status(itemRequestDto.getState())
                 .build();
         itemRepository.save(item);
+
+//        Map<Long, String> mainImage = uploadImageApi(itemRequestDto.getImageFileName(), item.getId(), ReferencTypeEnum.ITEM, ImageTypeEnum.MAIN);
+//        Long imageId = mainImage.keySet().iterator().next(); // 첫 번째 키 가져오기
+//        String imageUrl = mainImage.get(imageId); // 키에 해당하는 값 가져오기
+//        item.updateImageId(imageId);
+        // 연결 후 위에껄로 수정 예정
+        String imageUrl = "메인이다";
+        item.updateImageId(2L);
+        itemRepository.save(item);
+
         log.info("상품 등록: {}", item);
 
         // 카테고리 등록
@@ -76,18 +93,32 @@ public class ItemServiceImpl implements ItemService {
                     .item(item)
                     .itemColor(itemColor)
                     .itemSize(itemSize)
+                    .imageId(0L)
+                    .imageUrl("서브 이미지 url")
                     .name(itemDetailRequestDto.getName())
                     .price(itemDetailRequestDto.getPrice())
                     .quantity(itemDetailRequestDto.getQuantity())
                     .status(itemDetailRequestDto.getStatus())
                     .build();
             itemDetailRepository.save(itemDetail);
+
+//            Map<Long, String> subImage = uploadImageApi(itemDetailRequestDto.getImageFileName(), itemDetail.getId(), ReferencTypeEnum.ITEM, ImageTypeEnum.DESCRIPTION);
+//            Long subImageId = subImage.keySet().iterator().next(); // 첫 번째 키 가져오기
+//            String subImageUrl = subImage.get(imageId); // 키에 해당하는 값 가져오기
+//            itemDetail.updateImageId(subImageId);
+
+            // msa 연결 예정
+            itemDetail.updateImageId(5L);
+            itemDetail.updateImageUrl("서브다");
+            itemDetailRepository.save(itemDetail);
+
+
             item.getItemDetails().add(itemDetail);
             log.info("상품 상세 등록: {}", itemDetail);
 
         }
 
-        return ItemResponseDto.from(item);
+        return ItemResponseDto.from(item, imageUrl);
     }
 
     // 색 찾기
@@ -108,6 +139,20 @@ public class ItemServiceImpl implements ItemService {
     private Category2 findCategory2 (Long category2, Long category1) {
         return category2Repository.findByIdAndCategory1Id (category2, category1).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_CATEGORY_ID));
     }
+
+//    private Map<Long, String> uploadImageApi (String fileName, Long referenceId, ReferenceTypeEnum referenceType, ImageTypeEnum imageType) {
+//
+//        ImageUploadDto imageUploadDtoList = ImageUploadDto.builder ()
+//                .fileName (fileName)
+//                .referenceId (referenceId)
+//                .referenceType (referenceType)
+//                .imageType (imageType)
+//                .build();
+//
+//        Map<Long,String> response = moduleApiUtil.uploadImageApi(imageUploadDtoList);
+//
+//        return response;
+//    }
 
     @Override
     @Transactional
