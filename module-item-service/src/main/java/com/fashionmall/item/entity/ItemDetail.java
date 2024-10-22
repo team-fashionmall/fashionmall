@@ -28,6 +28,9 @@ public class ItemDetail extends BaseEntity {
     @ManyToOne @JoinColumn (name = "item_color_id", nullable = false)
     private ItemColor itemColor;
 
+    @Column (name = "image_description_id", nullable = false)
+    private Long imageId;
+
     @Column (name = "item_detail_name", nullable = false)
     private String name;
 
