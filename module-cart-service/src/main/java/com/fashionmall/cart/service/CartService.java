@@ -1,11 +1,13 @@
 package com.fashionmall.cart.service;
 
+import com.fashionmall.cart.dto.request.CartCalculateRequestDto;
 import com.fashionmall.cart.dto.request.CartRequestDto;
 import com.fashionmall.cart.dto.request.CartUpdateRequestDto;
 import com.fashionmall.cart.dto.response.CartUpdateResponseDto;
 import com.fashionmall.common.moduleApi.dto.ItemDetailDto;
 
 import java.util.List;
+import com.fashionmall.cart.dto.response.CartCalculateResponseDto;
 
 public interface CartService {
     List<Long> createCart (CartRequestDto cartRequestDto, Long userId);
@@ -14,4 +16,5 @@ public interface CartService {
 
     List <ItemDetailDto> getItemDetailFromCartApi (Long userId);
 
+    List<CartCalculateResponseDto> calculateCart(CartCalculateRequestDto cartCalculateRequestDto, Long userId);
 }

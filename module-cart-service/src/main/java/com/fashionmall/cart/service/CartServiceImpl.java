@@ -1,8 +1,10 @@
 package com.fashionmall.cart.service;
 
+import com.fashionmall.cart.dto.request.CartCalculateRequestDto;
 import com.fashionmall.cart.dto.request.CartRequestDto;
 import com.fashionmall.cart.dto.request.CartUpdateRequestDto;
 import com.fashionmall.cart.dto.response.CartUpdateResponseDto;
+import com.fashionmall.cart.dto.response.CartCalculateResponseDto;
 import com.fashionmall.cart.entity.Cart;
 import com.fashionmall.cart.repository.CartRepository;
 import com.fashionmall.common.moduleApi.dto.ItemDetailDto;
@@ -17,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -95,4 +96,25 @@ public class CartServiceImpl implements CartService{
         return cartRepository.getItemDetailFromCartApi(userId);
     }
 
+    @Override
+    @Transactional
+    public List<CartCalculateResponseDto> calculateCart(CartCalculateRequestDto cartCalculateRequestDto, Long userId) {
+
+        // 회원여부 인증
+
+        List<CartCalculateResponseDto> responseDtoList = new ArrayList<>();
+
+        for (CartCalculateRequestDto.CartItem cartItem : cartCalculateRequestDto.getItems()) {
+
+            Cart cart = cartRepository.findByIdAndUserId(cartItem.getId(), userId)
+                    .orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_CART_ID));
+
+            CartCalculateResponseDto responseDto = CartCalculateResponseDto.of(cart.getId(), cart.getPrice() * cart.getQuantity());
+            responseDtoList.add(responseDto);
+
+        }
+
+        return responseDtoList;
+
+    }
 }
