@@ -3,12 +3,14 @@ package com.fashionmall.item.service;
 import com.fashionmall.common.exception.CustomException;
 import com.fashionmall.common.exception.ErrorResponseCode;
 import com.fashionmall.common.moduleApi.dto.CouponDto;
+import com.fashionmall.common.moduleApi.dto.ItemDetailDto;
 import com.fashionmall.common.moduleApi.dto.OrderItemDto;
 import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
 import com.fashionmall.item.dto.request.ItemDiscountRequestDto;
 import com.fashionmall.item.dto.request.ItemRequestDto;
 import com.fashionmall.item.dto.response.ItemDiscountResponseDto;
 import com.fashionmall.item.dto.request.ItemUpdateRequestDto;
+import com.fashionmall.common.moduleApi.dto.ItemDetailResponseDto;
 import com.fashionmall.item.dto.response.ItemResponseDto;
 import com.fashionmall.item.dto.response.ItemUpdateResponseDto;
 import com.fashionmall.item.entity.*;
@@ -318,7 +320,13 @@ public class ItemServiceImpl implements ItemService {
 
         // 관리자 확인
         // 상품 아이디가 맞는지 확인 & 해당 관리자인지 확인 (추후)
-        findByIdAndWorkerId(itemId,workerId);
+        Item item = findByIdAndWorkerId(itemId,workerId);
+//        moduleApiUtil.deleteImageApi(item.getImageId());
+//        moduleApiUtil.deleteImageApi(item.getItemDetails().getImageId);
+//
+//        for (ItemDetail itemDetail : item.getItemDetails()) {
+//            moduleApiUtil.deleteImageApi(itemDetail.getImageId());
+//        }
 
         // 상품 삭제
         itemRepository.deleteById(itemId);
@@ -402,6 +410,19 @@ public class ItemServiceImpl implements ItemService {
             }
         }
 
+    }
+
+    @Override
+    @Transactional
+    public ItemDetailResponseDto getItemDetail (Long itemDetailId, Long workerId) {
+        // 본인인증
+
+        ItemDetail itemDetail = findByItemDetailIdAndWorkerId(itemDetailId, workerId);
+
+        return ItemDetailResponseDto.builder()
+                .name(itemDetail.getName())
+                .price(itemDetail.getPrice())
+                .build();
     }
 
     private ItemDetail findByItemDetailIdAndWorkerId (Long itemDetailId, Long workerId) {
