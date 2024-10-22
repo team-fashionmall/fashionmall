@@ -59,12 +59,12 @@ public class ModuleApiUtil {
     }
 
     //은미님께 요청
-    public int getItemQuantityApi(Long itemDetailId) {
+    public Map<Long, Integer> getItemQuantityApi(List<Long> itemDetailId) {
         Map<String, String> headers = Map.of(
                 HttpHeaders.CONTENT_TYPE, "application/json");
-        CommonResponse<Integer> integerCommonResponse = webClientUtil.get(itemApi + "/ItemQuantityApi", new ParameterizedTypeReference<CommonResponse<Integer>>() {
-        }, null, headers);
-        return integerCommonResponse.getData();
+        CommonResponse<Map<Long, Integer>> mapCommonResponse = webClientUtil.post(itemApi + "/ItemQuantityApi", itemDetailId, new ParameterizedTypeReference<CommonResponse<Map<Long, Integer>>>() {
+        }, headers);
+        return mapCommonResponse.getData();
     }
 
     //은미님께 요청

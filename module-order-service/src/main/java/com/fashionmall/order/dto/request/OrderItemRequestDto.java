@@ -13,5 +13,6 @@ public class OrderItemRequestDto {
     private String itemDetailName;
     private int quantity;
     private int price;
+    private Long imageUrl;
 
 }

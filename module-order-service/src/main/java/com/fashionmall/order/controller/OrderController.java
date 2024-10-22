@@ -3,8 +3,8 @@ package com.fashionmall.order.controller;
 import com.fashionmall.common.response.CommonResponse;
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.common.util.ApiResponseUtil;
-import com.fashionmall.order.dto.request.OrdersRequestDto;
-import com.fashionmall.order.dto.response.OrderCreateDto;
+import com.fashionmall.order.dto.request.OrderPaymentRequestDto;
+import com.fashionmall.order.dto.request.PaymentCancelRequestDto;
 import com.fashionmall.order.dto.response.OrdersCompleteResponseDto;
 import com.fashionmall.order.dto.response.OrdersDetailResponseDto;
 import com.fashionmall.order.dto.response.OrdersResponseDto;
@@ -21,14 +21,9 @@ public class OrderController {
     private final PaymentService paymentService;
 
     @PostMapping("/order")
-    public CommonResponse<OrderCreateDto> createOrder(@RequestBody OrdersRequestDto ordersRequestDto) {
+    public CommonResponse<OrdersCompleteResponseDto> createOrderAndPayment(@RequestBody OrderPaymentRequestDto orderPaymentRequestDto) {
 
-        return ApiResponseUtil.success(ordersService.createOrder(ordersRequestDto));
-    }
-
-    @GetMapping("/order/complete/{ordersId}")
-    public CommonResponse<OrdersCompleteResponseDto> completeOrder(@PathVariable Long ordersId) {
-        return ApiResponseUtil.success(ordersService.completeOrder(ordersId));
+        return ApiResponseUtil.success(ordersService.createAndPaymentOrder(orderPaymentRequestDto));
     }
 
     @GetMapping("/order")
@@ -44,9 +39,13 @@ public class OrderController {
     }
 
     @PatchMapping("/order/{orderId}/cancel")
-    public CommonResponse<Long> cancelOrder(@PathVariable Long orderId) {
+    public CommonResponse<Long> cancelOrder(@PathVariable Long orderId,
+                                            @RequestBody PaymentCancelRequestDto paymentCancelRequestDto) {
         Long userId = 1L;
-        paymentService.cancelPayment(orderId);
+
+        paymentCancelRequestDto.setUserId(userId);
+        paymentCancelRequestDto.setOrderId(orderId);
+        paymentService.cancelPayment(paymentCancelRequestDto);
         return ApiResponseUtil.success(ordersService.cancelOrder(userId, orderId));
     }
 }

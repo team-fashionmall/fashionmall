@@ -13,4 +13,5 @@ public class ItemDetailDto {
     private String name;
     private int price;
     private int quantity;
+    private Long imageUrl;
 }

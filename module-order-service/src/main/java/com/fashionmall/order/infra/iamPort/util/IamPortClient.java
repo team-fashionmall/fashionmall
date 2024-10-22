@@ -1,7 +1,8 @@
 package com.fashionmall.order.infra.iamPort.util;
 
 import com.fashionmall.common.util.WebClientUtil;
-import com.fashionmall.order.dto.request.PaymentRequestDto;
+import com.fashionmall.order.dto.request.OrderPaymentRequestDto;
+import com.fashionmall.order.dto.request.PaymentCancelRequestDto;
 import com.fashionmall.order.dto.response.BillingKeyResponseDto;
 import com.fashionmall.order.dto.response.PaymentResponseDto;
 import com.fashionmall.order.dto.response.UserBillingKeyResponseDto;
@@ -57,11 +58,11 @@ public class IamPortClient {
                 accessToken);
     }
 
-    public IamPortResponseDto<PaymentResponseDto> billingKeyPayment(PaymentRequestDto paymentRequestDto) {
+    public IamPortResponseDto<PaymentResponseDto> billingKeyPayment(OrderPaymentRequestDto orderPaymentRequestDto) {
         Map<String, String> accessToken = getAccessToken();
         return webClientUtil.post(
                 iamPortUrl + "/subscribe/payments/again",
-                paymentRequestDto,
+                orderPaymentRequestDto,
                 new ParameterizedTypeReference<IamPortResponseDto<PaymentResponseDto>>() {
                 },
                 accessToken);
@@ -75,21 +76,21 @@ public class IamPortClient {
                 accessToken);
     }
 
-    public IamPortResponseDto<PaymentResponseDto> onetimePayment(PaymentRequestDto paymentRequestDto) {
+    public IamPortResponseDto<PaymentResponseDto> onetimePayment(OrderPaymentRequestDto orderPaymentRequestDto) {
         Map<String, String> accessToken = getAccessToken();
         return webClientUtil.post(
                 iamPortUrl + "/subscribe/payments/onetime",
-                paymentRequestDto,
+                orderPaymentRequestDto,
                 new ParameterizedTypeReference<IamPortResponseDto<PaymentResponseDto>>() {
                 },
                 accessToken);
     }
 
-    public IamPortResponseDto<PaymentResponseDto> cancelPayment(PaymentRequestDto paymentRequestDto) {
+    public IamPortResponseDto<PaymentResponseDto> cancelPayment(PaymentCancelRequestDto paymentCancelRequestDto) {
         Map<String, String> accessToken = getAccessToken();
         return webClientUtil.post(
                 iamPortUrl + "/payments/cancel",
-                paymentRequestDto,
+                paymentCancelRequestDto,
                 new ParameterizedTypeReference<IamPortResponseDto<PaymentResponseDto>>() {
                 },
                 accessToken);

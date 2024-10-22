@@ -1,11 +1,8 @@
 package com.fashionmall.order.service;
 
-import com.fashionmall.order.dto.request.PaymentRequestDto;
-import com.fashionmall.order.dto.response.PaymentResponseDto;
+import com.fashionmall.order.dto.request.PaymentCancelRequestDto;
 
 public interface PaymentService {
 
-    PaymentResponseDto createPayment(PaymentRequestDto paymentRequestDto);
-
-    PaymentResponseDto cancelPayment(Long orderId);
+    void cancelPayment(PaymentCancelRequestDto paymentCancelRequestDto);
 }

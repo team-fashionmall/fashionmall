@@ -9,20 +9,27 @@ import com.fashionmall.common.moduleApi.dto.OrderItemDto;
 import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.order.dto.request.OrderItemRequestDto;
-import com.fashionmall.order.dto.request.OrdersRequestDto;
+import com.fashionmall.order.dto.request.OrderPaymentRequestDto;
 import com.fashionmall.order.dto.response.*;
 import com.fashionmall.order.entity.BillingKey;
 import com.fashionmall.order.entity.Orders;
 import com.fashionmall.order.entity.Payment;
 import com.fashionmall.order.enums.OrderStatus;
+import com.fashionmall.order.infra.iamPort.dto.IamPortResponseDto;
+import com.fashionmall.order.infra.iamPort.util.IamPortClient;
 import com.fashionmall.order.repository.BillingKeyRepository;
 import com.fashionmall.order.repository.OrdersRepository;
 import com.fashionmall.order.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -35,14 +42,16 @@ public class OrdersServiceImpl implements OrdersService {
     private final OrdersRepository ordersRepository;
     private final PaymentRepository paymentRepository;
     private final BillingKeyRepository billingKeyRepository;
+    private final IamPortClient iamPortClient;
 
     @Transactional
     @Override
-    public OrderCreateDto createOrder(OrdersRequestDto ordersRequestDto) {
-        Long userId = ordersRequestDto.getUserId();
-        Long couponId = ordersRequestDto.getCouponId();
-        Long deliveryAddressId = ordersRequestDto.getDeliveryAddressId();
-        Long billingKeyId = ordersRequestDto.getBillingKeyId();
+    public OrdersCompleteResponseDto createAndPaymentOrder(OrderPaymentRequestDto orderPaymentRequestDto) {
+        //<<주문>>
+        Long userId = orderPaymentRequestDto.getUserId();
+        Long couponId = orderPaymentRequestDto.getCouponId();
+        Long deliveryAddressId = orderPaymentRequestDto.getDeliveryAddressId();
+        Long billingKeyId = orderPaymentRequestDto.getBillingKeyId();
 
         //데이터 가져오기
         List<CouponDto> userCouponApi = moduleApiUtil.getUserCouponApi(userId);
@@ -56,20 +65,25 @@ public class OrdersServiceImpl implements OrdersService {
                         itemDetail.getId(),
                         itemDetail.getName(),
                         itemDetail.getPrice(),
-                        itemDetail.getQuantity()
+                        itemDetail.getQuantity(),
+                        itemDetail.getImageUrl()
                 ))
                 .toList();
 
-        ordersRequestDto.setOrderItemsDto(orderItems);
+        orderPaymentRequestDto.setOrderItemsDto(orderItems);
 
-        //재고 확인
+        //재고 확인(ver.2)
+        List<Long> itemDetailIds = orderItems.stream()
+                .map(OrderItemRequestDto::getItemDetailId)
+                .toList();
+
+        Map<Long, Integer> itemQuantityApi = moduleApiUtil.getItemQuantityApi(itemDetailIds);
         for (OrderItemRequestDto orderItem : orderItems) {
             Long itemDetailId = orderItem.getItemDetailId();
             int quantity = orderItem.getQuantity();
 
-            int itemQuantityApi = moduleApiUtil.getItemQuantityApi(itemDetailId);
-
-            if (quantity > itemQuantityApi) {
+            Integer orDefault = itemQuantityApi.getOrDefault(itemDetailId, 0);
+            if (quantity > orDefault) {
                 throw new CustomException(ErrorResponseCode.OUT_OF_STOCK);
             }
         }
@@ -84,8 +98,8 @@ public class OrdersServiceImpl implements OrdersService {
             String zipcode = deliveryAddressDto.getZipcode();
             String roadAddress = deliveryAddressDto.getRoadAddress();
 
-            ordersRequestDto.setZipcode(zipcode);
-            ordersRequestDto.setRoadAddress(roadAddress);
+            orderPaymentRequestDto.setZipcode(zipcode);
+            orderPaymentRequestDto.setRoadAddress(roadAddress);
         }
 
         //가격 계산
@@ -103,7 +117,7 @@ public class OrdersServiceImpl implements OrdersService {
             int discountValue = couponDto.getDiscountValue();
 
             if (discountType.equals("RATE")) {
-                discountPrice = (int) (totalPrice * (discountPrice / 100.0));
+                discountPrice = (int) (totalPrice * (discountValue / 100.0));
             } else {
                 discountPrice = discountValue;
             }
@@ -113,35 +127,48 @@ public class OrdersServiceImpl implements OrdersService {
 
         //billingKey 검증
         if (billingKeys.isEmpty()) {
-            throw new CustomException(ErrorResponseCode.ORDER_NOT_FOUND_BILLING_KEY);
-        }
-
-        if (billingKeyId != null && !billingKeyRepository.existsById(billingKeyId)) {
             throw new CustomException(ErrorResponseCode.NOT_FOUND);
         }
 
+        if (billingKeyId != null && !billingKeyRepository.existsById(billingKeyId)) {
+            throw new CustomException(ErrorResponseCode.ORDER_NOT_FOUND_BILLING_KEY);
+        }
+
         //DTO 정보 입력
-        ordersRequestDto.setTotalPrice(totalPrice);
-        ordersRequestDto.setDiscountPrice(discountPrice);
-        ordersRequestDto.setPaymentPrice(paymentPrice);
+        orderPaymentRequestDto.setTotalPrice(totalPrice);
+        orderPaymentRequestDto.setDiscountPrice(discountPrice);
+        orderPaymentRequestDto.setPaymentPrice(paymentPrice);
 
-        Long orderId = ordersRepository.save(ordersRequestDto.toOrders()).getId();
+        Orders order = ordersRepository.save(orderPaymentRequestDto.toOrders());
 
-        return new OrderCreateDto(orderId, billingKeyId);
-    }
+        //<<결제>>
+        //빌링키 가져오기
+        BillingKey billingKey = billingKeyRepository.findById(billingKeyId)
+                .orElseThrow(() -> new CustomException(ErrorResponseCode.ORDER_NOT_FOUND_BILLING_KEY));
+        orderPaymentRequestDto.setCustomerUid(billingKey.getCustomerUid());
 
-    @Override
-    public OrdersCompleteResponseDto completeOrder(Long orderId) {
+        //merchant_uid 추가
+        String merchantUid = createMerchantUid(order.getId());
+        orderPaymentRequestDto.setMerchantUid(merchantUid);
 
-        List<OrderItemDto> orderItemsByOrderId = ordersRepository.findOrderItemsByOrderId(orderId);
+        //비인증 일회성 결제
+        //IamPortResponseDto<PaymentResponseDto> post = iamPortClient.onetimePayment(paymentRequestDto);
+        IamPortResponseDto<PaymentResponseDto> post = iamPortClient.billingKeyPayment(orderPaymentRequestDto);
+
+        String impUid = post.getResponse().getImpUid();
+        long unixPaidAt = (long) post.getResponse().getPaidAt();
+        LocalDateTime paidAt = LocalDateTime.ofInstant(Instant.ofEpochSecond(unixPaidAt), ZoneId.systemDefault());
+
+        Payment payment = orderPaymentRequestDto.toPayment(order, billingKey, impUid, paidAt);
+
+        paymentRepository.save(payment);
+
+        order.setPayment(payment);
+
         //재고차감
-        moduleApiUtil.deductItemQuantityApi(orderItemsByOrderId);
+        deductStock(order);
 
-        Orders orders = ordersRepository.findById(orderId).orElseThrow(() -> new CustomException(ErrorResponseCode.NOT_FOUND));
-        Payment payment = paymentRepository.findByOrdersId(orderId).orElseThrow(() -> new CustomException(ErrorResponseCode.NOT_FOUND));
-        orders.setPayment(payment);
-
-        return ordersRepository.findByOrderId(orderId);
+        return ordersRepository.findByOrderId(order.getId());
     }
 
     @Override
@@ -165,6 +192,7 @@ public class OrdersServiceImpl implements OrdersService {
 
         ordersDetails.getOrderItemsDto()
                 .forEach(orderItem -> orderItem.setItemDetailName(itemDetailNames.get(orderItem.getItemDetailId())));
+        //item image, name 가져오기(추가하기)
 
         return ordersDetails;
     }
@@ -175,8 +203,7 @@ public class OrdersServiceImpl implements OrdersService {
         Long cancelOrder = ordersRepository.cancelOrderById(userId, orderId);
 
         if (cancelOrder != null) {
-            List<OrderItemDto> orderItemsByOrderId = ordersRepository.findOrderItemsByOrderId(orderId);
-            moduleApiUtil.restoreItemQuantityApi(orderItemsByOrderId);
+            restoreStock(orderId);
         } else {
             throw new CustomException(ErrorResponseCode.NOT_FOUND);
         }
@@ -187,5 +214,21 @@ public class OrdersServiceImpl implements OrdersService {
         return orderId;
     }
 
+    @Async
+    public void deductStock(Orders order) {
+        List<OrderItemDto> orderItemsByOrderId = ordersRepository.findOrderItemsByOrderId(order.getId());
+        moduleApiUtil.deductItemQuantityApi(orderItemsByOrderId);
+    }
 
+    @Async
+    public void restoreStock(Long orderId) {
+        List<OrderItemDto> orderItemsByOrderId = ordersRepository.findOrderItemsByOrderId(orderId);
+        moduleApiUtil.restoreItemQuantityApi(orderItemsByOrderId);
+    }
+
+    public String createMerchantUid(Long orderId) {
+        String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String counterNumber = String.format("%03d", orderId);
+        return "FM-" + date + "-" + counterNumber;
+    }
 }
