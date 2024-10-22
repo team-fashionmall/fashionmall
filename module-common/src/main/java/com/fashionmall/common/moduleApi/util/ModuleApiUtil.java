@@ -11,7 +11,6 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -84,16 +83,11 @@ public class ModuleApiUtil {
     }
 
     //은미님께 요청
-    public Map<Long, String> getItemDetailNameApi(List<Long> itemDetailIds) {
+    public Map<Long, ItemDetailDto> getItemDetailNameAndImageApi(List<Long> itemDetailIds) {
         Map<String, String> headers = Map.of(
                 HttpHeaders.CONTENT_TYPE, "application/json");
-        List<String> ids = itemDetailIds.stream()
-                .map(String::valueOf)
-                .toList();
-        Map<String, String> params = new HashMap<>();
-        params.put("itemDetailIds", String.join(",", ids));
-        CommonResponse<Map<Long, String>> mapCommonResponse = webClientUtil.get(itemApi + "/ItemDetailNameApi", new ParameterizedTypeReference<CommonResponse<Map<Long, String>>>() {
-        }, params, headers);
-        return mapCommonResponse.getData();
+        CommonResponse<Map<Long, ItemDetailDto>> post = webClientUtil.post(itemApi + "/ItemDetailNameApi", itemDetailIds, new ParameterizedTypeReference<CommonResponse<Map<Long, ItemDetailDto>>>() {
+        }, headers);
+        return post.getData();
     }
 }

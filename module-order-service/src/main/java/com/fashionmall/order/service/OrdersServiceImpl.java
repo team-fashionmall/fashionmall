@@ -174,25 +174,47 @@ public class OrdersServiceImpl implements OrdersService {
     @Override
     public PageInfoResponseDto<OrdersResponseDto> getOrders(Long userId, int pageNo, int size) {
         PageRequest pageRequest = PageRequest.of(pageNo - 1, size);
-        PageInfoResponseDto<OrdersResponseDto> ordersByUserId = ordersRepository.findOrdersByUserId(userId, pageRequest);
+        PageInfoResponseDto<OrdersResponseDto> orders = ordersRepository.findOrdersByUserId(userId, pageRequest);
         //item image, name 가져오기(추가하기)
+        List<OrdersResponseDto> content = orders.getContent();
+        List<Long> itemDetailIds = content.stream()
+                .map(OrdersResponseDto::getFistItemDetailId)
+                .toList();
 
-        return ordersByUserId;
+        Map<Long, ItemDetailDto> itemDetailNameAndImageApi = moduleApiUtil.getItemDetailNameAndImageApi(itemDetailIds);
+        for (OrdersResponseDto order : content) {
+            Long fistItemDetailId = order.getFistItemDetailId();
+            if (fistItemDetailId != null) {
+                ItemDetailDto itemDetailDto = itemDetailNameAndImageApi.get(fistItemDetailId);
+                if (itemDetailDto != null) {
+                    order.setItemName(itemDetailDto.getName());
+                    order.setItemImageUrl(itemDetailDto.getImageUrl());
+                }
+            }
+        }
+
+        return orders;
     }
 
     @Override
     public OrdersDetailResponseDto getOrderDetail(Long userId, Long orderId) {
         OrdersDetailResponseDto ordersDetails = ordersRepository.findOrdersDetailsByUserIdAndOrderId(userId, orderId);
 
+        //item image, name 가져오기(추가하기)
         List<Long> itemDetailIds = ordersDetails.getOrderItemsDto().stream()
                 .map(OrderItemDetailResponseDto::getItemDetailId)
                 .toList();
 
-        Map<Long, String> itemDetailNames = moduleApiUtil.getItemDetailNameApi(itemDetailIds);
+        Map<Long, ItemDetailDto> itemDetailNameAndImageApi = moduleApiUtil.getItemDetailNameAndImageApi(itemDetailIds);
 
-        ordersDetails.getOrderItemsDto()
-                .forEach(orderItem -> orderItem.setItemDetailName(itemDetailNames.get(orderItem.getItemDetailId())));
-        //item image, name 가져오기(추가하기)
+        ordersDetails.getOrderItemsDto().forEach(orderItemDetail -> {
+            Long itemDetailId = orderItemDetail.getItemDetailId();
+            ItemDetailDto itemDetailDto = itemDetailNameAndImageApi.get(itemDetailId);
+            if (itemDetailDto != null) {
+                orderItemDetail.setItemDetailName(itemDetailDto.getName());
+                orderItemDetail.setItemImageUrl(itemDetailDto.getImageUrl());
+            }
+        });
 
         return ordersDetails;
     }

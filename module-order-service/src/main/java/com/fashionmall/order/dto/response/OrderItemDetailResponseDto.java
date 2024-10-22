@@ -11,6 +11,7 @@ public class OrderItemDetailResponseDto {
 
     private Long itemDetailId;
     private String itemDetailName;
+    private String itemImageUrl;
     private int price;
     private int quantity;
     private int totalPrice;

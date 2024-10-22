@@ -58,7 +58,13 @@ public class OrdersRepositoryImpl implements OrdersRepositoryCustom {
                         orders.id,
                         orders.status,
                         orders.paymentPrice,
-                        orders.createdAt))
+                        orders.createdAt,
+                        JPAExpressions
+                                .select(orderItem.itemDetailId)
+                                .from(orderItem)
+                                .where(orderItem.orders.eq(orders))
+                                .orderBy(orderItem.orders.id.asc())
+                                .limit(1)))
                 .from(orders)
                 .where(orders.userId.eq(userId))
                 .offset(offset)
