@@ -5,6 +5,7 @@ import com.fashionmall.item.dto.request.ItemDiscountRequestDto;
 import com.fashionmall.item.dto.request.ItemRequestDto;
 import com.fashionmall.item.dto.response.ItemDiscountResponseDto;
 import com.fashionmall.item.dto.request.ItemUpdateRequestDto;
+import com.fashionmall.common.moduleApi.dto.ItemDetailResponseDto;
 import com.fashionmall.item.dto.response.ItemResponseDto;
 import com.fashionmall.item.dto.response.ItemUpdateResponseDto;
 
@@ -25,4 +26,6 @@ public interface ItemService {
 
     void restoreItemApi (List<OrderItemDto> orderItemDto, Long workerId);
 
+
+    ItemDetailResponseDto getItemDetail (Long itemDetailId, Long workerId);
 }
