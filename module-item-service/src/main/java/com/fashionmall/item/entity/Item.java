@@ -25,6 +25,9 @@ public class Item extends BaseEntity {
     @Column (name = "worker_userId", nullable = false)
     private Long workerId; // msa 에서 받아오는 사용자 Id
 
+    @Column (name = "main_imageId", nullable = false)
+    private Long imageId;
+
     @Column (name = "item_name", nullable = false)
     private String name;
 

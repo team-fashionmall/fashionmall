@@ -5,6 +5,7 @@ import com.fashionmall.cart.dto.request.CartRequestDto;
 import com.fashionmall.cart.dto.request.CartUpdateRequestDto;
 import com.fashionmall.cart.dto.response.CartUpdateResponseDto;
 import com.fashionmall.cart.dto.response.CartCalculateResponseDto;
+import com.fashionmall.cart.dto.response.CartResponseDto;
 import com.fashionmall.cart.entity.Cart;
 import com.fashionmall.cart.repository.CartRepository;
 import com.fashionmall.common.moduleApi.dto.ItemDetailDto;
@@ -12,8 +13,11 @@ import com.fashionmall.common.moduleApi.dto.ItemDetailResponseDto;
 import com.fashionmall.common.exception.CustomException;
 import com.fashionmall.common.exception.ErrorResponseCode;
 import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
+import com.fashionmall.common.response.PageInfoResponseDto;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,10 +38,12 @@ public class CartServiceImpl implements CartService{
     public List<Long> createCart (CartRequestDto cartRequestDto, Long userId) {
 
         // 회원 여부 인증
+
         //카트에 들어있는지 확인
         List<Long> cartIds = new ArrayList<>();
 
         for (CartRequestDto.CartRequestDtoList cartRequestDtoList : cartRequestDto.getCartRequestDtoList()) {
+
             Cart checkCart = cartRepository.findByItemDetailIdAndUserId(cartRequestDtoList.getItemDetailId(), userId);
             if (checkCart != null) {
                 throw new CustomException(ErrorResponseCode.DUPLICATE_CART_DETAIL_ID);
@@ -45,7 +51,7 @@ public class CartServiceImpl implements CartService{
 
             ItemDetailResponseDto itemDetail = moduleApiUtil.getItemDetail(cartRequestDtoList.getItemDetailId());
 
-            Cart cart = cartRequestDtoList.toEntity(userId, itemDetail.getPrice(), itemDetail.getName());
+            Cart cart = cartRequestDtoList.toEntity(userId,itemDetail.getImageId(), itemDetail.getPrice(), itemDetail.getName());
 
             cartRepository.save(cart);
 
@@ -98,6 +104,14 @@ public class CartServiceImpl implements CartService{
 
     @Override
     @Transactional
+    public PageInfoResponseDto<CartResponseDto> getCartList(int pageNo, int size, Long userId) {
+        // 회원 여부 인증
+        PageRequest pageRequest = PageRequest.of(pageNo - 1, size);
+        return cartRepository.getCartList(pageRequest, userId);
+    }
+
+    @Override
+    @Transactional
     public List<CartCalculateResponseDto> calculateCart(CartCalculateRequestDto cartCalculateRequestDto, Long userId) {
 
         // 회원여부 인증
@@ -117,4 +131,5 @@ public class CartServiceImpl implements CartService{
         return responseDtoList;
 
     }
+
 }
