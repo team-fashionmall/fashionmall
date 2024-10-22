@@ -20,6 +20,8 @@ public class ItemUpdateResponseDto {
 
     private Long id;
     private Long workerId;
+    private Long imageId;
+    private String imageUrl;
     private String name;
     private StatusEnum status;
     private List<ItemCategoryMappingResponseDto> itemCategoryMappingResponseDtoLists;
@@ -48,6 +50,8 @@ public class ItemUpdateResponseDto {
         return ItemUpdateResponseDto.builder()
                 .id(item.getId())
                 .workerId(item.getWorkerId())
+                .imageId(item.getImageId())
+                .imageUrl(item.getImageUrl())
                 .name(item.getName())
                 .status(item.getStatus())
                 .itemCategoryMappingResponseDtoLists(itemCategoryMappingResponseDtoList)
@@ -83,14 +87,18 @@ public class ItemUpdateResponseDto {
 
         private Long id;
         private String name;
+        private Long imageId;
+        private String imageUrl;
         private int price;
         private int quantity;
         private StatusEnum status;
 
         public static ItemUpdateResponseDto.ItemDetailResponseDto from(ItemDetail itemDetail) {
-            return ItemUpdateResponseDto.ItemDetailResponseDto.builder()
+            return ItemDetailResponseDto.builder()
                     .id(itemDetail.getId())
                     .name(itemDetail.getName())
+                    .imageId(itemDetail.getImageId())
+                    .imageUrl(itemDetail.getImageUrl())
                     .price(itemDetail.getPrice())
                     .quantity(itemDetail.getQuantity())
                     .status(itemDetail.getStatus())

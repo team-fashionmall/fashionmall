@@ -50,6 +50,7 @@ public class ItemServiceImpl implements ItemService {
         Item item = Item.builder()
                 .workerId(workerId)
                 .imageId(0L)
+                .imageUrl("무슨 내용이 들어갈까요?")
                 .name(itemRequestDto.getName())
                 .status(itemRequestDto.getState())
                 .build();
@@ -62,6 +63,7 @@ public class ItemServiceImpl implements ItemService {
         // 연결 후 위에껄로 수정 예정
         String imageUrl = "메인이다";
         item.updateImageId(2L);
+        item.updateImageUrl(imageUrl);
         itemRepository.save(item);
 
         log.info("상품 등록: {}", item);
@@ -198,6 +200,19 @@ public class ItemServiceImpl implements ItemService {
 
         item.updateItemState(itemUpdateRequestDto.getState());
 
+        if (!itemUpdateRequestDto.getImageFileName().isEmpty()) {
+//            moduleApiUtil.deleteImageApi(item.getImageId());
+//
+//            Map<Long,String> updateImage = moduleApiUtil.uploadImageApi(itemUpdateRequestDto.getImageFileName(), item.getImageId(), ReferencTypeEnum.ITEM, ImageTypeEnum.MAIN);
+//            Long imageId = updateImage.keySet().iterator().next(); // 첫 번째 키 가져오기
+//            String imageUrl = updateImage.get(imageId); // 키에 해당하는 값 가져오기
+            Long imageId = 27L;
+            String imageUrl = "수정된 메인 이미지 url";
+
+            item.updateImageId(imageId);
+            item.updateImageUrl(imageUrl);
+        }
+
         // 카테고리
         for (ItemUpdateRequestDto.CategoryRequestDto categoryDto : itemUpdateRequestDto.getCategoryRequestDtoList()) {
 
@@ -236,6 +251,20 @@ public class ItemServiceImpl implements ItemService {
 
                 itemDetail.updateState(itemDetailDto.getStatus());
 
+                if (!itemDetailDto.getImageFileName().isEmpty()) {
+//                    moduleApiUtil.deleteImageApi(itemDetail.getImageId());
+//
+//                    Map<Long,String> updateImage = moduleApiUtil.uploadImageApi(itemDetailDto.getImageFileName(), itemDetail.getImageId(), ReferencTypeEnum.ITEM, ImageTypeEnum.DESCRIPTION);
+//                    Long imageId = updateImage.keySet().iterator().next(); // 첫 번째 키 가져오기
+//                    String imageUrl = updateImage.get(imageId); // 키에 해당하는 값 가져오기
+
+                    Long imageId = 13L;
+                    String imageUrl = "수정된 서브 이미지 url";
+
+                    itemDetail.updateImageId(imageId);
+                    itemDetail.updateImageUrl(imageUrl);
+                }
+
                 if (itemDetailDto.getPrice() > 0) {
                     itemDetail.updatePrice(itemDetailDto.getPrice());
                 }
@@ -262,7 +291,7 @@ public class ItemServiceImpl implements ItemService {
 
             if (itemDiscountDto.getId() != null) {
                 ItemDiscount itemDiscount = itemDiscountRepository.findByIdAndItemId(itemDiscountDto.getId(),itemId)
-                        .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
+                        .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_DISCOUNT_ID));
 
                 if (itemDiscountDto.getType() != null) {
                     itemDiscount.updateItemDiscountType(itemDiscountDto.getType());

@@ -23,6 +23,8 @@ public class ItemUpdateRequestDto {
     @NotNull (message = "상품 활성화 여부를 입력해주세요(enum)")
     private StatusEnum state; // 상품 재고 현황
 
+    private String imageFileName;
+
     @NotNull (message = "상품의 카테고리를 입력해주세요")
     private List<ItemUpdateRequestDto.CategoryRequestDto> categoryRequestDtoList;
 
@@ -57,6 +59,9 @@ public class ItemUpdateRequestDto {
         private String name; // 상품 상세명
         @NotNull (message = "상품 전시 상태 여부를 입력해주세요(enum)")
         private StatusEnum status; // 상품 전시 상태
+
+        private String imageFileName;
+
         @NotNull @Positive (message = "상품 가격을 입력해주세요. 상품 가격은 0보다 커야합니다")
         private int price;
         @NotNull @Min (value = 0, message = "재고 수량을 입력해주세요")
