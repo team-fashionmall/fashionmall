@@ -8,42 +8,29 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class CartRequestDto {
 
-    @NotNull
-    private List<CartRequestDtoList> cartRequestDtoList;
+    @NotNull (message = "상품아이디를 입력해주세요")
+    private Long itemDetailId;
 
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class CartRequestDtoList {
+    @NotNull @Positive (message = "해당 상품의 개수를 입력해주세요")
+    private int quantity;
 
-        @NotNull(message = "itemDetail 아이디를 입력해주세요")
-        private Long itemDetailId;
+    @JsonProperty("is_selected")
+    @NotNull (message = "장바구니 선택 여부를 입력해주세요")
+    private boolean isSelected;
 
-        @NotNull
-        @Positive(message = "해당 상품의 개수를 입력해주세요")
-        private int quantity;
-
-        @JsonProperty("is_selected")
-        @NotNull(message = "장바구니 선택 여부를 입력해주세요")
-        private boolean isSelected;
-
-        public Cart toEntity(Long userId, int price, String itemDetailName) {
-            return Cart.builder()
-                    .userId(userId)
-                    .itemDetailId(this.itemDetailId)
-                    .itemDetailName(itemDetailName)
-                    .quantity(this.quantity)
-                    .price(price)
-                    .isSelected(this.isSelected)
-                    .build();
-        }
+    public Cart toEntity(Long userId, int price) {
+        return Cart.builder()
+                .userId(userId)
+                .itemDetailId(this.itemDetailId)
+                .quantity(this.quantity)
+                .price(price)
+                .isSelected(this.isSelected)
+                .build();
     }
 
 }

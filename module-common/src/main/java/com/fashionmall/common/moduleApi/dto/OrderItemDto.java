@@ -7,11 +7,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ItemDetailDto {
+public class OrderItemDto {
 
-    private Long id;
-    private String name;
-    private int price;
+    private Long itemDetailId;
     private int quantity;
-    private String imageUrl;
+
 }

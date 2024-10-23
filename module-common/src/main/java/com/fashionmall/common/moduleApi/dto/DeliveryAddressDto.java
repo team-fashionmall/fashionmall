@@ -5,13 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
-public class ItemDetailDto {
+@NoArgsConstructor
+public class DeliveryAddressDto {
 
     private Long id;
-    private String name;
-    private int price;
-    private int quantity;
-    private String imageUrl;
+    private String zipcode;
+    private String roadAddress;
 }

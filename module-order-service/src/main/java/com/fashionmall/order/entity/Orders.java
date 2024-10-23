@@ -4,6 +4,7 @@ import com.fashionmall.common.entity.BaseEntity;
 import com.fashionmall.order.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,8 +17,9 @@ import java.util.List;
 @Table(name = "orders")
 public class Orders extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "orders_id")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "user_id", nullable = false)
@@ -47,4 +49,29 @@ public class Orders extends BaseEntity {
 
     @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "payment_id")
+    private Payment payment;
+
+    @Builder
+    public Orders(Long userId, Long couponId, int totalPrice, int discountPrice, int paymentPrice, String zipcode, String roadAddress, List<OrderItem> orderItems) {
+        this.userId = userId;
+        this.couponId = couponId;
+        this.totalPrice = totalPrice;
+        this.discountPrice = discountPrice;
+        this.paymentPrice = paymentPrice;
+        this.status = OrderStatus.ORDERED;
+        this.zipcode = zipcode;
+        this.roadAddress = roadAddress;
+        this.orderItems = orderItems;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status;
+    }
 }
