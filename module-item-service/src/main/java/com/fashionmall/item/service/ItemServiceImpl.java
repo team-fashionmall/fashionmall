@@ -5,16 +5,14 @@ import com.fashionmall.common.exception.ErrorResponseCode;
 import com.fashionmall.item.dto.request.ItemDiscountRequestDto;
 import com.fashionmall.item.dto.request.ItemRequestDto;
 import com.fashionmall.item.dto.response.ItemDiscountResponseDto;
+import com.fashionmall.common.moduleApi.dto.ItemDetailResponseDto;
 import com.fashionmall.item.dto.response.ItemResponseDto;
 import com.fashionmall.item.entity.*;
-import com.fashionmall.item.enums.StatusEnum;
 import com.fashionmall.item.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -127,6 +125,24 @@ public class ItemServiceImpl implements ItemService {
         }
 
         return ItemDiscountResponseDto.from(item);
+    }
+
+    @Override
+    @Transactional
+    public ItemDetailResponseDto getItemDetail (Long itemDetailId, Long workerId) {
+        // 본인인증
+
+        ItemDetail itemDetail = findByItemDetailIdAndWorkerId(itemDetailId, workerId);
+
+        return ItemDetailResponseDto.builder()
+                .name(itemDetail.getName())
+                .price(itemDetail.getPrice())
+                .build();
+    }
+
+    private ItemDetail findByItemDetailIdAndWorkerId (Long itemDetailId, Long workerId) {
+        return itemDetailRepository.findByIdAndItem_WorkerId(itemDetailId, workerId)
+                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_DETAIL_ID));
     }
 
 }
