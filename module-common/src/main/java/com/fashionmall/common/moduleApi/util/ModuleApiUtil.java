@@ -1,9 +1,6 @@
 package com.fashionmall.common.moduleApi.util;
 
-import com.fashionmall.common.moduleApi.dto.CouponDto;
-import com.fashionmall.common.moduleApi.dto.DeliveryAddressDto;
-import com.fashionmall.common.moduleApi.dto.ItemDetailDto;
-import com.fashionmall.common.moduleApi.dto.OrderItemDto;
+import com.fashionmall.common.moduleApi.dto.*;
 import com.fashionmall.common.response.CommonResponse;
 import com.fashionmall.common.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +28,20 @@ public class ModuleApiUtil {
         CommonResponse<List<CouponDto>> listCommonResponse = webClientUtil.get(couponApi + "/getCoupon/" + userId, new ParameterizedTypeReference<CommonResponse<List<CouponDto>>>() {
         }, null, headers);
         return listCommonResponse.getData();
+    }
+
+    public ItemDetailResponseDto getItemDetail(Long itemDetailId) {
+        Map<String, String> headers = Map.of(
+                HttpHeaders.CONTENT_TYPE, "application/json");
+        CommonResponse<ItemDetailResponseDto> commonResponse = webClientUtil.get(
+                itemApi + "/itemDetail/" + itemDetailId,
+                new ParameterizedTypeReference<CommonResponse<ItemDetailResponseDto>>() {
+                },
+                null,
+                headers
+        );
+
+        return commonResponse.getData();
     }
 
     //은미님께 요청
