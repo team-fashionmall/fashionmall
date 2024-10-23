@@ -50,6 +50,7 @@ public class ModuleApiUtil {
         return listCommonResponse.getData();
     }
 
+<<<<<<< HEAD
     public int getItemQuantityApi(Long itemDetailId) {
 
         CommonResponse<Integer> integerCommonResponse = webClientUtil.get(
@@ -96,14 +97,50 @@ public class ModuleApiUtil {
                 headers());
     private final String imageApi = "http://localhost:8000/api/image";
 
+=======
+    // image
+    public Map <Long, String> uploadImageApi(List<ImageUploadDto> imageUploadDto) {
+        CommonResponse<Map<Long, String>> uploadImageApi = webClientUtil.post(
+                imageApi + "/uploadImageApi",
+                imageUploadDto,
+                new ParameterizedTypeReference<CommonResponse<Map<Long,String>>>() {},
+                headers()
+        );
+
+        return uploadImageApi.getData();
+    }
+
+    public List<ImageDataDto> getImageApi (List<Long> imageId) {
+        // referenceIds를 쿼리 파라미터로 변환
+        String imageIdParam = imageId.stream()
+                .map(id -> "imageId=" + id)
+                .collect(Collectors.joining("&"));
+
+        // API 호출
+        CommonResponse<List<ImageDataDto>> getImageApi = webClientUtil.get(
+                imageApi + "/getImageApi?" + imageIdParam,
+                new ParameterizedTypeReference<CommonResponse<List<ImageDataDto>>>() {},
+                null, // 쿼리 파라미터는 URL에 포함되므로 null
+                headers()
+        );
+
+        return getImageApi.getData();
+    }
+
+>>>>>>> 303bda9 (refactor : 이미지 등록,조회,삭제(gateway) 전체 코드)
     public List <Long> deleteImageApi (List<Long> imageId) {
 
         String imageIdParam = imageId.stream()
-                .map(String::valueOf)
-                .collect(Collectors.joining(","));
+                .map(id -> "imageId=" + id)
+                .collect(Collectors.joining("&"));
 
+<<<<<<< HEAD
         CommonResponse <List<Long>> deleteImageApi = webClientUtil.delete(
                 imageApi + "/deleteImageApi?imageId=" + imageIdParam,
+=======
+        CommonResponse<List<Long>> deleteImageApi = webClientUtil.delete(
+                imageApi + "/deleteImageApi?" + imageIdParam,
+>>>>>>> 303bda9 (refactor : 이미지 등록,조회,삭제(gateway) 전체 코드)
                 new ParameterizedTypeReference<CommonResponse<List<Long>>>() {},
                 headers()
         );
