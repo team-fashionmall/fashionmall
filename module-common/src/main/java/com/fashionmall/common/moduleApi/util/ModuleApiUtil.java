@@ -1,5 +1,6 @@
 package com.fashionmall.common.moduleApi.util;
 
+import com.fashionmall.common.moduleApi.dto.OrderItemDto;
 import com.fashionmall.common.moduleApi.dto.ImageDataDto;
 import com.fashionmall.common.moduleApi.dto.ImageUploadDto;
 import com.fashionmall.common.moduleApi.dto.ItemDetailDto;
@@ -17,6 +18,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -33,8 +35,7 @@ public class ModuleApiUtil {
 
         CommonResponse<ItemDetailResponseDto> commonResponse = webClientUtil.get(
                 itemApi + "/itemDetail/" + itemDetailId,
-                new ParameterizedTypeReference<CommonResponse<ItemDetailResponseDto>>() {
-                },
+                new ParameterizedTypeReference<CommonResponse<ItemDetailResponseDto>>() {},
                 null,
                 headers()
         );
@@ -47,14 +48,59 @@ public class ModuleApiUtil {
 
         CommonResponse<List<ItemDetailDto>> listCommonResponse = webClientUtil.get(
                 cartApi + "/ItemDetailApi/" + userId,
-                new ParameterizedTypeReference<CommonResponse<List<ItemDetailDto>>>() {
-                },
+                new ParameterizedTypeReference<CommonResponse<List<ItemDetailDto>>>() {},
                 null,
                 headers()
         );
 
         return listCommonResponse.getData();
 
+    }
+
+    public int getItemQuantityApi(Long itemDetailId) {
+
+        CommonResponse<Integer> integerCommonResponse = webClientUtil.get(
+                itemApi + itemDetailId + "/quantity",
+                new ParameterizedTypeReference<CommonResponse<Integer>>() {},
+                null,
+                headers()
+        );
+
+        return integerCommonResponse.getData();
+    }
+
+    public Map<Long, String> getItemDetailNameApi(List<Long> itemDetailIds) {
+
+        String ids = itemDetailIds.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
+
+        CommonResponse<Map<Long, String>> mapCommonResponse = webClientUtil.get(
+                itemApi + "/itemDetailName?itemDetailIds=" + ids,
+                new ParameterizedTypeReference<CommonResponse<Map<Long, String>>>() {},
+                null,
+                headers()
+        );
+
+        return mapCommonResponse.getData();
+    }
+
+    public void deductItemQuantityApi(List<OrderItemDto> orderItemDto) {
+
+        webClientUtil.patch(
+                itemApi + "/deductItem",
+                orderItemDto,
+                new ParameterizedTypeReference<Void>() {},
+                headers());
+    }
+
+    public void restoreItemQuantityApi(List<OrderItemDto> orderItemDto) {
+
+        webClientUtil.patch(
+                itemApi + "/restoreItem",
+                orderItemDto,
+                new ParameterizedTypeReference<Void>() {},
+                headers());
     }
 
     // image
@@ -101,7 +147,7 @@ public class ModuleApiUtil {
         return deleteImageApi.getData();
     }
 
-    private Map<String, String> headers () {
-        return Map.of(HttpHeaders.CONTENT_TYPE, "application/json");
+    private Map<String, String> headers (){
+        return Map.of (HttpHeaders.CONTENT_TYPE, "application/json");
     }
 }

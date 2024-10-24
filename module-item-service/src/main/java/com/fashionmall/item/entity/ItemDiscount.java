@@ -39,4 +39,13 @@ public class ItemDiscount extends BaseEntity {
         this.value = value;
         this.status = status;
     }
+    public void updateItemDiscountType (ItemDiscountTypeEnum itemDiscountType) {
+        this.type = itemDiscountType;
+    }
+    public void updateValue (int value) {
+        this.value = value;
+    }
+    public void updateStatus (StatusEnum status) {
+        this.status = status;
+    }
 }

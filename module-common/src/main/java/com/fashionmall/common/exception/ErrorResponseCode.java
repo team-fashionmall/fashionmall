@@ -27,9 +27,14 @@ public enum ErrorResponseCode {
     WRONG_ID(HttpStatus.BAD_REQUEST, "아이디를 다시 확인해주세요"),
 
     // Item
-    WRONG_ITEM_ID(HttpStatus.BAD_REQUEST, "상품 ID를 다시 확인해주세요"),
+    WRONG_ITEM_ID(HttpStatus.BAD_REQUEST, "상품 관련 ID를 다시 확인해주세요"),
     WRONG_ITEM_DETAIL_ID(HttpStatus.BAD_REQUEST, "item detail 아이디를 다시 확인해주세요"),
+    WRONG_ITEM_DISCOUNT_ID(HttpStatus.BAD_REQUEST, "item discount 아이디를 다시 확인해주세요"),
     WRONG_CATEGORY_ID(HttpStatus.BAD_REQUEST, "카테고리 관련 ID를 다시 확인해주세요"),
+    WRONG_RATE(HttpStatus.BAD_REQUEST, "정률(%)에 맞는 값을 입력해주세요."),
+    WRONG_AMOUNT(HttpStatus.BAD_REQUEST, "정액(원)에 맞는 값을 입력해주세요."),
+    BAD_DEDUCT_QUANTITY(HttpStatus.BAD_REQUEST, "재고 수량보다 더 큰 수량 입니다. 수량을 다시 확인해주세요"),
+    BAD_RESTORE_QUANTITY(HttpStatus.BAD_REQUEST, "수령이 0보다 작습니다. 수량을 다시 확인해주세요"),
 
     // Image
     NOT_FOUND_S3(HttpStatus.NOT_FOUND, "이미지가 S3에 존재하지 않습니다."),
