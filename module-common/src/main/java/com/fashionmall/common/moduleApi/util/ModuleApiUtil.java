@@ -50,7 +50,7 @@ public class ModuleApiUtil {
     public int getItemQuantityApi(Long itemDetailId) {
 
         CommonResponse<Integer> integerCommonResponse = webClientUtil.get(
-                itemApi + "/ItemQuantityApi/" + itemDetailId,
+                itemApi + itemDetailId + "/quantity",
                 new ParameterizedTypeReference<CommonResponse<Integer>>() {},
                 null,
                 headers()
@@ -66,7 +66,7 @@ public class ModuleApiUtil {
                 .collect(Collectors.joining(","));
 
         CommonResponse<Map<Long, String>> mapCommonResponse = webClientUtil.get(
-                itemApi + "/ItemDetailNameApi?itemDetailIds=" + ids,
+                itemApi + "/itemDetailName?itemDetailIds=" + ids,
                 new ParameterizedTypeReference<CommonResponse<Map<Long, String>>>() {},
                 null,
                 headers()
@@ -78,7 +78,7 @@ public class ModuleApiUtil {
     public void deductItemQuantityApi(List<OrderItemDto> orderItemDto) {
 
         webClientUtil.patch(
-                itemApi + "/DeductItemApi",
+                itemApi + "/deductItem",
                 orderItemDto,
                 new ParameterizedTypeReference<Void>() {},
                 headers());
@@ -87,7 +87,7 @@ public class ModuleApiUtil {
     public void restoreItemQuantityApi(List<OrderItemDto> orderItemDto) {
 
         webClientUtil.patch(
-                itemApi + "/RestoreItemApi",
+                itemApi + "/restoreItem",
                 orderItemDto,
                 new ParameterizedTypeReference<Void>() {},
                 headers());
