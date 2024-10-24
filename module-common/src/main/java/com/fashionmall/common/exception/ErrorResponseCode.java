@@ -24,6 +24,8 @@ public enum ErrorResponseCode {
     DUPLICATE_COUPON_NAME(HttpStatus.CONFLICT, "이미 존재하는 쿠폰명 입니다."),
     JWT_NOT_FOUND_TOKEN(HttpStatus.NOT_FOUND, "유효하지 않은 토큰입니다."),
 
+    WRONG_ID(HttpStatus.BAD_REQUEST, "아이디를 다시 확인해주세요"),
+
     // Item
     WRONG_ITEM_ID(HttpStatus.BAD_REQUEST, "상품 관련 ID를 다시 확인해주세요"),
     WRONG_ITEM_DETAIL_ID(HttpStatus.BAD_REQUEST, "item detail 아이디를 다시 확인해주세요"),
@@ -33,6 +35,9 @@ public enum ErrorResponseCode {
     WRONG_AMOUNT(HttpStatus.BAD_REQUEST, "정액(원)에 맞는 값을 입력해주세요."),
     BAD_DEDUCT_QUANTITY(HttpStatus.BAD_REQUEST, "재고 수량보다 더 큰 수량 입니다. 수량을 다시 확인해주세요"),
     BAD_RESTORE_QUANTITY(HttpStatus.BAD_REQUEST, "수령이 0보다 작습니다. 수량을 다시 확인해주세요"),
+
+    // Image
+    NOT_FOUND_S3(HttpStatus.NOT_FOUND, "이미지가 S3에 존재하지 않습니다."),
 
     // cart
     DUPLICATE_CART_DETAIL_ID(HttpStatus.BAD_REQUEST, "이미 존재하는 itemDetail Id 입니다."),
