@@ -13,11 +13,8 @@ import com.fashionmall.common.moduleApi.dto.ItemDetailResponseDto;
 import com.fashionmall.common.exception.CustomException;
 import com.fashionmall.common.exception.ErrorResponseCode;
 import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
-import com.fashionmall.common.response.PageInfoResponseDto;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -104,20 +101,18 @@ public class CartServiceImpl implements CartService{
 
     @Override
     @Transactional
-    public PageInfoResponseDto<CartResponseDto> getCartList(int pageNo, int size, Long userId) {
+    public List<CartResponseDto> getCartList(Long userId) {
 
         // 회원 여부 인증
 
         List<Cart> carts = cartRepository.findByUserId(userId);
         Cart cart = carts.get(0);
 
-        PageRequest pageRequest = PageRequest.of(pageNo - 1, size);
-
         // gateway로 연결예정
 //        String imageUrl = moduleApiUtil.getImageApi(cart.getImageId());
         String imageUrl = "이미지 Id / Url 중 뭐가 필요할까?";
 
-        return cartRepository.getCartList(pageRequest, userId, imageUrl);
+        return cartRepository.getCartList(userId, imageUrl);
     }
 
     @Override

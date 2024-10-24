@@ -9,9 +9,6 @@ import com.fashionmall.common.moduleApi.dto.ItemDetailDto;
 import java.util.List;
 import com.fashionmall.cart.dto.response.CartCalculateResponseDto;
 import com.fashionmall.cart.dto.response.CartResponseDto;
-import com.fashionmall.cart.dto.response.CartResponseDto;
-import com.fashionmall.common.response.PageInfoResponseDto;
-import org.aspectj.weaver.Lint;
 
 public interface CartService {
     List<Long> createCart (CartRequestDto cartRequestDto, Long userId);
@@ -20,7 +17,7 @@ public interface CartService {
 
     List <ItemDetailDto> getItemDetailFromCartApi (Long userId);
 
-    PageInfoResponseDto<CartResponseDto> getCartList(int pageNo, int size, Long userId);
+    List<CartResponseDto> getCartList(Long userId);
 
     List<CartCalculateResponseDto> calculateCart(CartCalculateRequestDto cartCalculateRequestDto, Long userId);
 }
