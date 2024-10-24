@@ -166,6 +166,59 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
 
     }
 
+    @Override
+    public PageInfoResponseDto <AdminItemDetailResponseDto> adminItemDetailListPageNation (Long itemId, Pageable pageable) {
+
+        List<AdminItemDetailResponseDto> adminItemDetailList = queryFactory
+                .select(Projections.constructor(AdminItemDetailResponseDto.class,
+                        Projections.constructor(AdminItemDetailResponseDto.ItemInfo.class,
+                                item.id,
+                                item.name,
+                                item.status
+                        ),
+                        Projections.constructor(AdminItemDetailResponseDto.ItemDetailInfo.class,
+                                itemDetail.itemColor.color,
+                                itemDetail.itemSize.size,
+                                itemDetail.name,
+                                itemDetail.price,
+                                ExpressionUtils.as(calculateDiscount(itemDetail.price, itemDiscount.status, itemDiscount.type, itemDiscount.value),
+                                        "discountPrice"),
+                                itemDetail.quantity,
+                                itemDetail.status,
+                                itemDetail.imageId,
+                                itemDetail.imageUrl
+                        ),
+                        Projections.constructor(AdminItemDetailResponseDto.ItemDiscountInfo.class,
+                                itemDiscount.type,
+                                itemDiscount.value,
+                                itemDiscount.status
+                        ),
+                        Projections.constructor(AdminItemDetailResponseDto.ItemCategoryInfo.class,
+                                itemCategoryMapping.category1.id,
+                                itemCategoryMapping.category2Id
+                        )
+                ))
+                .from(item)
+                .innerJoin(item.itemDetails, itemDetail)
+                .innerJoin(item.itemDiscounts, itemDiscount)
+                .innerJoin(item.itemCategoryMappings, itemCategoryMapping)
+                .where(item.id.eq(itemId))
+                .orderBy(item.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long countList = queryFactory
+                .select(item.count())
+                .from(item)
+                .where(item.id.eq(itemId))
+                .fetchOne();
+
+        int totalCount = countList.intValue();
+
+        return PageInfoResponseDto.of(pageable, adminItemDetailList, totalCount);
+    }
+
     private BooleanExpression getFilter (String itemName, Long category1, Long category2) {
 
         BooleanExpression filters = item.isNotNull();
