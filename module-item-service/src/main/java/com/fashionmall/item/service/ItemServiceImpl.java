@@ -138,6 +138,13 @@ public class ItemServiceImpl implements ItemService {
         return ItemResponseDto.from(item, imageUrl);
     }
 
+    @Override
+    public PageInfoResponseDto<AdminItemResponseDto> getAdminItemList(int pageNo, int size, String itemName, Long category1, Long category2) {
+        // 유저 검증코드 추가
+        PageRequest pageRequest = PageRequest.of(pageNo -1, size);
+        return itemRepository.adminItemListPageNation (pageRequest, itemName, category1, category2);
+    }
+
     // 색 찾기
     private ItemColor findColorId (Long colorId) {
         return itemColorRepository.findById(colorId).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));

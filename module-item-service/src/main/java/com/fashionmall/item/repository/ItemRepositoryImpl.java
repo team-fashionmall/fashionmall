@@ -124,6 +124,47 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
         return PageInfoResponseDto.of(pageable, itemDetailList, totalCount);
     }
 
+    @Override
+    public PageInfoResponseDto <AdminItemResponseDto> adminItemListPageNation (Pageable pageable, String itemName, Long category1, Long category2) {
+
+        int offset = (int) pageable.getOffset();
+        int size = pageable.getPageSize();
+
+        List<AdminItemResponseDto> adminItemList = queryFactory
+                .select(Projections.constructor(AdminItemResponseDto.class,
+                        Projections.constructor(AdminItemResponseDto.ItemInfo.class,
+                                item.id,
+                                item.name,
+                                item.workerId,
+                                item.imageId,
+                                item.imageUrl
+                        ),
+                        Projections.constructor(AdminItemResponseDto.ItemDetailInfo.class,
+                                itemDetail.price,
+                                ExpressionUtils.as(calculateDiscount(itemDetail.price, itemDiscount.status, itemDiscount.type, itemDiscount.value),
+                                        "discountPrice")
+                        )
+                ))
+                .from(item)
+                .innerJoin(item.itemDetails, itemDetail)
+                .innerJoin(item.itemCategoryMappings, itemCategoryMapping)
+                .innerJoin(item.itemDiscounts, itemDiscount)
+                .where(getFilter(itemName, category1, category2))
+                .orderBy(item.id.desc())
+                .offset(offset)
+                .limit(size)
+                .fetch();
+
+        Long countList = queryFactory
+                .select(item.count())
+                .from(item)
+                .fetchOne();
+
+        int totalCount = countList.intValue();
+
+        return PageInfoResponseDto.of(pageable, adminItemList, totalCount);
+
+    }
 
     private BooleanExpression getFilter (String itemName, Long category1, Long category2) {
 
