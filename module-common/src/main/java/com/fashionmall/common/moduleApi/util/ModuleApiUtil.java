@@ -101,7 +101,7 @@ public class ModuleApiUtil {
     // image
     public Map <Long, String> uploadImageApi(List<ImageUploadDto> imageUploadDto) {
         CommonResponse<Map<Long, String>> uploadImageApi = webClientUtil.post(
-                imageApi + "/uploadImageApi",
+                imageApi + "/uploadImage",
                 imageUploadDto,
                 new ParameterizedTypeReference<CommonResponse<Map<Long,String>>>() {},
                 headers()
@@ -118,7 +118,7 @@ public class ModuleApiUtil {
 
         // API 호출
         CommonResponse<List<ImageDataDto>> getImageApi = webClientUtil.get(
-                imageApi + "/getImageApi?" + imageIdParam,
+                imageApi + "/getImage?" + imageIdParam,
                 new ParameterizedTypeReference<CommonResponse<List<ImageDataDto>>>() {},
                 null, // 쿼리 파라미터는 URL에 포함되므로 null
                 headers()
@@ -139,8 +139,12 @@ public class ModuleApiUtil {
                 imageApi + "/deleteImageApi?imageId=" + imageIdParam,
 =======
         CommonResponse<List<Long>> deleteImageApi = webClientUtil.delete(
+<<<<<<< HEAD
                 imageApi + "/deleteImageApi?" + imageIdParam,
 >>>>>>> 303bda9 (refactor : 이미지 등록,조회,삭제(gateway) 전체 코드)
+=======
+                imageApi + "/deleteImage?" + imageIdParam,
+>>>>>>> 84b3685 (refactor : Image gateway 엔드포인트 수정)
                 new ParameterizedTypeReference<CommonResponse<List<Long>>>() {},
                 headers()
         );
