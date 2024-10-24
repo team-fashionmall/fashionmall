@@ -1,8 +1,10 @@
 package com.fashionmall.cart.controller;
 
+import com.fashionmall.cart.dto.request.CartCalculateRequestDto;
 import com.fashionmall.cart.dto.request.CartRequestDto;
 import com.fashionmall.cart.dto.request.CartUpdateRequestDto;
 import com.fashionmall.cart.dto.response.CartUpdateResponseDto;
+import com.fashionmall.cart.dto.response.CartCalculateResponseDto;
 import com.fashionmall.cart.service.CartService;
 import com.fashionmall.common.response.CommonResponse;
 import com.fashionmall.common.util.ApiResponseUtil;
@@ -37,5 +39,11 @@ public class CartController {
     public CommonResponse <Long> deleteCart (@PathVariable Long cartId) {
         Long userId=1L;
         return ApiResponseUtil.success(cartService.deleteCart(cartId, userId));
+    }
+
+    @GetMapping ("/cart/calculate")
+    public CommonResponse <List<CartCalculateResponseDto>> calculateCart (@Valid @RequestBody CartCalculateRequestDto cartCalculateRequestDto) {
+        Long userId = 1L;
+        return ApiResponseUtil.success(cartService.calculateCart(cartCalculateRequestDto, userId));
     }
 }
