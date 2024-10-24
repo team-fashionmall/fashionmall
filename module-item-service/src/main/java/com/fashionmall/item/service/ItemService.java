@@ -2,11 +2,13 @@ package com.fashionmall.item.service;
 
 import com.fashionmall.common.moduleApi.dto.OrderItemDto;
 import com.fashionmall.item.dto.request.ItemDiscountRequestDto;
+import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.item.dto.request.ItemRequestDto;
 import com.fashionmall.item.dto.response.ItemDiscountResponseDto;
 import com.fashionmall.item.dto.request.ItemUpdateRequestDto;
 import com.fashionmall.common.moduleApi.dto.ItemDetailResponseDto;
 import com.fashionmall.item.dto.response.ItemResponseDto;
+import com.fashionmall.item.dto.response.*;
 import com.fashionmall.item.dto.response.ItemUpdateResponseDto;
 
 import java.util.List;
@@ -18,6 +20,7 @@ public interface ItemService {
     ItemUpdateResponseDto updateItem (Long itemId, ItemUpdateRequestDto itemUpdateRequestDto, Long workerId);
     String deleteItem (Long itemId, Long workerId);
 
+    // gateway
     int getItemQuantityApi (Long itemDetailId, Long workerId);
 
     Map<Long, String> getItemDetailNameApi (List<Long> itemDetailIds);
@@ -26,6 +29,9 @@ public interface ItemService {
 
     void restoreItemApi (List<OrderItemDto> orderItemDto, Long workerId);
 
-
     ItemDetailResponseDto getItemDetail (Long itemDetailId, Long workerId);
+
+    // 조회
+    PageInfoResponseDto<ItemListResponseDto> getItemList(int pageNo, int size, String itemName, Long category1, Long category2);
+
 }

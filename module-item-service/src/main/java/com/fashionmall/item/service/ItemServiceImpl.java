@@ -5,17 +5,20 @@ import com.fashionmall.common.exception.ErrorResponseCode;
 import com.fashionmall.common.moduleApi.dto.OrderItemDto;
 import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
 import com.fashionmall.item.dto.request.ItemDiscountRequestDto;
+import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.item.dto.request.ItemRequestDto;
 import com.fashionmall.item.dto.response.ItemDiscountResponseDto;
 import com.fashionmall.item.dto.request.ItemUpdateRequestDto;
 import com.fashionmall.common.moduleApi.dto.ItemDetailResponseDto;
 import com.fashionmall.item.dto.response.ItemResponseDto;
+import com.fashionmall.item.dto.response.*;
 import com.fashionmall.item.dto.response.ItemUpdateResponseDto;
 import com.fashionmall.item.entity.*;
 import com.fashionmall.item.enums.ItemDiscountTypeEnum;
 import com.fashionmall.item.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +43,11 @@ public class ItemServiceImpl implements ItemService {
     private final ItemDiscountRepository itemDiscountRepository;
     private final ModuleApiUtil moduleApiUtil;
 
+    @Override
+    public PageInfoResponseDto<ItemListResponseDto> getItemList(int pageNo, int size, String itemName, Long category1, Long category2) {
+        PageRequest pageRequest = PageRequest.of(pageNo -1, size);
+        return itemRepository.itemListPageNation (pageRequest, itemName, category1, category2);
+    }
     @Override
     @Transactional
     public ItemResponseDto createItem (ItemRequestDto itemRequestDto, Long workerId) {
