@@ -1,15 +1,10 @@
 package com.fashionmall.image.service;
 
-import com.amazonaws.SdkClientException;
 import com.fashionmall.common.exception.CustomException;
 import com.fashionmall.common.exception.ErrorResponseCode;
 
 import com.fashionmall.common.moduleApi.dto.ImageDataDto;
 import com.fashionmall.common.moduleApi.dto.ImageUploadDto;
-import com.fashionmall.common.response.PageInfoResponseDto;
-import com.fashionmall.image.dto.request.ImageUploadRequestDto;
-import com.fashionmall.image.dto.response.ImageListResponseDto;
-import com.fashionmall.image.dto.response.ImageUploadResponseDto;
 import com.fashionmall.image.entity.Image;
 import com.fashionmall.image.entity.ImageMapping;
 import com.fashionmall.image.repository.ImageMappingRepository;
@@ -17,7 +12,6 @@ import com.fashionmall.image.repository.ImageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import software.amazon.awssdk.services.s3.S3Client;
