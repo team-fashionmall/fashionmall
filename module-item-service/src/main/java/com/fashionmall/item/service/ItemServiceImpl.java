@@ -48,6 +48,13 @@ public class ItemServiceImpl implements ItemService {
         PageRequest pageRequest = PageRequest.of(pageNo -1, size);
         return itemRepository.itemListPageNation (pageRequest, itemName, category1, category2);
     }
+
+    @Override
+    public PageInfoResponseDto<ItemDetailListResponseDto> getItemDetailList(Long itemId, int pageNo, int size) {
+        PageRequest pageRequest = PageRequest.of(pageNo -1, size);
+        return itemRepository.itemDetailListPageNation (itemId, pageRequest);
+    }
+
     @Override
     @Transactional
     public ItemResponseDto createItem (ItemRequestDto itemRequestDto, Long workerId) {
