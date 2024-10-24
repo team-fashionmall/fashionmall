@@ -20,19 +20,19 @@ public class ImageApiController {
     private final ImageService imageService;
     private final ModuleApiUtil moduleApiUtil;
 
-    @PostMapping("/uploadImageApi")
+    @PostMapping("/uploadImage")
     public CommonResponse<Map<Long,String>> uploadImageApi (@RequestBody List<ImageUploadDto> imageUploadDto) {
         Long workerId = 1L;
         return ApiResponseUtil.success(imageService.uploadImageApi(imageUploadDto, workerId));
     }
 
-    @GetMapping ("/getImageApi")
+    @GetMapping ("/getImage")
     public CommonResponse<List<ImageDataDto>> getImageApi (@RequestParam List<Long> imageId) {
         Long workerId = 1L;
         return ApiResponseUtil.success(imageService.getImageApi(imageId, workerId));
     }
 
-    @DeleteMapping ("/deleteImageApi")
+    @DeleteMapping ("/deleteImage")
     public CommonResponse <List<Long>> deleteImageApi (@RequestParam List<Long> imageId) {
         Long workerId = 1L;
         return ApiResponseUtil.success(imageService.deleteImageApi(imageId, workerId));

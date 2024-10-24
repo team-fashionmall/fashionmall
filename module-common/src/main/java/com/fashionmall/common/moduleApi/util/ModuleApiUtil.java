@@ -60,7 +60,7 @@ public class ModuleApiUtil {
     // image
     public Map <Long, String> uploadImageApi(List<ImageUploadDto> imageUploadDto) {
         CommonResponse<Map<Long, String>> uploadImageApi = webClientUtil.post(
-                imageApi + "/uploadImageApi",
+                imageApi + "/uploadImage",
                 imageUploadDto,
                 new ParameterizedTypeReference<CommonResponse<Map<Long,String>>>() {},
                 headers()
@@ -77,7 +77,7 @@ public class ModuleApiUtil {
 
         // API 호출
         CommonResponse<List<ImageDataDto>> getImageApi = webClientUtil.get(
-                imageApi + "/getImageApi?" + imageIdParam,
+                imageApi + "/getImage?" + imageIdParam,
                 new ParameterizedTypeReference<CommonResponse<List<ImageDataDto>>>() {},
                 null, // 쿼리 파라미터는 URL에 포함되므로 null
                 headers()
@@ -93,7 +93,7 @@ public class ModuleApiUtil {
                 .collect(Collectors.joining("&"));
 
         CommonResponse<List<Long>> deleteImageApi = webClientUtil.delete(
-                imageApi + "/deleteImageApi?" + imageIdParam,
+                imageApi + "/deleteImage?" + imageIdParam,
                 new ParameterizedTypeReference<CommonResponse<List<Long>>>() {},
                 headers()
         );
