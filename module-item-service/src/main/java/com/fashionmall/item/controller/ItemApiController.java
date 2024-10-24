@@ -17,24 +17,24 @@ public class ItemApiController {
 
     private final ItemService itemService;
 
-    @GetMapping ("/ItemQuantityApi/{itemDetailId}")
+    @GetMapping ("/{itemDetailId}/quantity")
     public CommonResponse <Integer> getItemQuantityApi (@PathVariable Long itemDetailId) {
         Long workerId = 1L;
         return ApiResponseUtil.success(itemService.getItemQuantityApi(itemDetailId, workerId));
     }
 
-    @GetMapping ("/ItemDetailNameApi")
+    @GetMapping ("/itemDetailName")
     public CommonResponse <Map<Long, String>> getItemDetailNameApi (@RequestParam List<Long> itemDetailIds) {
         return ApiResponseUtil.success(itemService.getItemDetailNameApi(itemDetailIds));
     }
 
-    @PatchMapping ("/DeductItemApi")
+    @PatchMapping ("/deductItem")
     public void deductItemQuantityApi (@RequestBody List<OrderItemDto> orderItemDto) {
         Long workerId = 1L;
         itemService.deductItemQuantityApi(orderItemDto, workerId);
     }
 
-    @PatchMapping ("/RestoreItemApi")
+    @PatchMapping ("/restoreItem")
     public void restoreItemApi (@RequestBody List<OrderItemDto> orderItemDto) {
         Long workerId = 1L;
         itemService.restoreItemApi(orderItemDto, workerId);
