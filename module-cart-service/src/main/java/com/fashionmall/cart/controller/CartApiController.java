@@ -20,7 +20,7 @@ public class CartApiController {
 
     private final CartService cartService;
 
-    @GetMapping ("/ItemDetailApi/{userId}")
+    @GetMapping ("/itemDetail/{userId}")
     public CommonResponse <List<ItemDetailDto>> getItemDetailFromCartApi (@PathVariable Long userId) {
         return ApiResponseUtil.success(cartService.getItemDetailFromCartApi(userId));
     }

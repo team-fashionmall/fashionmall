@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ItemDetailResponseDto {
 
+    private Long imageId;
     private String name;
     private int price;
 
