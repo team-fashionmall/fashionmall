@@ -3,7 +3,10 @@ package com.fashionmall.item.dto.response;
 import com.fashionmall.item.entity.Item;
 import com.fashionmall.item.entity.ItemDetail;
 import com.fashionmall.item.enums.StatusEnum;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Comparator;
 import java.util.List;
