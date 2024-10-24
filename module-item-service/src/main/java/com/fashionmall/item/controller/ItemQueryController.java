@@ -38,4 +38,12 @@ public class ItemQueryController {
         return ApiResponseUtil.success(itemService.getItemDetailList(itemId, pageNo, size));
     }
 
+    @GetMapping ("/admin/item")
+    public CommonResponse <PageInfoResponseDto<AdminItemResponseDto>> getAdminItemList (@RequestParam(defaultValue = "1") int pageNo,
+                                                                                        @RequestParam(defaultValue = "10") int size,
+                                                                                        @RequestParam(required = false) String itemName,
+                                                                                        @RequestParam(required = false) Long category1,
+                                                                                        @RequestParam(required = false) Long category2) {
+        return ApiResponseUtil.success(itemService.getAdminItemList(pageNo, size, itemName, category1, category2));
+    }
 }

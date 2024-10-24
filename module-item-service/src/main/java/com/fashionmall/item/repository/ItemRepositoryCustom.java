@@ -14,4 +14,6 @@ public interface ItemRepositoryCustom {
 
     PageInfoResponseDto <ItemDetailListResponseDto> itemDetailListPageNation (Long itemId, Pageable pageable);
 
+    PageInfoResponseDto <AdminItemResponseDto> adminItemListPageNation (Pageable pageable, String itemName, Long category1, Long category2);
+
 }
