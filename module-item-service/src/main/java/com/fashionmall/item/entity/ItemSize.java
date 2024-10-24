@@ -25,7 +25,9 @@ public class ItemSize extends BaseEntity {
     private String size;
 
     @Builder
-    public ItemSize (Long sizeId) {
+    public ItemSize (Long sizeId, String size) {
         this.id = sizeId;
+        this.size = size;
     }
+
 }

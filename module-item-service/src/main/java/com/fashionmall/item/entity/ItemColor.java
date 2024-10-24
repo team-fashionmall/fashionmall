@@ -8,9 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Getter
 @Table (name = "item_color")
@@ -25,7 +22,7 @@ public class ItemColor extends BaseEntity {
     private String color;
 
     @Builder
-    public ItemColor (Long colorId) {
-        this.id = colorId;
+    public ItemColor (String color) {
+        this.color = color;
     }
 }

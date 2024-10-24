@@ -1,5 +1,6 @@
 package com.fashionmall.common.moduleApi.util;
 
+import com.fashionmall.common.moduleApi.dto.OrderItemDto;
 import com.fashionmall.common.moduleApi.dto.ItemDetailDto;
 import com.fashionmall.common.moduleApi.dto.ItemDetailResponseDto;
 import com.fashionmall.common.response.CommonResponse;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -45,8 +47,53 @@ public class ModuleApiUtil {
         return listCommonResponse.getData();
     }
 
+    public int getItemQuantityApi(Long itemDetailId) {
+
+        CommonResponse<Integer> integerCommonResponse = webClientUtil.get(
+                itemApi + itemDetailId + "/quantity",
+                new ParameterizedTypeReference<CommonResponse<Integer>>() {},
+                null,
+                headers()
+        );
+
+        return integerCommonResponse.getData();
+    }
+
+    public Map<Long, String> getItemDetailNameApi(List<Long> itemDetailIds) {
+
+        String ids = itemDetailIds.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
+
+        CommonResponse<Map<Long, String>> mapCommonResponse = webClientUtil.get(
+                itemApi + "/itemDetailName?itemDetailIds=" + ids,
+                new ParameterizedTypeReference<CommonResponse<Map<Long, String>>>() {},
+                null,
+                headers()
+        );
+
+        return mapCommonResponse.getData();
+    }
+
+    public void deductItemQuantityApi(List<OrderItemDto> orderItemDto) {
+
+        webClientUtil.patch(
+                itemApi + "/deductItem",
+                orderItemDto,
+                new ParameterizedTypeReference<Void>() {},
+                headers());
+    }
+
+    public void restoreItemQuantityApi(List<OrderItemDto> orderItemDto) {
+
+        webClientUtil.patch(
+                itemApi + "/restoreItem",
+                orderItemDto,
+                new ParameterizedTypeReference<Void>() {},
+                headers());
+    }
+
     private Map<String, String> headers (){
         return Map.of (HttpHeaders.CONTENT_TYPE, "application/json");
     }
-
 }

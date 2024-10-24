@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface ItemDetailRepository extends JpaRepository <ItemDetail, Long> {
-    ItemDetail findTopByItemOrderByCreatedAtDesc(Item item);
-
+    Optional<ItemDetail> findByIdAndItemId(Long id, Long itemId);
     Optional<ItemDetail> findByIdAndItem_WorkerId(Long itemDetailId, Long workerId);
+
 }
