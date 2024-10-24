@@ -5,7 +5,6 @@ import com.fashionmall.common.exception.ErrorResponseCode;
 import com.fashionmall.common.moduleApi.dto.CouponDto;
 import com.fashionmall.common.moduleApi.dto.DeliveryAddressDto;
 import com.fashionmall.common.moduleApi.dto.ItemDetailDto;
-import com.fashionmall.common.moduleApi.dto.OrderItemDto;
 import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.order.dto.request.OrderItemRequestDto;
@@ -15,14 +14,16 @@ import com.fashionmall.order.entity.BillingKey;
 import com.fashionmall.order.entity.Orders;
 import com.fashionmall.order.entity.Payment;
 import com.fashionmall.order.enums.OrderStatus;
+import com.fashionmall.order.event.StockDeductEvent;
+import com.fashionmall.order.event.StockRestoreEvent;
 import com.fashionmall.order.infra.iamPort.dto.IamPortResponseDto;
 import com.fashionmall.order.infra.iamPort.util.IamPortClient;
 import com.fashionmall.order.repository.BillingKeyRepository;
 import com.fashionmall.order.repository.OrdersRepository;
 import com.fashionmall.order.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,6 +44,7 @@ public class OrdersServiceImpl implements OrdersService {
     private final PaymentRepository paymentRepository;
     private final BillingKeyRepository billingKeyRepository;
     private final IamPortClient iamPortClient;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     @Override
@@ -166,7 +168,7 @@ public class OrdersServiceImpl implements OrdersService {
         order.setPayment(payment);
 
         //재고차감
-        deductStock(order);
+        eventPublisher.publishEvent(new StockDeductEvent(order.getId()));
 
         return ordersRepository.findByOrderId(order.getId());
     }
@@ -225,7 +227,7 @@ public class OrdersServiceImpl implements OrdersService {
         Long cancelOrder = ordersRepository.cancelOrderById(userId, orderId);
 
         if (cancelOrder != null) {
-            restoreStock(orderId);
+            eventPublisher.publishEvent(new StockRestoreEvent(orderId));
         } else {
             throw new CustomException(ErrorResponseCode.NOT_FOUND);
         }
@@ -234,18 +236,6 @@ public class OrdersServiceImpl implements OrdersService {
         orders.setStatus(OrderStatus.CANCELED);
 
         return orderId;
-    }
-
-    @Async
-    public void deductStock(Orders order) {
-        List<OrderItemDto> orderItemsByOrderId = ordersRepository.findOrderItemsByOrderId(order.getId());
-        moduleApiUtil.deductItemQuantityApi(orderItemsByOrderId);
-    }
-
-    @Async
-    public void restoreStock(Long orderId) {
-        List<OrderItemDto> orderItemsByOrderId = ordersRepository.findOrderItemsByOrderId(orderId);
-        moduleApiUtil.restoreItemQuantityApi(orderItemsByOrderId);
     }
 
     public String createMerchantUid(Long orderId) {
