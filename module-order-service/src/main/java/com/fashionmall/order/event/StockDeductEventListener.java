@@ -5,9 +5,10 @@ import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
 import com.fashionmall.order.repository.OrdersRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.List;
 
@@ -19,7 +20,10 @@ public class StockDeductEventListener {
     private final ModuleApiUtil moduleApiUtil;
 
     @Async
-    @EventListener
+    @TransactionalEventListener(
+            classes = StockDeductEvent.class,
+            phase = TransactionPhase.AFTER_COMMIT
+    )
     public void stockDeduct(StockDeductEvent event) {
         Long ordersId = event.getOrdersId();
 
