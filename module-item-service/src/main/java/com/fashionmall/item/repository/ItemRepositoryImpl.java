@@ -43,7 +43,6 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
                         Projections.constructor(ItemListResponseDto.ItemInfo.class,
                                 item.id,
                                 item.name,
-                                item.workerId,
                                 item.imageId,
                                 item.imageUrl
                         ),
@@ -174,6 +173,7 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
                         Projections.constructor(AdminItemDetailResponseDto.ItemInfo.class,
                                 item.id,
                                 item.name,
+                                item.workerId,
                                 item.status
                         ),
                         Projections.constructor(AdminItemDetailResponseDto.ItemDetailInfo.class,
