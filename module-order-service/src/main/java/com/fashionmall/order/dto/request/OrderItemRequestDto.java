@@ -12,7 +12,12 @@ public class OrderItemRequestDto {
     private Long itemDetailId;
     private String itemDetailName;
     private int quantity;
-    private int price;
+    private int originalPrice;
+    private int itemDiscountPrice;
+    private int finalPrice;
     private String imageUrl;
 
+    public int getTotalItemDiscountPrice() {
+        return itemDiscountPrice * quantity;
+    }
 }

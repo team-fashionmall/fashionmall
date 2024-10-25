@@ -63,13 +63,23 @@ public class OrdersServiceImpl implements OrdersService {
 
         //주문 항목 생성
         List<OrderItemRequestDto> orderItems = itemDetailApi.stream()
-                .map(itemDetail -> new OrderItemRequestDto(
-                        itemDetail.getId(),
-                        itemDetail.getName(),
-                        itemDetail.getPrice(),
-                        itemDetail.getQuantity(),
-                        itemDetail.getImageUrl()
-                ))
+                .map(itemDetail -> {
+                    int originalPrice = itemDetail.getPrice();
+                    int itemDiscountPrice = itemDetail.getDiscountType().equals("RATE")
+                            ? (int) (originalPrice * (itemDetail.getItemDiscountValue() / 100.0))
+                            : itemDetail.getItemDiscountValue();
+                    int finalPrice = originalPrice - itemDiscountPrice;
+
+                    return new OrderItemRequestDto(
+                            itemDetail.getId(),
+                            itemDetail.getName(),
+                            itemDetail.getQuantity(),
+                            originalPrice,
+                            itemDiscountPrice,
+                            finalPrice,
+                            itemDetail.getImageUrl()
+                    );
+                })
                 .toList();
 
         orderPaymentRequestDto.setOrderItemsDto(orderItems);
@@ -105,8 +115,9 @@ public class OrdersServiceImpl implements OrdersService {
         }
 
         //가격 계산
-        int totalPrice = itemDetailApi.stream().mapToInt(ItemDetailDto::getPrice).sum();
-        int discountPrice = 0;
+        int totalPrice = itemDetailApi.stream().mapToInt(ItemDetailDto::getTotalPrice).sum();
+        int totalItemDiscountPrice = orderItems.stream().mapToInt(OrderItemRequestDto::getTotalItemDiscountPrice).sum();
+        int couponDiscountPrice = 0;
 
         //쿠폰 적용
         if (couponId != null) {
@@ -119,13 +130,13 @@ public class OrdersServiceImpl implements OrdersService {
             int discountValue = couponDto.getDiscountValue();
 
             if (discountType.equals("RATE")) {
-                discountPrice = (int) (totalPrice * (discountValue / 100.0));
+                couponDiscountPrice = (int) (totalPrice * (discountValue / 100.0));
             } else {
-                discountPrice = discountValue;
+                couponDiscountPrice = discountValue;
             }
         }
 
-        int paymentPrice = totalPrice - discountPrice;
+        int paymentPrice = totalPrice - totalItemDiscountPrice - couponDiscountPrice;
 
         //billingKey 검증
         if (billingKeys.isEmpty()) {
@@ -138,7 +149,8 @@ public class OrdersServiceImpl implements OrdersService {
 
         //DTO 정보 입력
         orderPaymentRequestDto.setTotalPrice(totalPrice);
-        orderPaymentRequestDto.setDiscountPrice(discountPrice);
+        orderPaymentRequestDto.setCouponDiscountPrice(couponDiscountPrice);
+        orderPaymentRequestDto.setTotalItemDiscountPrice(totalItemDiscountPrice);
         orderPaymentRequestDto.setPaymentPrice(paymentPrice);
 
         Orders order = ordersRepository.save(orderPaymentRequestDto.toOrders());
@@ -176,42 +188,24 @@ public class OrdersServiceImpl implements OrdersService {
     @Override
     public PageInfoResponseDto<OrdersResponseDto> getOrders(Long userId, int pageNo, int size) {
         PageRequest pageRequest = PageRequest.of(pageNo - 1, size);
-        PageInfoResponseDto<OrdersResponseDto> orders = ordersRepository.findOrdersByUserId(userId, pageRequest);
-        //item image, name 가져오기(추가하기)
-        List<OrdersResponseDto> content = orders.getContent();
-        List<Long> itemDetailIds = content.stream()
-                .map(OrdersResponseDto::getFistItemDetailId)
-                .toList();
-
-        Map<Long, ItemDetailDto> itemDetailNameAndImageApi = moduleApiUtil.getItemDetailNameAndImageApi(itemDetailIds);
-        for (OrdersResponseDto order : content) {
-            Long fistItemDetailId = order.getFistItemDetailId();
-            if (fistItemDetailId != null) {
-                ItemDetailDto itemDetailDto = itemDetailNameAndImageApi.get(fistItemDetailId);
-                if (itemDetailDto != null) {
-                    order.setItemName(itemDetailDto.getName());
-                    order.setItemImageUrl(itemDetailDto.getImageUrl());
-                }
-            }
-        }
-
-        return orders;
+        return ordersRepository.findOrdersByUserId(userId, pageRequest);
     }
 
     @Override
     public OrdersDetailResponseDto getOrderDetail(Long userId, Long orderId) {
         OrdersDetailResponseDto ordersDetails = ordersRepository.findOrdersDetailsByUserIdAndOrderId(userId, orderId);
 
-        //item image, name 가져오기(추가하기)
+        //item name, image,
         List<Long> itemDetailIds = ordersDetails.getOrderItemsDto().stream()
                 .map(OrderItemDetailResponseDto::getItemDetailId)
                 .toList();
-
+        //상품명, 이미지, 상품할인값, 타입
         Map<Long, ItemDetailDto> itemDetailNameAndImageApi = moduleApiUtil.getItemDetailNameAndImageApi(itemDetailIds);
 
         ordersDetails.getOrderItemsDto().forEach(orderItemDetail -> {
             Long itemDetailId = orderItemDetail.getItemDetailId();
             ItemDetailDto itemDetailDto = itemDetailNameAndImageApi.get(itemDetailId);
+
             if (itemDetailDto != null) {
                 orderItemDetail.setItemDetailName(itemDetailDto.getName());
                 orderItemDetail.setItemImageUrl(itemDetailDto.getImageUrl());

@@ -27,7 +27,8 @@ public class OrderPaymentRequestDto {
     private String roadAddress;
 
     private int totalPrice;
-    private int discountPrice;
+    private int couponDiscountPrice;
+    private int totalItemDiscountPrice;
     @JsonProperty("amount")
     private int paymentPrice;
 
@@ -46,8 +47,10 @@ public class OrderPaymentRequestDto {
         List<OrderItem> orderItems = orderItemsDto.stream()
                 .map(orderitems -> new OrderItem(
                         orderitems.getItemDetailId(),
-                        orderitems.getPrice(),
-                        orderitems.getQuantity()
+                        orderitems.getOriginalPrice(),
+                        orderitems.getQuantity(),
+                        orderitems.getItemDiscountPrice()
+
                 ))
                 .toList();
 
@@ -58,7 +61,8 @@ public class OrderPaymentRequestDto {
                 .zipcode(zipcode)
                 .roadAddress(roadAddress)
                 .totalPrice(totalPrice)
-                .discountPrice(discountPrice)
+                .couponDiscountPrice(couponDiscountPrice)
+                .totalItemDiscountPrice(totalItemDiscountPrice)
                 .paymentPrice(paymentPrice)
                 .orderItems(orderItems)
                 .build();

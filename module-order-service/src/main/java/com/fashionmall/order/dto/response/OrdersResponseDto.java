@@ -16,15 +16,12 @@ public class OrdersResponseDto {
     private OrderStatus orderStatus;
     private int paymentPrice;
     private LocalDateTime createAt;
-    private Long fistItemDetailId;
-    private String itemImageUrl;
-    private String itemName;
 
-    public OrdersResponseDto(Long ordersId, OrderStatus orderStatus, int paymentPrice, LocalDateTime createAt, Long fistItemDetailId) {
+
+    public OrdersResponseDto(Long ordersId, OrderStatus orderStatus, int paymentPrice, LocalDateTime createAt) {
         this.ordersId = ordersId;
         this.orderStatus = orderStatus;
         this.paymentPrice = paymentPrice;
         this.createAt = createAt;
-        this.fistItemDetailId = fistItemDetailId;
     }
 }

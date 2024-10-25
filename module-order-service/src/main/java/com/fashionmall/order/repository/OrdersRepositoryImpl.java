@@ -88,7 +88,8 @@ public class OrdersRepositoryImpl implements OrdersRepositoryCustom {
                 .select(Projections.constructor(OrdersDetailResponseDto.class,
                         orders.id,
                         orders.totalPrice,
-                        orders.discountPrice,
+                        orders.couponDiscountPrice,
+                        orders.totalItemDiscountPrice,
                         orders.paymentPrice,
                         orders.zipcode,
                         orders.roadAddress,
@@ -97,7 +98,11 @@ public class OrdersRepositoryImpl implements OrdersRepositoryCustom {
                                         orderItem.itemDetailId,
                                         orderItem.price,
                                         orderItem.quantity,
-                                        orderItem.price.multiply(orderItem.quantity).as("totalPrice"))
+                                        orderItem.itemDiscountPrice,
+                                        orderItem.price.multiply(orderItem.quantity).as("totalPrice"),
+                                        orderItem.price.multiply(orderItem.quantity)
+                                                .subtract(orderItem.itemDiscountPrice.multiply(orderItem.quantity))
+                                                .as("totalDiscountPrice"))
                                 )
                                 .from(orderItem)
                                 .where(orderItem.orders.id.eq(orderId))
