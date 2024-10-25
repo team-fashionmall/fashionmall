@@ -22,7 +22,6 @@ public class ItemListResponseDto {
 
         private long id;
         private String name;
-        private long workerId;
         private long imageId;
         private String imageUrl;
 

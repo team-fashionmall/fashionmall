@@ -30,6 +30,7 @@ public class AdminItemDetailResponseDto {
 
         private long id;
         private String name;
+        private long workerId;
         private StatusEnum state; // 상품 전시 상태
 
     }
