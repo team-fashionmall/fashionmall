@@ -61,39 +61,31 @@ public class ModuleApiUtil {
      */
     //은미님께 요청
     public List<ItemDetailDto> getItemDetailFromCartApi(Long userId) {
-        Map<String, String> headers = Map.of(
-                HttpHeaders.CONTENT_TYPE, "application/json");
-        CommonResponse<List<ItemDetailDto>> listCommonResponse = webClientUtil.get(cartApi + "/ItemDetailApi/" + userId, new ParameterizedTypeReference<CommonResponse<List<ItemDetailDto>>>() {
-        }, null, headers);
+
+        CommonResponse<List<ItemDetailDto>> listCommonResponse = webClientUtil.get(
+                cartApi + "/itemDetail/" + userId,
+                new ParameterizedTypeReference<CommonResponse<List<ItemDetailDto>>>() {
+                },
+                null,
+                headers()
+        );
+
         return listCommonResponse.getData();
     }
 
-    //은미님께 요청
-    public Map<Long, Integer> getItemQuantityApi(List<Long> itemDetailId) {
-        Map<String, String> headers = Map.of(
-                HttpHeaders.CONTENT_TYPE, "application/json");
-        CommonResponse<Map<Long, Integer>> mapCommonResponse = webClientUtil.post(itemApi + "/ItemQuantityApi", itemDetailId, new ParameterizedTypeReference<CommonResponse<Map<Long, Integer>>>() {
-        }, headers);
-        return mapCommonResponse.getData();
+    public int getItemQuantityApi(Long itemDetailId) {
+
+        CommonResponse<Integer> integerCommonResponse = webClientUtil.get(
+                itemApi + itemDetailId + "/quantity",
+                new ParameterizedTypeReference<CommonResponse<Integer>>() {
+                },
+                null,
+                headers()
+        );
+
+        return integerCommonResponse.getData();
     }
 
-    //은미님께 요청
-    public void deductItemQuantityApi(List<OrderItemDto> orderItemDto) {
-        Map<String, String> headers = Map.of(
-                HttpHeaders.CONTENT_TYPE, "application/json");
-        webClientUtil.patch(itemApi + "Deduct Item Api", orderItemDto, new ParameterizedTypeReference<Void>() {
-        }, headers);
-    }
-
-    //은미님께 요청
-    public void restoreItemQuantityApi(List<OrderItemDto> orderItemDto) {
-        Map<String, String> headers = Map.of(
-                HttpHeaders.CONTENT_TYPE, "application/json");
-        webClientUtil.patch(itemApi + "restore Item Api", orderItemDto, new ParameterizedTypeReference<Void>() {
-        }, headers);
-    }
-
-    //은미님께 요청
     public Map<Long, ItemDetailDto> getItemDetailNameAndImageApi(List<Long> itemDetailIds) {
         Map<String, String> headers = Map.of(
                 HttpHeaders.CONTENT_TYPE, "application/json");
@@ -101,4 +93,29 @@ public class ModuleApiUtil {
         }, headers);
         return post.getData();
     }
+
+    public void deductItemQuantityApi(List<OrderItemDto> orderItemDto) {
+
+        webClientUtil.patch(
+                itemApi + "/deductItem",
+                orderItemDto,
+                new ParameterizedTypeReference<Void>() {
+                },
+                headers());
+    }
+
+    public void restoreItemQuantityApi(List<OrderItemDto> orderItemDto) {
+
+        webClientUtil.patch(
+                itemApi + "/restoreItem",
+                orderItemDto,
+                new ParameterizedTypeReference<Void>() {
+                },
+                headers());
+    }
+
+    private Map<String, String> headers() {
+        return Map.of(HttpHeaders.CONTENT_TYPE, "application/json");
+    }
+
 }
