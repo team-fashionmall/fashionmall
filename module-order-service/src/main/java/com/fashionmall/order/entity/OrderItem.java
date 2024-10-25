@@ -31,10 +31,14 @@ public class OrderItem extends BaseEntity {
     @Column(name = "quantity", nullable = false)
     private int quantity;
 
+    @Column(name = "discount_price", nullable = false)
+    private int itemDiscountPrice;
+
     @Builder
-    public OrderItem(Long itemDetailId, int price, int quantity) {
+    public OrderItem(Long itemDetailId, int price, int quantity, int itemDiscountPrice) {
         this.itemDetailId = itemDetailId;
         this.price = price;
         this.quantity = quantity;
+        this.itemDiscountPrice = itemDiscountPrice;
     }
 }

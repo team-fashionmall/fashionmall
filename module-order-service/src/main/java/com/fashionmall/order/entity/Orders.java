@@ -31,8 +31,11 @@ public class Orders extends BaseEntity {
     @Column(name = "total_price", nullable = false)
     private int totalPrice;
 
-    @Column(name = "discount_price", nullable = false)
-    private int discountPrice;
+    @Column(name = "coupon_discount_price", nullable = false)
+    private int couponDiscountPrice;
+
+    @Column(name = "item_discount_price", nullable = false)
+    private int totalItemDiscountPrice;
 
     @Column(name = "payment_price", nullable = false)
     private int paymentPrice;
@@ -55,11 +58,12 @@ public class Orders extends BaseEntity {
     private Payment payment;
 
     @Builder
-    public Orders(Long userId, Long couponId, int totalPrice, int discountPrice, int paymentPrice, String zipcode, String roadAddress, List<OrderItem> orderItems) {
+    public Orders(Long userId, Long couponId, int totalPrice, int couponDiscountPrice, int totalItemDiscountPrice, int paymentPrice, String zipcode, String roadAddress, List<OrderItem> orderItems) {
         this.userId = userId;
         this.couponId = couponId;
         this.totalPrice = totalPrice;
-        this.discountPrice = discountPrice;
+        this.couponDiscountPrice = couponDiscountPrice;
+        this.totalItemDiscountPrice = totalItemDiscountPrice;
         this.paymentPrice = paymentPrice;
         this.status = OrderStatus.ORDERED;
         this.zipcode = zipcode;
