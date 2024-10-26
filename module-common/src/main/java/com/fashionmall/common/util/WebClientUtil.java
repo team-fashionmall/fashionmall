@@ -74,8 +74,8 @@ public class WebClientUtil {
                 .block();
     }
 
-    public <T> T patch(String uri, Object requestBody, ParameterizedTypeReference<T> elementTypeRef, Map<String, String> headers) {
-        return webClient.patch()
+    public <T> void patch(String uri, Object requestBody, ParameterizedTypeReference<T> elementTypeRef, Map<String, String> headers) {
+        webClient.patch()
                 .uri(uri)
                 .headers(getHttpHeadersConsumer(headers))
                 .bodyValue(requestBody)
