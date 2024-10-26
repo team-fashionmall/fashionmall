@@ -4,6 +4,7 @@ import com.fashionmall.common.entity.BaseEntity;
 import com.fashionmall.order.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,15 +16,15 @@ import java.time.LocalDateTime;
 @Table(name = "payment")
 public class Payment extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "payment_id")
     private Long id;
 
     @Column(name = "user_id")
     private Long userId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "orders_id", nullable = false)
+    @OneToOne(mappedBy = "payment", fetch = FetchType.LAZY)
     private Orders orders;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -56,4 +57,33 @@ public class Payment extends BaseEntity {
 
     @Column(name = "cancel_reason")
     private String cancelReason; //결제 취소 사유
+
+    @Builder
+    public Payment(Long userId, Orders orders, BillingKey billingKey, String merchantUid, int cardQuota, String impUid, int price, LocalDateTime paidAt) {
+        this.userId = userId;
+        this.orders = orders;
+        this.billingKey = billingKey;
+        this.merchantUid = merchantUid;
+        this.cardQuota = cardQuota;
+        this.impUid = impUid;
+        this.price = price;
+        this.status = PaymentStatus.PAID;
+        this.paidAt = paidAt;
+    }
+
+    public void setCancelPrice(int cancelPrice) {
+        this.cancelPrice = cancelPrice;
+    }
+
+    public void setStatus(PaymentStatus status) {
+        this.status = status;
+    }
+
+    public void setCanceled_at(LocalDateTime canceled_at) {
+        this.canceled_at = canceled_at;
+    }
+
+    public void setCancelReason(String cancelReason) {
+        this.cancelReason = cancelReason;
+    }
 }

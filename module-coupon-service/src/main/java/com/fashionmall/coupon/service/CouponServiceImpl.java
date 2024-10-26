@@ -2,6 +2,7 @@ package com.fashionmall.coupon.service;
 
 import com.fashionmall.common.exception.CustomException;
 import com.fashionmall.common.exception.ErrorResponseCode;
+import com.fashionmall.common.moduleApi.dto.CouponDto;
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.coupon.dto.request.CouponRequestDto;
 import com.fashionmall.coupon.dto.request.CouponUpdateRequestDto;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Transactional(readOnly = true)
 @Service
@@ -114,7 +116,7 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public PageInfoResponseDto<UserCouponResponseDto> getUserCoupons(Long userId, int pageNo, int size) {
         PageRequest pageRequest = PageRequest.of(pageNo - 1, size);
-        return couponRepository.findUserCouponByUserId(userId, pageRequest);
+        return couponRepository.findUserCouponByUserIdToApi(userId, pageRequest);
     }
 
     @Override
@@ -132,6 +134,11 @@ public class CouponServiceImpl implements CouponService {
         UserCoupon userCoupon = new UserCoupon(userId, coupon);
         UserCoupon saveUserCoupon = userCouponRepository.save(userCoupon);
         return saveUserCoupon.getId();
+    }
+
+    @Override
+    public List<CouponDto> getUserCouponsToApi(Long userId) {
+        return couponRepository.findUserCouponByUserIdToApi(userId);
     }
 
     private void validateMaxDiscountPrice(Coupon coupon) {

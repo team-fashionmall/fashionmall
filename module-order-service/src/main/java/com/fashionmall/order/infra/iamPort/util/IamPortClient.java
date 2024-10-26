@@ -1,8 +1,8 @@
 package com.fashionmall.order.infra.iamPort.util;
 
-import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.common.util.WebClientUtil;
-import com.fashionmall.order.dto.request.PaymentRequestDto;
+import com.fashionmall.order.dto.request.OrderPaymentRequestDto;
+import com.fashionmall.order.dto.request.PaymentCancelRequestDto;
 import com.fashionmall.order.dto.response.BillingKeyResponseDto;
 import com.fashionmall.order.dto.response.PaymentResponseDto;
 import com.fashionmall.order.dto.response.UserBillingKeyResponseDto;
@@ -15,7 +15,6 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -59,12 +58,13 @@ public class IamPortClient {
                 accessToken);
     }
 
-    public PageInfoResponseDto<UserBillingKeyResponseDto> getUserBillingKey(HashMap<String, String> queryParam) {
+    public IamPortResponseDto<PaymentResponseDto> billingKeyPayment(OrderPaymentRequestDto orderPaymentRequestDto) {
         Map<String, String> accessToken = getAccessToken();
-        return webClientUtil.get(iamPortUrl + "/subscribe/customers",
-                new ParameterizedTypeReference<PageInfoResponseDto<UserBillingKeyResponseDto>>() {
+        return webClientUtil.post(
+                iamPortUrl + "/subscribe/payments/again",
+                orderPaymentRequestDto,
+                new ParameterizedTypeReference<IamPortResponseDto<PaymentResponseDto>>() {
                 },
-                queryParam,
                 accessToken);
     }
 
@@ -72,6 +72,26 @@ public class IamPortClient {
         Map<String, String> accessToken = getAccessToken();
         webClientUtil.delete(iamPortUrl + "/subscribe/customers/" + customerUid,
                 new ParameterizedTypeReference<IamPortResponseDto<UserBillingKeyResponseDto>>() {
+                },
+                accessToken);
+    }
+
+    public IamPortResponseDto<PaymentResponseDto> onetimePayment(OrderPaymentRequestDto orderPaymentRequestDto) {
+        Map<String, String> accessToken = getAccessToken();
+        return webClientUtil.post(
+                iamPortUrl + "/subscribe/payments/onetime",
+                orderPaymentRequestDto,
+                new ParameterizedTypeReference<IamPortResponseDto<PaymentResponseDto>>() {
+                },
+                accessToken);
+    }
+
+    public IamPortResponseDto<PaymentResponseDto> cancelPayment(PaymentCancelRequestDto paymentCancelRequestDto) {
+        Map<String, String> accessToken = getAccessToken();
+        return webClientUtil.post(
+                iamPortUrl + "/payments/cancel",
+                paymentCancelRequestDto,
+                new ParameterizedTypeReference<IamPortResponseDto<PaymentResponseDto>>() {
                 },
                 accessToken);
     }

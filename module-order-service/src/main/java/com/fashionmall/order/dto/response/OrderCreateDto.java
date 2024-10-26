@@ -1,4 +1,4 @@
-package com.fashionmall.common.moduleApi.dto;
+package com.fashionmall.order.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderItemDto {
-
-    private Long itemDetailId;
-    private int quantity;
-
+public class OrderCreateDto {
+    private Long orderId;
+    private Long billingKeyId;
 }
