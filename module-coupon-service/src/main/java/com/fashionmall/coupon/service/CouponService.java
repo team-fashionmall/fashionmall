@@ -1,10 +1,13 @@
 package com.fashionmall.coupon.service;
 
+import com.fashionmall.common.moduleApi.dto.CouponDto;
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.coupon.dto.request.CouponRequestDto;
 import com.fashionmall.coupon.dto.request.CouponUpdateRequestDto;
 import com.fashionmall.coupon.dto.response.AdminCouponResponseDto;
 import com.fashionmall.coupon.dto.response.UserCouponResponseDto;
+
+import java.util.List;
 
 public interface CouponService {
 
@@ -21,4 +24,6 @@ public interface CouponService {
     PageInfoResponseDto<UserCouponResponseDto> getDownloadableCoupons(Long userId, int pageNo, int size);
 
     Long downloadCoupon(Long userId, Long couponId);
+
+    List<CouponDto> getUserCouponsToApi(Long userId);
 }
