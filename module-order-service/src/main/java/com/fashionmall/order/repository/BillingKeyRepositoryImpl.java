@@ -16,7 +16,7 @@ import static com.fashionmall.order.entity.QBillingKey.billingKey;
 @RequiredArgsConstructor
 public class BillingKeyRepositoryImpl implements BillingKeyRepositoryCustom {
 
-    private final JPAQueryFactory jpaQueryFactory;
+    private final JPAQueryFactory queryFactory;
 
 
     public PageInfoResponseDto<UserBillingKeyResponseDto> findBillingKeyByUserId(Long userId, Pageable pageable) {
@@ -24,11 +24,12 @@ public class BillingKeyRepositoryImpl implements BillingKeyRepositoryCustom {
         int offset = (int) pageable.getOffset();
         int size = pageable.getPageSize();
 
-        List<UserBillingKeyResponseDto> content = jpaQueryFactory
+        List<UserBillingKeyResponseDto> content = queryFactory
                 .select(Projections.constructor(UserBillingKeyResponseDto.class,
                         billingKey.id,
                         billingKey.cardNickname,
-                        billingKey.customerUid))
+                        billingKey.cardName,
+                        billingKey.cardType))
                 .from(billingKey)
                 .where(billingKey.userId.eq(userId))
                 .orderBy(billingKey.id.asc())
@@ -36,7 +37,7 @@ public class BillingKeyRepositoryImpl implements BillingKeyRepositoryCustom {
                 .limit(size)
                 .fetch();
 
-        Long fetchOne = jpaQueryFactory
+        Long fetchOne = queryFactory
                 .select(billingKey.count())
                 .from(billingKey)
                 .where(billingKey.userId.eq(userId))
@@ -45,5 +46,14 @@ public class BillingKeyRepositoryImpl implements BillingKeyRepositoryCustom {
         int totalCount = fetchOne.intValue();
 
         return PageInfoResponseDto.of(pageable, content, totalCount);
+    }
+
+    @Override
+    public String findCustomerUidById(Long id) {
+        return queryFactory
+                .select(billingKey.customerUid)
+                .from(billingKey)
+                .where(billingKey.id.eq(id))
+                .fetchOne();
     }
 }

@@ -10,7 +10,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class BillingKeyRequestDto {
-
     private Long userId;
     @JsonProperty("card_nickname")
     private String cardNickname;
@@ -18,10 +17,12 @@ public class BillingKeyRequestDto {
     private String cardNumber;
     @JsonProperty("expiry")
     private String expiry;
+    @JsonProperty("birth")
+    private String birth;
     @JsonProperty("pwd_2digit")
     private String pwd2digit;
 
-    public BillingKey toEntity(String cardName, String cardType) {
+    public BillingKey toEntity(String cardName, String cardType, String customerUid) {
         return BillingKey
                 .builder()
                 .userId(userId)
@@ -29,6 +30,7 @@ public class BillingKeyRequestDto {
                 .cardNumber(cardNumber)
                 .cardName(cardName)
                 .cardType(cardType)
+                .customerUid(customerUid)
                 .build();
     }
 
