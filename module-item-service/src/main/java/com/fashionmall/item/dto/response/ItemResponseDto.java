@@ -18,7 +18,6 @@ import java.util.List;
 public class ItemResponseDto {
 
     private Long id;
-    private Long workerId;
     private Long imageId;
     private String imageUrl;
     private String name;
@@ -33,7 +32,6 @@ public class ItemResponseDto {
 
         return ItemResponseDto.builder()
                 .id(item.getId())
-                .workerId(item.getWorkerId())
                 .imageId(item.getImageId())
                 .imageUrl(imageUrl)
                 .name(item.getName())
