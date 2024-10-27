@@ -1,14 +1,11 @@
 package com.fashionmall.common.moduleApi.util;
 
-<<<<<<< HEAD
 import com.fashionmall.common.moduleApi.dto.ImageDataDto;
 import com.fashionmall.common.moduleApi.dto.ImageUploadDto;
 import com.fashionmall.common.moduleApi.dto.OrderItemDto;
 import com.fashionmall.common.moduleApi.dto.ItemDetailDto;
 import com.fashionmall.common.moduleApi.dto.ItemDetailResponseDto;
-=======
 import com.fashionmall.common.moduleApi.dto.*;
->>>>>>> 0ec6cc3 (feat : order Api 재등록)
 import com.fashionmall.common.response.CommonResponse;
 import com.fashionmall.common.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +13,11 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
+import java.awt.*;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -30,6 +29,7 @@ public class ModuleApiUtil {
     private final String userApi = "http://localhost:8000/api/user";
     private final String couponApi = "http://localhost:8000/api/coupon";
     private final String itemApi = "http://localhost:8000/api/item";
+    private final String imageApi = "http://localhost:8000/api/image";
 
     public List<CouponDto> getUserCouponApi(Long userId) {
         Map<String, String> headers = Map.of(
@@ -83,12 +83,8 @@ public class ModuleApiUtil {
         return listCommonResponse.getData();
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    public int getItemQuantityApi(Long itemDetailId) {
-=======
+
     public Map<Long, Integer> getItemQuantityApi(List<Long> itemDetailId) {
->>>>>>> 0ec6cc3 (feat : order Api 재등록)
 
         CommonResponse<Map<Long, Integer>> integerCommonResponse = webClientUtil.get(
                 itemApi + itemDetailId + "/quantity",
@@ -127,9 +123,7 @@ public class ModuleApiUtil {
                 new ParameterizedTypeReference<Void>() {
                 },
                 headers());
-    private final String imageApi = "http://localhost:8000/api/image";
-
-=======
+            }
     // image
     public Map <Long, String> uploadImageApi(List<ImageUploadDto> imageUploadDto) {
         CommonResponse<Map<Long, String>> uploadImageApi = webClientUtil.post(
@@ -159,24 +153,14 @@ public class ModuleApiUtil {
         return getImageApi.getData();
     }
 
->>>>>>> 303bda9 (refactor : 이미지 등록,조회,삭제(gateway) 전체 코드)
     public List <Long> deleteImageApi (List<Long> imageId) {
 
         String imageIdParam = imageId.stream()
                 .map(id -> "imageId=" + id)
                 .collect(Collectors.joining("&"));
 
-<<<<<<< HEAD
         CommonResponse <List<Long>> deleteImageApi = webClientUtil.delete(
-                imageApi + "/deleteImageApi?imageId=" + imageIdParam,
-=======
-        CommonResponse<List<Long>> deleteImageApi = webClientUtil.delete(
-<<<<<<< HEAD
                 imageApi + "/deleteImageApi?" + imageIdParam,
->>>>>>> 303bda9 (refactor : 이미지 등록,조회,삭제(gateway) 전체 코드)
-=======
-                imageApi + "/deleteImage?" + imageIdParam,
->>>>>>> 84b3685 (refactor : Image gateway 엔드포인트 수정)
                 new ParameterizedTypeReference<CommonResponse<List<Long>>>() {},
                 headers()
         );
