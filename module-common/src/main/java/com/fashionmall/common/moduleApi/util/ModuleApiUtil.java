@@ -117,12 +117,12 @@ public class ModuleApiUtil {
                 new ParameterizedTypeReference<Void>() {
                 },
                 headers());
-    }
+        }
 
-    public void restoreItemQuantityApi(List<OrderItemDto> orderItemDto) {
+        public void restoreItemQuantityApi (List < OrderItemDto > orderItemDto) {
 
-        webClientUtil.patch(
-                itemApi + "/restoreItem",
+            webClientUtil.patch(
+                    itemApi + "/restoreItem",
                 orderItemDto,
                 new ParameterizedTypeReference<Void>() {
                 },
