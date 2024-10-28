@@ -69,6 +69,27 @@ public class UserServiceImpl implements UserService {
         return user.getId();
     }
 
+    @Override
+    @Transactional
+    public Long updateUserInfo (UpdateUserInfoRequestDto updateUserInfoRequestDto, Long userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_USER_ID));
+
+        if (updateUserInfoRequestDto.getOldPassword() != null && updateUserInfoRequestDto.getOldPassword().equals(user.getPassword())) {
+            user.updatePassword(updateUserInfoRequestDto.getNewPassword());
+        }
+
+        if (updateUserInfoRequestDto.getNickName() != null) {
+            user.updateNickname(updateUserInfoRequestDto.getNickName());
+        }
+        if (updateUserInfoRequestDto.getContact() != null) {
+            user.updateContact(updateUserInfoRequestDto.getContact());
+        }
+
+        return user.getId();
+    }
+
     private void validateUser (String email, String nickName) {
 
         if (userRepository.existsByEmail(email)) {

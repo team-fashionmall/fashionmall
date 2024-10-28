@@ -17,6 +17,8 @@ public interface UserService {
     // User
     Long signUp (SignUpRequestDto signUpRequestDto);
 
+    Long updateUserInfo (UpdateUserInfoRequestDto updateUserInfoRequestDto, Long userId);
+
     // DeliveryAddress
     Long createDeliveryAddress (DeliveryAddressRequestDto deliveryAddressRequestDto, Long userId);
 

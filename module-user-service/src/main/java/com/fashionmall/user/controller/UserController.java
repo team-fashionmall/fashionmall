@@ -23,4 +23,10 @@ public class UserController {
 
         return ApiResponseUtil.success(userService.signUp(signUpRequestDto));
     }
+
+    @PatchMapping("/user/{userId}")
+    public CommonResponse<Long> updateUserInfo (@Valid @RequestBody UpdateUserInfoRequestDto updateUserInfoRequestDto) {
+        Long userId = 1L;
+        return ApiResponseUtil.success(userService.updateUserInfo(updateUserInfoRequestDto, userId));
+    }
 }
