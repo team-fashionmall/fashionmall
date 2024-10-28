@@ -7,6 +7,7 @@ import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.user.dto.request.DeliveryAddressRequestDto;
 import com.fashionmall.user.dto.request.FavoriteRequestDto;
+import com.fashionmall.user.dto.response.DeliveryAddressResponseDto;
 import com.fashionmall.user.dto.response.FavoriteResponseDto;
 import com.fashionmall.user.entity.DeliveryAddress;
 import com.fashionmall.user.repository.DeliveryAddressRepository;
@@ -18,7 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.fashionmall.user.entity.Favorite;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j(topic = "favoriteService")
 @Service
@@ -45,6 +48,25 @@ public class UserServiceImpl implements UserService {
         deliveryAddressRepository.save(deliveryAddress);
 
         return deliveryAddress.getId();
+    }
+
+    @Override
+    @Transactional
+    public List<DeliveryAddressResponseDto> getDeliveryAddress (Long userId) {
+        // 회원 인증
+
+        List<DeliveryAddress> deliveryAddresses = deliveryAddressRepository.findAllByUserId(userId);
+
+        // DeliveryAddress 객체들을 DeliveryAddressResponseDto로 변환하여 리스트로 저장
+        List<DeliveryAddressResponseDto> deliveryAddressResponseDtos = deliveryAddresses.stream()
+                .map(deliveryAddress -> DeliveryAddressResponseDto.builder()
+                        .id(deliveryAddress.getId())
+                        .zipCode(deliveryAddress.getZipCode())
+                        .roadAddress(deliveryAddress.getRoadAddress())
+                        .build())
+                .collect(Collectors.toList());
+
+        return deliveryAddressResponseDtos;
     }
 
     // Favorite
