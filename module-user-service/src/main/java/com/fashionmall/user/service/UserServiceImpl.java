@@ -90,6 +90,25 @@ public class UserServiceImpl implements UserService {
         return user.getId();
     }
 
+    @Override
+    @Transactional
+    public UserInfoResponseDto userInfo (Long userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_USER_ID));
+
+        UserRoleEnum role = user.getRole() == UserRoleEnum.ADMIN ? user.getRole() : null;
+
+        // 정보 조회 및 반환
+        return UserInfoResponseDto.builder()
+                .email(user.getEmail())
+                .userName(user.getUserName())
+                .nickName(user.getNickName())
+                .contact(user.getContact())
+                .role(role)
+                .build();
+    }
+
     private void validateUser (String email, String nickName) {
 
         if (userRepository.existsByEmail(email)) {

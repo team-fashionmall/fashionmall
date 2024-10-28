@@ -19,6 +19,8 @@ public interface UserService {
 
     Long updateUserInfo (UpdateUserInfoRequestDto updateUserInfoRequestDto, Long userId);
 
+    UserInfoResponseDto userInfo(Long userId);
+
     // DeliveryAddress
     Long createDeliveryAddress (DeliveryAddressRequestDto deliveryAddressRequestDto, Long userId);
 

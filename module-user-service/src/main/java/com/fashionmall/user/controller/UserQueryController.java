@@ -5,6 +5,7 @@ import com.fashionmall.common.response.CommonResponse;
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.common.util.ApiResponseUtil;
 import com.fashionmall.user.dto.response.DeliveryAddressResponseDto;
+import com.fashionmall.user.dto.response.UserInfoResponseDto;
 import com.fashionmall.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,13 @@ import java.util.List;
 public class UserQueryController {
 
     private final UserService userService;
+
+    // User
+    @GetMapping ("/user/info")
+    public CommonResponse<UserInfoResponseDto> userInfo () {
+        Long userId = 1L;
+        return ApiResponseUtil.success(userService.userInfo(userId));
+    }
 
     // DeliveryAddress
     @GetMapping("/address")
