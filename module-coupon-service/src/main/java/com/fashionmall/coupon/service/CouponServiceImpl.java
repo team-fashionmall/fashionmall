@@ -120,9 +120,8 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public PageInfoResponseDto<UserCouponResponseDto> getDownloadableCoupons(Long userId, int pageNo, int size) {
-        PageRequest pageRequest = PageRequest.of(pageNo - 1, size);
-        return couponRepository.findDownloadableCoupon(userId, pageRequest);
+    public List<UserCouponResponseDto> getDownloadableCoupons(Long userId) {
+        return couponRepository.findDownloadableCoupon(userId);
     }
 
     @Override

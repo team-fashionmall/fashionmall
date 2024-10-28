@@ -8,6 +8,8 @@ import com.fashionmall.coupon.service.CouponService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class CouponQueryController {
@@ -24,10 +26,9 @@ public class CouponQueryController {
 
     //다운로드가능쿠폰목록조회
     @GetMapping("/coupon/download")
-    public CommonResponse<PageInfoResponseDto<UserCouponResponseDto>> getUserCouponDownloadList(@RequestParam(defaultValue = "1") int pageNo,
-                                                                                                @RequestParam(defaultValue = "10") int size) {
+    public CommonResponse<List<UserCouponResponseDto>> getUserCouponDownloadList() {
         Long id = 1L; //임시부여
-        return ApiResponseUtil.success(couponService.getDownloadableCoupons(id, pageNo, size));
+        return ApiResponseUtil.success(couponService.getDownloadableCoupons(id));
     }
 
     //쿠폰다운로드

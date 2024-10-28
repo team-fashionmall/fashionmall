@@ -6,7 +6,6 @@ import com.fashionmall.common.util.ApiResponseUtil;
 import com.fashionmall.coupon.service.CouponService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,8 +18,9 @@ public class ApiCouponController {
 
     private final CouponService couponService;
 
-    @GetMapping("/getCoupon/{userId}")
-    public CommonResponse<List<CouponDto>> getCoupon(@PathVariable(value = "userId") Long userId) {
+    @GetMapping("/getCoupon")
+    public CommonResponse<List<CouponDto>> getCoupon() {
+        Long userId = 1L; //로그인 인증 기능 추가
         return ApiResponseUtil.success(couponService.getUserCouponsToApi(userId));
     }
 }

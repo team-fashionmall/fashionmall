@@ -22,7 +22,7 @@ public class BillingKeyRequestDto {
     @JsonProperty("pwd_2digit")
     private String pwd2digit;
 
-    public BillingKey toEntity(String cardName, String cardType, String customerUid) {
+    public BillingKey toEntity(String cardNumber, String cardName, String cardType, String customerUid) {
         return BillingKey
                 .builder()
                 .userId(userId)
