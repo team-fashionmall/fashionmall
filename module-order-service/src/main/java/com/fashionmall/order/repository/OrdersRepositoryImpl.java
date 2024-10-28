@@ -3,7 +3,6 @@ package com.fashionmall.order.repository;
 import com.fashionmall.common.moduleApi.dto.OrderItemDto;
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.order.dto.response.OrderItemDetailResponseDto;
-import com.fashionmall.order.dto.response.OrdersCompleteResponseDto;
 import com.fashionmall.order.dto.response.OrdersDetailResponseDto;
 import com.fashionmall.order.dto.response.OrdersResponseDto;
 import com.fashionmall.order.enums.OrderStatus;
@@ -24,18 +23,6 @@ import static com.fashionmall.order.entity.QOrders.orders;
 public class OrdersRepositoryImpl implements OrdersRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
-
-    @Override
-    public OrdersCompleteResponseDto findByOrderId(Long orderId) {
-        return queryFactory
-                .select(Projections.constructor(OrdersCompleteResponseDto.class,
-                        orders.id,
-                        orders.createdAt,
-                        orders.paymentPrice))
-                .from(orders)
-                .where(orders.id.eq(orderId))
-                .fetchOne();
-    }
 
     @Override
     public List<OrderItemDto> findOrderItemsByOrderId(Long orderId) {
