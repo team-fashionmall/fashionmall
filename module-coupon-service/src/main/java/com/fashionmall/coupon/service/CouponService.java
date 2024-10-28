@@ -21,7 +21,7 @@ public interface CouponService {
 
     PageInfoResponseDto<UserCouponResponseDto> getUserCoupons(Long userId, int pageNo, int size);
 
-    PageInfoResponseDto<UserCouponResponseDto> getDownloadableCoupons(Long userId, int pageNo, int size);
+    List<UserCouponResponseDto> getDownloadableCoupons(Long userId);
 
     Long downloadCoupon(Long userId, Long couponId);
 

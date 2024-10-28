@@ -67,6 +67,7 @@ public class CouponRepositoryImpl implements CouponRepositoryCustom {
 
         List<UserCouponResponseDto> content = queryFactory
                 .select(Projections.constructor(UserCouponResponseDto.class,
+                        coupon.id,
                         coupon.name,
                         coupon.discountType,
                         coupon.discountValue,
@@ -101,13 +102,11 @@ public class CouponRepositoryImpl implements CouponRepositoryCustom {
     }
 
     @Override
-    public PageInfoResponseDto<UserCouponResponseDto> findDownloadableCoupon(Long userId, Pageable pageable) {
+    public List<UserCouponResponseDto> findDownloadableCoupon(Long userId) {
 
-        int offset = (int) pageable.getOffset();
-        int size = pageable.getPageSize();
-
-        List<UserCouponResponseDto> content = queryFactory
+        return queryFactory
                 .select(Projections.constructor(UserCouponResponseDto.class,
+                        coupon.id,
                         coupon.name,
                         coupon.discountType,
                         coupon.discountValue,
@@ -124,25 +123,7 @@ public class CouponRepositoryImpl implements CouponRepositoryCustom {
                         coupon.endDate.after(LocalDateTime.now()),
                         userCoupon.id.isNull())
                 .orderBy(coupon.id.desc())
-                .offset(offset)
-                .limit(size)
                 .fetch();
-
-        Long fetchOne = queryFactory
-                .select(coupon.count())
-                .from(coupon)
-                .leftJoin(userCoupon)
-                .on(userCoupon.coupon.eq(coupon)
-                        .and(userCoupon.userId.eq(userId)))
-                .where(coupon.couponType.eq(CouponType.DOWNLOAD),
-                        coupon.status.eq(CouponStatus.ACTIVATED),
-                        coupon.endDate.after(LocalDateTime.now()),
-                        userCoupon.id.isNull())
-                .fetchOne();
-
-        int totalCount = fetchOne.intValue();
-
-        return PageInfoResponseDto.of(pageable, content, totalCount);
     }
 
     @Override
