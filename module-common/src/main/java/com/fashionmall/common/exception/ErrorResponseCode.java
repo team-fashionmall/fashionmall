@@ -41,7 +41,11 @@ public enum ErrorResponseCode {
 
     // cart
     DUPLICATE_CART_DETAIL_ID(HttpStatus.BAD_REQUEST, "이미 존재하는 itemDetail Id 입니다."),
-    WRONG_CART_ID(HttpStatus.BAD_REQUEST, "올바르지 않는 CartId 입니다.");
+    WRONG_CART_ID(HttpStatus.BAD_REQUEST, "올바르지 않는 CartId 입니다."),
+
+    // favorite
+    DUPLICATE_TRUE(HttpStatus.CONFLICT, "이미 좋아요가 되어있습니다."),
+    DUPLICATE_FALSE(HttpStatus.CONFLICT, "이미 좋아요가 취소 되어있습니다.");
 
     private final HttpStatus status;
     private final String message;
