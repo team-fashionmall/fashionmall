@@ -1,0 +1,27 @@
+package com.fashionmall.user.controller;
+
+import com.fashionmall.common.moduleApi.dto.LikeItemListResponseDto;
+import com.fashionmall.common.response.CommonResponse;
+import com.fashionmall.common.response.PageInfoResponseDto;
+import com.fashionmall.common.util.ApiResponseUtil;
+import com.fashionmall.user.service.FavoriteService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequiredArgsConstructor
+public class FavoriteQueryController {
+
+    private final FavoriteService favoriteService;
+
+    @GetMapping ("/favorite/{itemId}")
+    public CommonResponse<PageInfoResponseDto<LikeItemListResponseDto>> favoriteList (@RequestParam(defaultValue = "1") int pageNo,
+                                                                                      @RequestParam(defaultValue = "8") int size,
+                                                                                      @PathVariable Long itemId) {
+        Long userId = 1L;
+        return ApiResponseUtil.success(favoriteService.favoriteList(pageNo, size, itemId, userId));
+    }
+}

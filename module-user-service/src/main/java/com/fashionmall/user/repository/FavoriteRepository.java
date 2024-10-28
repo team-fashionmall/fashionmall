@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface FavoriteRepository extends JpaRepository <Favorite, Long> {
     Favorite findByItemId(Long itemId);
 
+   int countByUserId(Long userId);
+
 }

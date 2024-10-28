@@ -60,6 +60,19 @@ public class FavoriteServiceImpl implements FavoriteService {
         }
     }
 
+    @Override
+    @Transactional
+    public PageInfoResponseDto <LikeItemListResponseDto> favoriteList (int pageNo, int size, Long itemId, Long userId) {
+
+        PageRequest pageRequest = PageRequest.of(pageNo - 1, size);
+        int totalCount = favoriteRepository.countByUserId(userId);
+
+        List<LikeItemListResponseDto> itemInfo = moduleApiUtil.itemInfo(itemId, userId);
+
+        return PageInfoResponseDto.of(pageRequest, itemInfo, totalCount);
+
+    }
+
     private Favorite buildFavorite(Long itemId, boolean isSelected, Long userId) {
         return Favorite.builder()
                 .itemId(itemId)
