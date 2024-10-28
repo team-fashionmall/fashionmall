@@ -1,4 +1,4 @@
-package com.fashionmall.item.enums;
+package com.fashionmall.common.moduleApi.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

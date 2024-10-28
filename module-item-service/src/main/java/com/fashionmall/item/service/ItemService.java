@@ -1,5 +1,7 @@
 package com.fashionmall.item.service;
 
+import com.fashionmall.common.moduleApi.dto.LikeItemListResponseDto;
+import com.fashionmall.item.dto.response.ItemListResponseDto;
 import com.fashionmall.common.moduleApi.dto.OrderItemDto;
 import com.fashionmall.item.dto.request.ItemDiscountRequestDto;
 import com.fashionmall.common.response.PageInfoResponseDto;
@@ -30,6 +32,8 @@ public interface ItemService {
     void restoreItemApi (List<OrderItemDto> orderItemDto, Long workerId);
 
     ItemDetailResponseDto getItemDetail (Long itemDetailId, Long workerId);
+
+    List<LikeItemListResponseDto> getItemInfo (Long itemId, Long userId);
 
     // 조회
     PageInfoResponseDto<ItemListResponseDto> getItemList(int pageNo, int size, String itemName, Long category1, Long category2);

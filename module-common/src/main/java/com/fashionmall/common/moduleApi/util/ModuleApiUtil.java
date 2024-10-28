@@ -7,18 +7,16 @@ import com.fashionmall.common.moduleApi.dto.ItemDetailDto;
 import com.fashionmall.common.moduleApi.dto.ItemDetailResponseDto;
 import com.fashionmall.common.moduleApi.dto.*;
 import com.fashionmall.common.response.CommonResponse;
+import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.common.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.List;
-import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -33,6 +31,19 @@ public class ModuleApiUtil {
     private final String imageApi = "http://localhost:8000/api/image";
 
     // item
+    public List<LikeItemListResponseDto> itemInfo (Long itemId, Long userId) {
+
+        CommonResponse<List<LikeItemListResponseDto>> commonResponse = webClientUtil.get(
+                itemApi + "/item/" + itemId + "/" + userId,
+                new ParameterizedTypeReference<CommonResponse<List<LikeItemListResponseDto>>>() {},
+                null,
+                headers()
+        );
+
+        return commonResponse.getData();
+
+    }
+
     public List<CouponDto> getUserCouponApi (Long userId){
         Map<String, String> headers = Map.of(
                 HttpHeaders.CONTENT_TYPE, "application/json");

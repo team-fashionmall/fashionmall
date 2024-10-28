@@ -1,14 +1,13 @@
 package com.fashionmall.item.repository;
 
+import com.fashionmall.common.moduleApi.dto.LikeItemListResponseDto;
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.item.dto.response.AdminItemDetailResponseDto;
 import com.fashionmall.item.dto.response.AdminItemResponseDto;
 import com.fashionmall.item.dto.response.ItemDetailListResponseDto;
 import com.fashionmall.item.dto.response.ItemListResponseDto;
-import com.fashionmall.item.entity.QItemCategoryMapping;
-import com.fashionmall.item.enums.ItemDiscountTypeEnum;
+import com.fashionmall.common.moduleApi.enums.ItemDiscountTypeEnum;
 import com.fashionmall.item.enums.StatusEnum;
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -20,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.security.Principal;
 import java.util.List;
 
 
@@ -34,6 +32,32 @@ import static com.fashionmall.item.entity.QItemDiscount.itemDiscount;
 public class ItemRepositoryImpl implements ItemRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
+
+    @Override
+    public List<LikeItemListResponseDto> getItemInfo (Long itemId, Long userId) {
+
+        return queryFactory
+                .select(Projections.constructor(LikeItemListResponseDto.class,
+                        Projections.constructor(LikeItemListResponseDto.ItemInfo.class,
+                                item.id,
+                                item.name,
+                                item.imageId,
+                                item.imageUrl
+                        ),
+                        Projections.constructor(LikeItemListResponseDto.ItemDetailInfo.class,
+                                itemDetail.price,
+                                ExpressionUtils.as(calculateDiscount(itemDetail.price, itemDiscount.status, itemDiscount.type, itemDiscount.value),
+                                        "discountPrice")
+                        )
+                ))
+                .from(item)
+                .innerJoin(item.itemDetails, itemDetail)
+                .innerJoin(item.itemCategoryMappings, itemCategoryMapping)
+                .innerJoin(item.itemDiscounts, itemDiscount)
+                .where(item.id.eq(itemId).and(item.workerId.eq(userId)))
+                .orderBy(item.id.desc())
+                .fetch();
+    }
 
     @Override
     public PageInfoResponseDto <ItemListResponseDto> itemListPageNation (Pageable pageable, String itemName, Long category1, Long category2) {

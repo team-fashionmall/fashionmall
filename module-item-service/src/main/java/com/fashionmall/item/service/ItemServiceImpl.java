@@ -2,6 +2,8 @@ package com.fashionmall.item.service;
 
 import com.fashionmall.common.exception.CustomException;
 import com.fashionmall.common.exception.ErrorResponseCode;
+import com.fashionmall.common.moduleApi.dto.LikeItemListResponseDto;
+import com.fashionmall.item.dto.response.ItemListResponseDto;
 import com.fashionmall.common.moduleApi.dto.OrderItemDto;
 import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
 import com.fashionmall.item.dto.request.ItemDiscountRequestDto;
@@ -14,7 +16,7 @@ import com.fashionmall.item.dto.response.ItemResponseDto;
 import com.fashionmall.item.dto.response.*;
 import com.fashionmall.item.dto.response.ItemUpdateResponseDto;
 import com.fashionmall.item.entity.*;
-import com.fashionmall.item.enums.ItemDiscountTypeEnum;
+import com.fashionmall.common.moduleApi.enums.ItemDiscountTypeEnum;
 import com.fashionmall.item.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +49,12 @@ public class ItemServiceImpl implements ItemService {
     public PageInfoResponseDto<ItemListResponseDto> getItemList(int pageNo, int size, String itemName, Long category1, Long category2) {
         PageRequest pageRequest = PageRequest.of(pageNo -1, size);
         return itemRepository.itemListPageNation (pageRequest, itemName, category1, category2);
+    }
+
+    @Override
+    @Transactional
+    public List<LikeItemListResponseDto> getItemInfo (Long itemId, Long userId) {
+        return itemRepository.getItemInfo(itemId, userId);
     }
 
     @Override
