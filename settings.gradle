@@ -8,4 +8,4 @@ include 'module-review-service'
 include 'module-cart-service'
 include 'module-eureka-server'
 include 'module-gateway-service'
-
+include 'module-image-service'
