@@ -5,29 +5,49 @@ import com.fashionmall.common.exception.ErrorResponseCode;
 import com.fashionmall.common.moduleApi.dto.LikeItemListResponseDto;
 import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
 import com.fashionmall.common.response.PageInfoResponseDto;
+import com.fashionmall.user.dto.request.DeliveryAddressRequestDto;
 import com.fashionmall.user.dto.request.FavoriteRequestDto;
 import com.fashionmall.user.dto.response.FavoriteResponseDto;
+import com.fashionmall.user.entity.DeliveryAddress;
+import com.fashionmall.user.repository.DeliveryAddressRepository;
 import com.fashionmall.user.repository.FavoriteRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.fashionmall.user.entity.Favorite;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j(topic = "favoriteService")
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class FavoriteServiceImpl implements FavoriteService {
+public class UserServiceImpl implements UserService {
 
     private final FavoriteRepository favoriteRepository;
+    private final DeliveryAddressRepository deliveryAddressRepository;
     private final ModuleApiUtil moduleApiUtil;
 
+
+    // DeliveryAddress
+    @Override
+    @Transactional
+    public Long createDeliveryAddress (DeliveryAddressRequestDto deliveryAddressRequestDto, Long userId) {
+        // 회원 인증
+
+        DeliveryAddress deliveryAddress = DeliveryAddress.builder()
+                .userId(userId)
+                .zipCode(deliveryAddressRequestDto.getZipcode())
+                .roadAddress(deliveryAddressRequestDto.getRoadAddress())
+                .build();
+        deliveryAddressRepository.save(deliveryAddress);
+
+        return deliveryAddress.getId();
+    }
+
+    // Favorite
     @Override
     @Transactional
     public FavoriteResponseDto updateFavorite (Long itemId, FavoriteRequestDto favoriteRequestDto, Long userId) {
