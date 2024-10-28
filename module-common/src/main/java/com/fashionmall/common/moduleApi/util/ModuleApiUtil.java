@@ -1,10 +1,5 @@
 package com.fashionmall.common.moduleApi.util;
 
-import com.fashionmall.common.moduleApi.dto.OrderItemDto;
-import com.fashionmall.common.moduleApi.dto.ImageDataDto;
-import com.fashionmall.common.moduleApi.dto.ImageUploadDto;
-import com.fashionmall.common.moduleApi.dto.ItemDetailDto;
-import com.fashionmall.common.moduleApi.dto.ItemDetailResponseDto;
 import com.fashionmall.common.moduleApi.dto.*;
 import com.fashionmall.common.response.CommonResponse;
 import com.fashionmall.common.util.WebClientUtil;
@@ -13,12 +8,9 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.List;
-import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -33,7 +25,7 @@ public class ModuleApiUtil {
     private final String imageApi = "http://localhost:8000/api/image";
 
     // item
-    public List<CouponDto> getUserCouponApi (Long userId){
+    public List<CouponDto> getUserCouponApi(Long userId) {
         Map<String, String> headers = Map.of(
                 HttpHeaders.CONTENT_TYPE, "application/json");
         CommonResponse<List<CouponDto>> listCommonResponse = webClientUtil.get(couponApi + "/getCoupon", new ParameterizedTypeReference<CommonResponse<List<CouponDto>>>() {
@@ -42,7 +34,7 @@ public class ModuleApiUtil {
     }
 
 
-    public ItemDetailResponseDto getItemDetail (Long itemDetailId){
+    public ItemDetailResponseDto getItemDetail(Long itemDetailId) {
         Map<String, String> headers = Map.of(
                 HttpHeaders.CONTENT_TYPE, "application/json");
 
@@ -59,7 +51,7 @@ public class ModuleApiUtil {
 
     // cart
     //은미님께 요청
-    public List<DeliveryAddressDto> getUserDeliveryAddressApi (Long userId){
+    public List<DeliveryAddressDto> getUserDeliveryAddressApi(Long userId) {
         Map<String, String> headers = Map.of(
                 HttpHeaders.CONTENT_TYPE, "application/json");
         CommonResponse<List<DeliveryAddressDto>> listCommonResponse = webClientUtil.get(userApi + "/DeliveryAddressApi/" + userId, new ParameterizedTypeReference<CommonResponse<List<DeliveryAddressDto>>>() {
@@ -74,7 +66,7 @@ public class ModuleApiUtil {
      * WHERE c.user_id = 'userId' AND c.is_selected = TRUE;
      */
     //은미님께 요청
-    public List<ItemDetailDto> getItemDetailFromCartApi (Long userId){
+    public List<ItemDetailDto> getItemDetailFromCartApi(Long userId) {
 
         CommonResponse<List<ItemDetailDto>> listCommonResponse = webClientUtil.get(
                 cartApi + "/itemDetail/" + userId,
@@ -87,7 +79,7 @@ public class ModuleApiUtil {
         return listCommonResponse.getData();
     }
 
-    public Map<Long, Integer> getItemQuantityApi (List < Long > itemDetailId) {
+    public Map<Long, Integer> getItemQuantityApi(List<Long> itemDetailId) {
 
         CommonResponse<Map<Long, Integer>> integerCommonResponse = webClientUtil.get(
                 itemApi + itemDetailId + "/quantity",
@@ -100,7 +92,7 @@ public class ModuleApiUtil {
         return integerCommonResponse.getData();
     }
 
-    public Map<Long, ItemDetailDto> getItemDetailNameAndImageApi (List < Long > itemDetailIds) {
+    public Map<Long, ItemDetailDto> getItemDetailNameAndImageApi(List<Long> itemDetailIds) {
         Map<String, String> headers = Map.of(
                 HttpHeaders.CONTENT_TYPE, "application/json");
         CommonResponse<Map<Long, ItemDetailDto>> post = webClientUtil.post(itemApi + "/ItemDetailNameApi", itemDetailIds, new ParameterizedTypeReference<CommonResponse<Map<Long, ItemDetailDto>>>() {
@@ -108,7 +100,7 @@ public class ModuleApiUtil {
         return post.getData();
     }
 
-    public void deductItemQuantityApi (List < OrderItemDto > orderItemDto) {
+    public void deductItemQuantityApi(List<OrderItemDto> orderItemDto) {
 
         webClientUtil.patch(
                 itemApi + "/deductItem",
@@ -118,7 +110,7 @@ public class ModuleApiUtil {
                 headers());
     }
 
-    public void restoreItemQuantityApi (List < OrderItemDto > orderItemDto) {
+    public void restoreItemQuantityApi(List<OrderItemDto> orderItemDto) {
 
         webClientUtil.patch(
                 itemApi + "/restoreItem",
@@ -129,7 +121,7 @@ public class ModuleApiUtil {
     }
 
     // image
-    public Map<Long, String> uploadImageApi (List < ImageUploadDto > imageUploadDto) {
+    public Map<Long, String> uploadImageApi(List<ImageUploadDto> imageUploadDto) {
         CommonResponse<Map<Long, String>> uploadImageApi = webClientUtil.post(
                 imageApi + "/uploadImage",
                 imageUploadDto,
@@ -141,7 +133,7 @@ public class ModuleApiUtil {
         return uploadImageApi.getData();
     }
 
-    public List<ImageDataDto> getImageApi (List < Long > imageId) {
+    public List<ImageDataDto> getImageApi(List<Long> imageId) {
         // referenceIds를 쿼리 파라미터로 변환
         String imageIdParam = imageId.stream()
                 .map(id -> "imageId=" + id)
@@ -159,7 +151,7 @@ public class ModuleApiUtil {
         return getImageApi.getData();
     }
 
-    public List<Long> deleteImageApi (List < Long > imageId) {
+    public List<Long> deleteImageApi(List<Long> imageId) {
 
         String imageIdParam = imageId.stream()
                 .map(id -> "imageId=" + id)
@@ -175,7 +167,18 @@ public class ModuleApiUtil {
         return deleteImageApi.getData();
     }
 
-    private Map<String, String> headers () {
+    public String getItemNameApi(Long itemId) {
+        CommonResponse<String> stringCommonResponse = webClientUtil.get(
+                itemApi + "itemName/" + itemId,
+                new ParameterizedTypeReference<CommonResponse<String>>() {
+                },
+                null,
+                headers()
+        );
+        return stringCommonResponse.getData();
+    }
+
+    private Map<String, String> headers() {
         return Map.of(HttpHeaders.CONTENT_TYPE, "application/json");
     }
 }
