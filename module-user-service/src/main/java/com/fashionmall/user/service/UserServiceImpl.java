@@ -7,14 +7,21 @@ import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.user.dto.request.DeliveryAddressRequestDto;
 import com.fashionmall.user.dto.request.FavoriteRequestDto;
+import com.fashionmall.user.dto.request.SignUpRequestDto;
+import com.fashionmall.user.dto.request.UpdateUserInfoRequestDto;
 import com.fashionmall.user.dto.response.DeliveryAddressResponseDto;
 import com.fashionmall.user.dto.response.FavoriteResponseDto;
+import com.fashionmall.user.dto.response.UserInfoResponseDto;
 import com.fashionmall.user.entity.DeliveryAddress;
+import com.fashionmall.user.entity.User;
+import com.fashionmall.user.entity.UserRoleEnum;
 import com.fashionmall.user.repository.DeliveryAddressRepository;
 import com.fashionmall.user.repository.FavoriteRepository;
+import com.fashionmall.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.fashionmall.user.entity.Favorite;
@@ -29,10 +36,49 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
     private final FavoriteRepository favoriteRepository;
     private final DeliveryAddressRepository deliveryAddressRepository;
     private final ModuleApiUtil moduleApiUtil;
 
+    // User
+    @Override
+    @Transactional
+    public Long signUp (SignUpRequestDto signUpRequestDto) {
+
+        String email = signUpRequestDto.getEmail();
+        String nickName = signUpRequestDto.getNickName();
+        validateUser(email,nickName);
+
+        String encodePassword = passwordEncoder.encode(signUpRequestDto.getPassword());
+
+        UserRoleEnum role = signUpRequestDto.isAdmin() ? UserRoleEnum.ADMIN : UserRoleEnum.USER;
+
+        User user = User.builder()
+                .email(email)
+                .password(encodePassword)
+                .userName(signUpRequestDto.getUserName())
+                .nickName(nickName)
+                .contact(signUpRequestDto.getContact())
+                .role(role)
+                .build();
+
+        userRepository.save(user);
+
+        return user.getId();
+    }
+
+    private void validateUser (String email, String nickName) {
+
+        if (userRepository.existsByEmail(email)) {
+            throw new CustomException(ErrorResponseCode.DUPLICATE_EMAIL);
+        }
+
+        if (userRepository.existsByNickName(nickName)) {
+            throw new CustomException(ErrorResponseCode.DUPLICATE_NICKNAME);
+        }
+    }
 
     // DeliveryAddress
     @Override

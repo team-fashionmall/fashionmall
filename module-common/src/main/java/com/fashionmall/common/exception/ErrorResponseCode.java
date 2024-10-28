@@ -25,7 +25,9 @@ public enum ErrorResponseCode {
     JWT_NOT_FOUND_TOKEN(HttpStatus.NOT_FOUND, "유효하지 않은 토큰입니다."),
 
     WRONG_ID(HttpStatus.BAD_REQUEST, "아이디를 다시 확인해주세요"),
+
     WRONG_USER_ID(HttpStatus.BAD_REQUEST, "userId를 다시 확인해주세요"),
+    WRONG_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 동일하지 않습니다"),
 
     // Item
     WRONG_ITEM_ID(HttpStatus.BAD_REQUEST, "상품 관련 ID를 다시 확인해주세요"),
