@@ -27,9 +27,6 @@ public class DeliveryAddress extends BaseEntity {
     @Column (nullable = false, length = 100)
     private String roadAddress;
 
-    @Column (name = "is_selected", nullable = false)
-    private boolean isSelected = false;
-
     @Builder
     public DeliveryAddress (Long userId, String zipCode, String roadAddress) {
         this.userId = userId;
