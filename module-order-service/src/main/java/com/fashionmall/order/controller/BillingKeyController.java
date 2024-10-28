@@ -1,13 +1,14 @@
 package com.fashionmall.order.controller;
 
 import com.fashionmall.common.response.CommonResponse;
-import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.common.util.ApiResponseUtil;
 import com.fashionmall.order.dto.request.BillingKeyRequestDto;
 import com.fashionmall.order.dto.response.UserBillingKeyResponseDto;
 import com.fashionmall.order.service.BillingKeyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,10 +23,9 @@ public class BillingKeyController {
     }
 
     @GetMapping("/billingKey")
-    public CommonResponse<PageInfoResponseDto<UserBillingKeyResponseDto>> getBillingKey(@RequestParam(defaultValue = "1") int pageNo,
-                                                                                        @RequestParam(defaultValue = "10") int size) {
+    public CommonResponse<List<UserBillingKeyResponseDto>> getBillingKey() {
         Long userId = 1L;
-        return ApiResponseUtil.success(billingKeyService.getUserBillingKeyList(userId, pageNo, size));
+        return ApiResponseUtil.success(billingKeyService.getUserBillingKeyList(userId));
     }
 
     @DeleteMapping("/billingKey/{billingKeyId}")
