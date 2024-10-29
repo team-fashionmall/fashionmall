@@ -53,7 +53,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public List<LikeItemListResponseDto> getItemInfo (Long itemId, Long userId) {
+    public List<LikeItemListResponseDto> getItemInfoApi (Long itemId, Long userId) {
         return itemRepository.getItemInfo(itemId, userId);
     }
 

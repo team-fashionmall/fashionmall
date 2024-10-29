@@ -33,7 +33,7 @@ public interface ItemService {
 
     ItemDetailResponseDto getItemDetail (Long itemDetailId, Long workerId);
 
-    List<LikeItemListResponseDto> getItemInfo (Long itemId, Long userId);
+    List<LikeItemListResponseDto> getItemInfoApi (Long itemId, Long userId);
 
     // 조회
     PageInfoResponseDto<ItemListResponseDto> getItemList(int pageNo, int size, String itemName, Long category1, Long category2);

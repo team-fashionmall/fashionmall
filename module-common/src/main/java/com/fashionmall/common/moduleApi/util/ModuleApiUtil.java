@@ -31,7 +31,7 @@ public class ModuleApiUtil {
     private final String imageApi = "http://localhost:8000/api/image";
 
     // item
-    public List<LikeItemListResponseDto> itemInfo (Long itemId, Long userId) {
+    public List<LikeItemListResponseDto> itemInfoApi (Long itemId, Long userId) {
 
         CommonResponse<List<LikeItemListResponseDto>> commonResponse = webClientUtil.get(
                 itemApi + "/item/" + itemId + "/" + userId,

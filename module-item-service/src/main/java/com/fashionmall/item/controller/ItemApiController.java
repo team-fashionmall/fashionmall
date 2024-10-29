@@ -32,9 +32,9 @@ public class ItemApiController {
     }
 
     @GetMapping("/item/{itemId}/{userId}")
-    public CommonResponse<List<LikeItemListResponseDto>> getItemInfo (@PathVariable Long itemId,
+    public CommonResponse<List<LikeItemListResponseDto>> getItemInfoApi (@PathVariable Long itemId,
                                                                @PathVariable Long userId) {
-        return ApiResponseUtil.success(itemService.getItemInfo(itemId, userId));
+        return ApiResponseUtil.success(itemService.getItemInfoApi(itemId, userId));
     }
 
     @PatchMapping ("/deductItem")
