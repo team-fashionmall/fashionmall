@@ -84,6 +84,7 @@ public class ImageServiceImpl implements ImageService {
                     .imageType(uploadInfo.getImageType())
                     .build();
             imageMappingRepository.save(imageMapping);
+
             image.getImageMappings().add(imageMapping);
 
             response.put(image.getId(), image.getUrl());

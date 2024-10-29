@@ -21,7 +21,7 @@ public class Image extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false, length = 500, columnDefinition = "TEXT")
     private String url;
 
     @Column(nullable = false)
