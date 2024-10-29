@@ -1,10 +1,10 @@
 package com.fashionmall.user.controller;
 
+import com.fashionmall.common.moduleApi.dto.DeliveryAddressDto;
 import com.fashionmall.common.moduleApi.dto.LikeItemListResponseDto;
 import com.fashionmall.common.response.CommonResponse;
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.common.util.ApiResponseUtil;
-import com.fashionmall.user.dto.response.DeliveryAddressResponseDto;
 import com.fashionmall.user.dto.response.UserInfoResponseDto;
 import com.fashionmall.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class UserQueryController {
 
     // DeliveryAddress
     @GetMapping("/address")
-    public CommonResponse<List<DeliveryAddressResponseDto>> getDeliveryAddress () {
+    public CommonResponse<List<DeliveryAddressDto>> getDeliveryAddress () {
         Long userId = 1L;
         return ApiResponseUtil.success(userService.getDeliveryAddress(userId));
     }
