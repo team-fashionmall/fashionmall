@@ -8,8 +8,7 @@ import com.fashionmall.cart.dto.response.CartCalculateResponseDto;
 import com.fashionmall.cart.dto.response.CartResponseDto;
 import com.fashionmall.cart.entity.Cart;
 import com.fashionmall.cart.repository.CartRepository;
-import com.fashionmall.common.moduleApi.dto.ItemDetailDto;
-import com.fashionmall.common.moduleApi.dto.ItemDetailResponseDto;
+import com.fashionmall.common.moduleApi.dto.*;
 import com.fashionmall.common.exception.CustomException;
 import com.fashionmall.common.exception.ErrorResponseCode;
 import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
@@ -18,8 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -161,11 +160,22 @@ public class CartServiceImpl implements CartService{
             Cart cart = cartRepository.findByIdAndUserId(cartItem.getId(), userId)
                     .orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_CART_ID));
 
-            CartCalculateResponseDto responseDto = CartCalculateResponseDto.of(cart.getId(), cart.getPrice() * cart.getQuantity());
-            responseDtoList.add(responseDto);
+            List<ItemPriceNameDto> discountPrices = moduleApiUtil.getItemPriceAndNameApi(Collections.singletonList(cart.getItemDetailId()));
 
+            int quantity = cart.getQuantity();
+
+
+            for (ItemPriceNameDto discountPriceDto : discountPrices) {
+                if (discountPriceDto.getItemDetailId() == cart.getItemDetailId()) {
+                    int discountPrice = discountPriceDto.getPrice(); // 할인 가격으로 설정
+                    int calculatePrice = discountPrice * quantity;
+
+                    CartCalculateResponseDto responseDto = CartCalculateResponseDto.of(cart.getId(), calculatePrice);
+                    responseDtoList.add(responseDto);
+
+                }
+            }
         }
-
         return responseDtoList;
     }
 
