@@ -41,6 +41,18 @@ public class ModuleApiUtil {
         return listCommonResponse.getData();
     }
 
+    public List<CartItemDto> getIsSelectedItemApi () {
+
+        CommonResponse<List<CartItemDto>> commonResponse = webClientUtil.get(
+                cartApi + "/getIsSelectedItem",
+                new ParameterizedTypeReference<CommonResponse<List<CartItemDto>>>() {},
+                null,
+                headers()
+        );
+
+        return commonResponse.getData();
+    }
+
     public ItemDetailResponseDto getItemDetailApi(Long itemDetailId) {
         Map<String, String> headers = Map.of(
                 HttpHeaders.CONTENT_TYPE, "application/json");

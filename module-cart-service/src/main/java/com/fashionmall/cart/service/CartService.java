@@ -20,4 +20,6 @@ public interface CartService {
     List<CartResponseDto> getCartList(Long userId);
 
     List<CartCalculateResponseDto> calculateCart(CartCalculateRequestDto cartCalculateRequestDto, Long userId);
+
+    List<CartItemDto> getIsSelectedItemApi(Long userId);
 }

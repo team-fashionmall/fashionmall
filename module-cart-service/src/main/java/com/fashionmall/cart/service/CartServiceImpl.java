@@ -134,7 +134,26 @@ public class CartServiceImpl implements CartService{
         }
 
         return responseDtoList;
-
     }
 
+    @Override
+    @Transactional
+    public List<CartItemDto> getIsSelectedItemApi (Long userId) {
+
+        List<Cart> carts = cartRepository.findByUserId(userId)
+                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_USER_ID));
+
+        List<CartItemDto> cartItemDtoList = new ArrayList<>();
+
+        for (Cart cart : carts) {
+
+            Long id = cart.getId();
+            int quantity = cart.getQuantity();
+
+            CartItemDto cartItemDto = new CartItemDto(id, quantity);
+            cartItemDtoList.add(cartItemDto);
+        }
+
+        return cartItemDtoList;
+    }
 }
