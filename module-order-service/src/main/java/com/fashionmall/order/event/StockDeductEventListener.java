@@ -29,7 +29,7 @@ public class StockDeductEventListener {
 
         try {
             List<OrderItemDto> orderItemsByOrderId = ordersRepository.findOrderItemsByOrderId(ordersId);
-            moduleApiUtil.deductItemQuantityApi(orderItemsByOrderId);
+            moduleApiUtil.deductItemStockApi(orderItemsByOrderId);
         } catch (Exception e) {
             log.error("stockDeduct error", e);
         }

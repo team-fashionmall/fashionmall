@@ -117,7 +117,7 @@ public class ModuleApiUtil {
         return null; // 오류나서 만들어뒀습니다. 수정 후 지워주세요!
     }
 
-    public void deductItemQuantityApi(List<OrderItemDto> orderItemDto) {
+    public void deductItemStockApi(List<OrderItemDto> orderItemDto) {
 
         webClientUtil.patch(
                 itemApi + "/deductItem",

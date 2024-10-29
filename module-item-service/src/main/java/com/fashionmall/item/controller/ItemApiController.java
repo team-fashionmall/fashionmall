@@ -35,9 +35,9 @@ public class ItemApiController {
     }
 
     @PatchMapping ("/deductItem")
-    public void deductItemQuantityApi (@RequestBody List<OrderItemDto> orderItemDto) {
+    public void deductItemStockApi (@RequestBody List<OrderItemDto> orderItemDto) {
         Long workerId = 1L;
-        itemService.deductItemQuantityApi(orderItemDto, workerId);
+        itemService.deductItemStockApi(orderItemDto, workerId);
     }
 
     @PatchMapping ("/restoreItem")

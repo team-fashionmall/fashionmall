@@ -25,7 +25,7 @@ public interface ItemService {
 
     String getItemNameApi (Long itemId);
 
-    void deductItemQuantityApi (List<OrderItemDto> orderItemDto, Long workerId);
+    void deductItemStockApi (List<OrderItemDto> orderItemDto, Long workerId);
 
     void restoreItemApi (List<OrderItemDto> orderItemDto, Long workerId);
 

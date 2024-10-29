@@ -402,7 +402,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public void deductItemQuantityApi (List<OrderItemDto> orderItemDto, Long workerId) {
+    public void deductItemStockApi (List<OrderItemDto> orderItemDto, Long workerId) {
         // 본인 확인
 
         for (OrderItemDto orderItemDtoList : orderItemDto) {
