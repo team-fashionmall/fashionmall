@@ -97,6 +97,18 @@ public class ModuleApiUtil {
         return listCommonResponse.getData();
     }
 
+    public List<ItemDetailInfoDto> getItemDetailInfoApi (List<Long> itemDetailId) {
+
+        CommonResponse<List<ItemDetailInfoDto>> commonResponse = webClientUtil.get(
+            itemApi + "/getItemDetail/" + itemDetailId,
+            new ParameterizedTypeReference<CommonResponse<List<ItemDetailInfoDto>>>(){},
+            null,
+            headers()
+        );
+
+        return commonResponse.getData();
+    }
+
     public Map<Long, Integer> getItemStockApi(List<Long> itemDetailId) {
 
         CommonResponse<Map<Long, Integer>> integerCommonResponse = webClientUtil.get(

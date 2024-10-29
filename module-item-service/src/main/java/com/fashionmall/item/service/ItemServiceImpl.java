@@ -402,6 +402,37 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
+    public List<ItemDetailInfoDto> getItemDetailInfoApi (List<Long> itemDetailId) {
+        // 회원인증
+
+        List<ItemDetailInfoDto> itemDetailInfoDtoList = new ArrayList<>();
+
+        for (Long id : itemDetailId) {
+            ItemDetail itemDetail = itemDetailRepository.findById(id).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_DETAIL_ID));
+            Item item = itemRepository.findById(itemDetail.getItem().getId()).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
+            List<ItemDiscount> itemDiscounts = item.getItemDiscounts();
+
+            String itemDetailName = itemDetail.getName();
+            int price = itemDetail.getPrice();
+            String imageUrl = itemDetail.getImageUrl();
+
+            for (ItemDiscount itemDiscount : itemDiscounts) {
+
+                ItemPriceNameDto itemPriceNameDto = itemRepository.getDiscountPrice(itemDetail.getId(), itemDiscount.getId());
+
+                int itemDiscountValue = itemPriceNameDto.getPrice();
+                ItemDiscountTypeEnum discountType = itemDiscount.getType();
+
+                ItemDetailInfoDto itemDetailInfoDto = new ItemDetailInfoDto(itemDetailName, price, itemDiscountValue, discountType, imageUrl);
+                itemDetailInfoDtoList.add(itemDetailInfoDto);
+            }
+        }
+
+        return itemDetailInfoDtoList;
+    }
+
+    @Override
+    @Transactional
     public void deductItemStockApi (List<OrderItemDto> orderItemDto, Long workerId) {
         // 본인 확인
 

@@ -34,6 +34,11 @@ public class ItemApiController {
         return ApiResponseUtil.success(itemService.getItemNameApi(itemId));
     }
 
+    @GetMapping ("/getItemDetail/{itemDetailId}")
+    public CommonResponse<List<ItemDetailInfoDto>> getItemDetailInfoApi (@PathVariable List<Long> itemDetailId) {
+        return ApiResponseUtil.success(itemService.getItemDetailInfoApi(itemDetailId));
+    }
+
     @PatchMapping ("/deductItem")
     public void deductItemStockApi (@RequestBody List<OrderItemDto> orderItemDto) {
         Long workerId = 1L;
