@@ -6,7 +6,6 @@ import com.fashionmall.common.moduleApi.dto.ImageDataDto;
 import com.fashionmall.common.moduleApi.dto.ImageUploadDto;
 import com.fashionmall.common.moduleApi.dto.ItemDetailDto;
 import com.fashionmall.common.moduleApi.dto.ItemDetailResponseDto;
-import com.fashionmall.common.moduleApi.dto.*;
 import com.fashionmall.common.response.CommonResponse;
 import com.fashionmall.common.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;
@@ -14,12 +13,9 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.List;
-import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -207,6 +203,11 @@ public class ModuleApiUtil {
         return integerCommonResponse.getData();
     }
 
+    public Long deleteImageApi (Long imageId) {
+
+        CommonResponse<Long> deleteImageApi = webClientUtil.delete(
+                imageApi + "/deleteImage/" + imageId,
+                new ParameterizedTypeReference<CommonResponse<Long>>() {},
                 headers()
         );
 

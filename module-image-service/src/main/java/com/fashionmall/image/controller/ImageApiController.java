@@ -32,8 +32,8 @@ public class ImageApiController {
         return ApiResponseUtil.success(imageService.getImageApi(imageId, workerId));
     }
 
-    @DeleteMapping ("/deleteImage")
-    public CommonResponse <List<Long>> deleteImageApi (@RequestParam List<Long> imageId) {
+    @DeleteMapping ("/deleteImage/{imageId}")
+    public CommonResponse <Long> deleteImageApi (@PathVariable Long imageId) {
         Long workerId = 1L;
         return ApiResponseUtil.success(imageService.deleteImageApi(imageId, workerId));
     }

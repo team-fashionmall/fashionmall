@@ -133,21 +133,19 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     @Transactional
-    public List<Long> deleteImageApi (List<Long> imageId, Long workerId) {
+    public Long deleteImageApi (Long imageId, Long workerId) {
         // 본인인증
 
-        for (Long imageIds : imageId) {
-            Image image = imageRepository.findById(imageIds)
-                    .orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ID));
+        Image image = imageRepository.findById(imageId)
+                .orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ID));
 
-            DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
-                    .bucket(bucketName)
-                    .key(image.getUniqueFileName())
-                    .build();
-            s3Client.deleteObject(deleteObjectRequest);
+        DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                .bucket(bucketName)
+                .key(image.getUniqueFileName())
+                .build();
+        s3Client.deleteObject(deleteObjectRequest);
 
-            imageRepository.deleteById(imageIds);
-        }
+        imageRepository.deleteById(imageId);
 
         return imageId;
     }

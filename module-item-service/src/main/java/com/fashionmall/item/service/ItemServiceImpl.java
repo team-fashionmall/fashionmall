@@ -230,13 +230,10 @@ public class ItemServiceImpl implements ItemService {
         item.updateItemState(itemUpdateRequestDto.getState());
 
         if (!itemUpdateRequestDto.getImageFileName().isEmpty()) {
-//            moduleApiUtil.deleteImageApi(item.getImageId());
-//
-//            Map<Long,String> updateImage = moduleApiUtil.uploadImageApi(itemUpdateRequestDto.getImageFileName(), item.getImageId(), ReferencTypeEnum.ITEM, ImageTypeEnum.MAIN);
-//            Long imageId = updateImage.keySet().iterator().next(); // 첫 번째 키 가져오기
-//            String imageUrl = updateImage.get(imageId); // 키에 해당하는 값 가져오기
-            Long imageId = 27L;
-            String imageUrl = "수정된 메인 이미지 url";
+
+            moduleApiUtil.deleteImageApi(item.getImageId());
+
+
 
             item.updateImageId(imageId);
             item.updateImageUrl(imageUrl);
@@ -281,14 +278,9 @@ public class ItemServiceImpl implements ItemService {
                 itemDetail.updateState(itemDetailDto.getStatus());
 
                 if (!itemDetailDto.getImageFileName().isEmpty()) {
-//                    moduleApiUtil.deleteImageApi(itemDetail.getImageId());
-//
-//                    Map<Long,String> updateImage = moduleApiUtil.uploadImageApi(itemDetailDto.getImageFileName(), itemDetail.getImageId(), ReferencTypeEnum.ITEM, ImageTypeEnum.DESCRIPTION);
-//                    Long imageId = updateImage.keySet().iterator().next(); // 첫 번째 키 가져오기
-//                    String imageUrl = updateImage.get(imageId); // 키에 해당하는 값 가져오기
 
-                    Long imageId = 13L;
-                    String imageUrl = "수정된 서브 이미지 url";
+                    moduleApiUtil.deleteImageApi(itemDetail.getImageId());
+
 
                     itemDetail.updateImageId(imageId);
                     itemDetail.updateImageUrl(imageUrl);
@@ -348,12 +340,12 @@ public class ItemServiceImpl implements ItemService {
         // 관리자 확인
         // 상품 아이디가 맞는지 확인 & 해당 관리자인지 확인 (추후)
         Item item = findByIdAndWorkerId(itemId,workerId);
-//        moduleApiUtil.deleteImageApi(item.getImageId());
-//        moduleApiUtil.deleteImageApi(item.getItemDetails().getImageId);
-//
-//        for (ItemDetail itemDetail : item.getItemDetails()) {
-//            moduleApiUtil.deleteImageApi(itemDetail.getImageId());
-//        }
+
+        moduleApiUtil.deleteImageApi(item.getImageId());
+
+        for (ItemDetail itemDetail : item.getItemDetails()) {
+            moduleApiUtil.deleteImageApi(itemDetail.getImageId());
+        }
 
         // 상품 삭제
         itemRepository.deleteById(itemId);
