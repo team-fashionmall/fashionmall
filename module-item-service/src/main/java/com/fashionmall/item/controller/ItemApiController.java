@@ -31,9 +31,9 @@ public class ItemApiController {
         return ApiResponseUtil.success(itemService.getItemDetailNameApi(itemDetailIds));
     }
 
-    @GetMapping("/item/{itemId}/{userId}")
+    @GetMapping("/itemInfo/{itemId}/{userId}")
     public CommonResponse<List<LikeItemListResponseDto>> getItemInfoApi (@PathVariable Long itemId,
-                                                               @PathVariable Long userId) {
+                                                                         @PathVariable Long userId) {
         return ApiResponseUtil.success(itemService.getItemInfoApi(itemId, userId));
     }
 

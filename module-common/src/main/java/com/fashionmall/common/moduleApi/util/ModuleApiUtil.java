@@ -33,7 +33,7 @@ public class ModuleApiUtil {
     public List<LikeItemListResponseDto> getItemInfoApi (Long itemId, Long userId) {
 
         CommonResponse<List<LikeItemListResponseDto>> commonResponse = webClientUtil.get(
-                itemApi + "/item/" + itemId + "/" + userId,
+                itemApi + "/itemInfo/" + itemId + "/" + userId,
                 new ParameterizedTypeReference<CommonResponse<List<LikeItemListResponseDto>>>() {},
                 null,
                 headers()
