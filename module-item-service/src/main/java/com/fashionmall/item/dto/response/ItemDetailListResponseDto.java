@@ -1,7 +1,6 @@
 package com.fashionmall.item.dto.response;
 
-import com.fashionmall.item.entity.Category1;
-import com.fashionmall.item.enums.ItemDiscountTypeEnum;
+import com.fashionmall.common.moduleApi.enums.ItemDiscountTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +15,6 @@ public class ItemDetailListResponseDto {
     private ItemInfo itemInfo;
     private ItemDetailInfo itemDetailInfo;
     private ItemDiscountInfo itemDiscountInfo;
-    private ItemCategoryInfo itemCategoryInfo;
 
     @Getter
     @Builder
@@ -26,6 +24,7 @@ public class ItemDetailListResponseDto {
 
         private long id;
         private String name;
+        private String imageUrl;
 
     }
 
@@ -35,6 +34,7 @@ public class ItemDetailListResponseDto {
     @AllArgsConstructor
     public static class ItemDetailInfo {
 
+        private long id;
         private String color;
         private String size;
         private String name; // 상품 상세명
@@ -57,16 +57,8 @@ public class ItemDetailListResponseDto {
 
     }
 
-    @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class ItemCategoryInfo {
-
-        private long category1;
-        private long category2;
-    }
 
     //찜개수
+
 
 }

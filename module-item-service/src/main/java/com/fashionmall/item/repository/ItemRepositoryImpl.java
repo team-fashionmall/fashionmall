@@ -1,14 +1,10 @@
 package com.fashionmall.item.repository;
 
+import com.fashionmall.common.moduleApi.dto.ItemPriceNameDto;
 import com.fashionmall.common.response.PageInfoResponseDto;
-import com.fashionmall.item.dto.response.AdminItemDetailResponseDto;
-import com.fashionmall.item.dto.response.AdminItemResponseDto;
-import com.fashionmall.item.dto.response.ItemDetailListResponseDto;
-import com.fashionmall.item.dto.response.ItemListResponseDto;
-import com.fashionmall.item.entity.QItemCategoryMapping;
-import com.fashionmall.item.enums.ItemDiscountTypeEnum;
+import com.fashionmall.item.dto.response.*;
+import com.fashionmall.common.moduleApi.enums.ItemDiscountTypeEnum;
 import com.fashionmall.item.enums.StatusEnum;
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -20,12 +16,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.security.Principal;
 import java.util.List;
 
 
 import static com.fashionmall.item.entity.QItem.item;
 import static com.fashionmall.item.entity.QItemCategoryMapping.itemCategoryMapping;
+
 import static com.fashionmall.item.entity.QItemDetail.itemDetail;
 import static com.fashionmall.item.entity.QItemDiscount.itemDiscount;
 
@@ -74,15 +70,17 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
     }
 
     @Override
-    public PageInfoResponseDto <ItemDetailListResponseDto> itemDetailListPageNation (Long itemId, Pageable pageable) {
+    public List<ItemDetailListResponseDto> itemDetailListPageNation (Long itemId) {
 
         List<ItemDetailListResponseDto> itemDetailList = queryFactory
                 .select(Projections.constructor(ItemDetailListResponseDto.class,
                         Projections.constructor(ItemDetailListResponseDto.ItemInfo.class,
                                 item.id,
-                                item.name
+                                item.name,
+                                item.imageUrl
                         ),
                         Projections.constructor(ItemDetailListResponseDto.ItemDetailInfo.class,
+                                itemDetail.id,
                                 itemDetail.itemColor.color,
                                 itemDetail.itemSize.size,
                                 itemDetail.name,
@@ -96,31 +94,16 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
                         Projections.constructor(ItemDetailListResponseDto.ItemDiscountInfo.class,
                                 itemDiscount.type,
                                 itemDiscount.value
-                        ),
-                        Projections.constructor(ItemDetailListResponseDto.ItemCategoryInfo.class,
-                                itemCategoryMapping.category1.id,
-                                itemCategoryMapping.category2Id
                         )
                 ))
                 .from(item)
                 .innerJoin(item.itemDetails, itemDetail)
                 .innerJoin(item.itemDiscounts, itemDiscount)
-                .innerJoin(item.itemCategoryMappings, itemCategoryMapping)
+//                .innerJoin(item.itemCategoryMappings, itemCategoryMapping)
                 .where(item.id.eq(itemId))
-                .orderBy(item.id.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
                 .fetch();
 
-        Long countList = queryFactory
-                .select(item.count())
-                .from(item)
-                .where(item.id.eq(itemId))
-                .fetchOne();
-
-        int totalCount = countList.intValue();
-
-        return PageInfoResponseDto.of(pageable, itemDetailList, totalCount);
+        return itemDetailList;
     }
 
     @Override

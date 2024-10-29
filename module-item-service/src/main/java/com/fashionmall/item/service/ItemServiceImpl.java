@@ -50,9 +50,8 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public PageInfoResponseDto<ItemDetailListResponseDto> getItemDetailList(Long itemId, int pageNo, int size) {
-        PageRequest pageRequest = PageRequest.of(pageNo -1, size);
-        return itemRepository.itemDetailListPageNation (itemId, pageRequest);
+    public List<ItemDetailListResponseDto> getItemDetailList(Long itemId) {
+        return itemRepository.itemDetailListPageNation (itemId);
     }
 
     @Override
