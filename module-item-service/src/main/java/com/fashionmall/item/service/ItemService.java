@@ -1,5 +1,7 @@
 package com.fashionmall.item.service;
 
+import com.fashionmall.common.moduleApi.dto.ItemDetailInfoDto;
+import com.fashionmall.common.moduleApi.dto.ItemPriceNameDto;
 import com.fashionmall.common.moduleApi.dto.OrderItemDto;
 import com.fashionmall.item.dto.request.ItemDiscountRequestDto;
 import com.fashionmall.common.response.PageInfoResponseDto;
@@ -38,7 +40,7 @@ public interface ItemService {
     // 조회
     PageInfoResponseDto<ItemListResponseDto> getItemList(int pageNo, int size, String itemName, Long category1, Long category2);
 
-    PageInfoResponseDto<ItemDetailListResponseDto> getItemDetailList(Long itemId, int pageNo, int size);
+    List<ItemDetailListResponseDto> getItemDetailList(Long itemId);
 
     PageInfoResponseDto<AdminItemResponseDto> getAdminItemList(int pageNo, int size, String itemName, Long category1, Long category2);
 
