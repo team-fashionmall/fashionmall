@@ -50,4 +50,11 @@ public class ItemApiController {
         Long workerId = 1L;
         itemService.restoreItemStockApi(orderItemDto, workerId);
     }
+
+    // 카트
+    @GetMapping("/itemPriceAndName")
+    public CommonResponse<List<ItemPriceNameDto>> getItemPriceAneNameApi (@RequestParam List<Long> itemDetailId) {
+        Long workerId = 1L;
+        return ApiResponseUtil.success(itemService.getItemPriceAndNameApi(itemDetailId, workerId));
+    }
 }

@@ -485,4 +485,26 @@ public class ItemServiceImpl implements ItemService {
                 .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_DETAIL_ID));
     }
 
+    @Override
+    @Transactional
+    public List<ItemPriceNameDto> getItemPriceAndNameApi (List<Long> itemDetailId, Long workerId) {
+        // 본인인증
+
+        List<ItemPriceNameDto> itemPriceNameDtos = new ArrayList<>();
+
+        for (Long itemDetailIds : itemDetailId) {
+
+            ItemDetail itemDetail = itemDetailRepository.findById(itemDetailIds).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_DETAIL_ID));
+            Item item = itemRepository.findById(itemDetail.getItem().getId()).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
+            List<ItemDiscount> itemDiscounts = item.getItemDiscounts();
+
+            for (ItemDiscount itemDiscount : itemDiscounts) {
+                ItemPriceNameDto itemPriceNameDto = itemRepository.getDiscountPrice(itemDetail.getId(), itemDiscount.getId());
+                itemPriceNameDtos.add(itemPriceNameDto);
+            }
+        }
+
+        return itemPriceNameDtos;
+    }
+
 }

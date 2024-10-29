@@ -105,14 +105,47 @@ public class CartServiceImpl implements CartService{
 
         // 회원 여부 인증
 
-        List<Cart> carts = cartRepository.findByUserId(userId);
-        Cart cart = carts.get(0);
+        List<CartResponseDto> cartResponseDtoList = new ArrayList<>();
 
-        // gateway로 연결예정
-//        String imageUrl = moduleApiUtil.getImageApi(cart.getImageId());
-        String imageUrl = "이미지 Id / Url 중 뭐가 필요할까?";
+        List<Cart> carts = cartRepository.findByUserId(userId)
+                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_USER_ID));
 
-        return cartRepository.getCartList(userId, imageUrl);
+        List<Long> itemDetailIds = carts.stream()
+                .map(Cart::getItemDetailId)
+                .collect(Collectors.toList());
+
+        List<Long> imageIds = carts.stream()
+                .map(Cart::getImageId)
+                .collect(Collectors.toList());
+
+        List<ItemPriceNameDto> discountPrices = moduleApiUtil.getItemPriceAndNameApi(itemDetailIds);
+        List<ImageDataDto> imageUrls = moduleApiUtil.getImageApi(imageIds);
+
+
+        for (Cart cart : carts) {
+
+            int discountPrice = 0;
+            String itemName = "";
+
+            for (ItemPriceNameDto response : discountPrices) {
+                if (response.getItemDetailId() == cart.getItemDetailId()) {
+                    discountPrice = response.getPrice();
+                    itemName = response.getName();
+                }
+            }
+
+            String imageUrl = "";
+            for (ImageDataDto response : imageUrls) {
+                if (response.getId().equals(cart.getImageId())) {
+                    imageUrl = response.getUrl();
+                }
+            }
+
+            List<CartResponseDto> cartList = cartRepository.getCartList(userId, discountPrice, itemName, cart.isSelected(), imageUrl);
+            cartResponseDtoList.addAll(cartList);
+        }
+
+        return cartResponseDtoList;
     }
 
     @Override

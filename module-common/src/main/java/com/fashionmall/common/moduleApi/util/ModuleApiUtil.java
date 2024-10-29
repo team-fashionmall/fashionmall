@@ -174,34 +174,39 @@ public class ModuleApiUtil {
         return uploadImageApi.getData();
     }
 
-    public List<ImageDataDto> getImageApi (List < Long > imageId) {
-        // referenceIds를 쿼리 파라미터로 변환
+    public List<ImageDataDto> getImageApi (List<Long> imageId) {
+
         String imageIdParam = imageId.stream()
                 .map(id -> "imageId=" + id)
                 .collect(Collectors.joining("&"));
 
-        // API 호출
         CommonResponse<List<ImageDataDto>> getImageApi = webClientUtil.get(
                 imageApi + "/getImage?" + imageIdParam,
                 new ParameterizedTypeReference<CommonResponse<List<ImageDataDto>>>() {
                 },
-                null, // 쿼리 파라미터는 URL에 포함되므로 null
+                null,
                 headers()
         );
 
         return getImageApi.getData();
     }
 
-    public List<Long> deleteImageApi (List < Long > imageId) {
+    public List<ItemPriceNameDto> getItemPriceAndNameApi (List<Long> itemDetailIds) {
 
-        String imageIdParam = imageId.stream()
-                .map(id -> "imageId=" + id)
+        String itemDetailId= itemDetailIds.stream()
+                .map(id -> "itemDetailId=" + id)
                 .collect(Collectors.joining("&"));
 
-        CommonResponse<List<Long>> deleteImageApi = webClientUtil.delete(
-                imageApi + "/deleteImage?" + imageIdParam,
-                new ParameterizedTypeReference<CommonResponse<List<Long>>>() {
-                },
+        CommonResponse <List<ItemPriceNameDto>> integerCommonResponse = webClientUtil.get(
+                itemApi + "/itemPriceAndName?" + itemDetailId,
+                new ParameterizedTypeReference<CommonResponse<List<ItemPriceNameDto>>>() {},
+                null,
+                headers()
+        );
+
+        return integerCommonResponse.getData();
+    }
+
                 headers()
         );
 

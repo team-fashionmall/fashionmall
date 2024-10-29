@@ -238,12 +238,31 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
         return filters;
     }
 
-    private NumberExpression<Integer> calculateDiscount (NumberExpression<Integer> price, EnumPath<StatusEnum> status, EnumPath <ItemDiscountTypeEnum> type, NumberExpression<Integer> value) {
+    public ItemPriceNameDto getDiscountPrice (Long itemDetailId, Long itemDiscountId) {
+
+        return queryFactory
+                .select(Projections.fields(ItemPriceNameDto.class,
+                        itemDetail.id.as("itemDetailId"),
+                        ExpressionUtils.as(calculateDiscount(itemDetail.price, itemDiscount.status, itemDiscount.type, itemDiscount.value),
+                                "price"),
+                        item.name
+                        )
+                )
+                .from(item)
+                .innerJoin(item.itemDetails, itemDetail)
+                .innerJoin(item.itemDiscounts, itemDiscount)
+                .where(itemDetail.id.eq(itemDetailId)
+                        .and(itemDiscount.id.eq(itemDiscountId)))
+                .orderBy(itemDetail.id.desc())
+                .fetchOne();
+    }
+
+    private NumberExpression<Integer> calculateDiscount (NumberExpression<Integer> price, EnumPath<StatusEnum> status, EnumPath<ItemDiscountTypeEnum> type, NumberExpression<Integer> value) {
         return new CaseBuilder()
                 .when(status.eq(StatusEnum.ACTIVATED).and(type.eq(ItemDiscountTypeEnum.RATE)))
                 .then(price.subtract(price.multiply(value).divide(100)))
                 .when(status.eq(StatusEnum.ACTIVATED).and(type.eq(ItemDiscountTypeEnum.AMOUNT)))
                 .then(price.subtract(value))
-                .otherwise(0);
+                .otherwise(price);
     }
 }
