@@ -1,5 +1,8 @@
 package com.fashionmall.item.controller;
 
+import com.fashionmall.common.moduleApi.dto.ItemDetailInfoDto;
+import com.fashionmall.common.moduleApi.dto.ItemDetailResponseDto;
+import com.fashionmall.common.moduleApi.dto.ItemPriceNameDto;
 import com.fashionmall.common.moduleApi.dto.OrderItemDto;
 import com.fashionmall.common.response.CommonResponse;
 import com.fashionmall.common.util.ApiResponseUtil;

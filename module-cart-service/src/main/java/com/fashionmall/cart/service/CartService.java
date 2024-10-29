@@ -4,6 +4,7 @@ import com.fashionmall.cart.dto.request.CartCalculateRequestDto;
 import com.fashionmall.cart.dto.request.CartRequestDto;
 import com.fashionmall.cart.dto.request.CartUpdateRequestDto;
 import com.fashionmall.cart.dto.response.CartUpdateResponseDto;
+import com.fashionmall.common.moduleApi.dto.CartItemDto;
 import com.fashionmall.common.moduleApi.dto.ItemDetailDto;
 
 import java.util.List;

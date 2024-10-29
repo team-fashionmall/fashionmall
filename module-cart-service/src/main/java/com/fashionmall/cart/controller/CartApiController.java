@@ -1,10 +1,10 @@
 package com.fashionmall.cart.controller;
 
 import com.fashionmall.cart.service.CartService;
+import com.fashionmall.common.moduleApi.dto.CartItemDto;
 import com.fashionmall.common.moduleApi.dto.ItemDetailDto;
 import com.fashionmall.common.response.CommonResponse;
 import com.fashionmall.common.util.ApiResponseUtil;
-import jakarta.ws.rs.Path;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
