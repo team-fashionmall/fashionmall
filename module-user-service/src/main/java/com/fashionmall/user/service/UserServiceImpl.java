@@ -119,6 +119,16 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    @Transactional
+    public Long confirmUserInfoApi (String userName) {
+
+        User user = userRepository.findByUserName(userName)
+                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_USER_NAME));
+
+        return user.getId();
+    }
+
     // DeliveryAddress
     @Override
     @Transactional

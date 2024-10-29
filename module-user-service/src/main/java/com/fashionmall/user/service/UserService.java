@@ -21,6 +21,8 @@ public interface UserService {
 
     UserInfoResponseDto userInfo(Long userId);
 
+    Long confirmUserInfoApi (String userName);
+
     // DeliveryAddress
     Long createDeliveryAddress (DeliveryAddressRequestDto deliveryAddressRequestDto, Long userId);
 

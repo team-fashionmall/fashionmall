@@ -7,17 +7,24 @@ import com.fashionmall.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/user")
 public class UserApiController {
 
     private final UserService userService;
 
-    @GetMapping ("/api/user/DeliveryAddressApi/{userId}")
+    @GetMapping ("/confirm/{userName}")
+    public CommonResponse<Long> confirmUserInfoApi (@PathVariable String userName) {
+        return ApiResponseUtil.success(userService.confirmUserInfoApi(userName));
+    }
+
+    @GetMapping ("/DeliveryAddressApi/{userId}")
     public CommonResponse<List<DeliveryAddressDto>> getUserDeliveryAddressApi (@PathVariable Long userId) {
         return ApiResponseUtil.success(userService.getDeliveryAddress(userId));
     }

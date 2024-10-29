@@ -30,7 +30,6 @@ public class ModuleApiUtil {
     private final String itemApi = "http://localhost:8000/api/item";
     private final String imageApi = "http://localhost:8000/api/image";
 
-    // item
     public List<LikeItemListResponseDto> itemInfoApi (Long itemId, Long userId) {
 
         CommonResponse<List<LikeItemListResponseDto>> commonResponse = webClientUtil.get(
@@ -42,6 +41,18 @@ public class ModuleApiUtil {
 
         return commonResponse.getData();
 
+    }
+
+    public Long confirmUserInfoApi (String userName) {
+
+        CommonResponse<Long> commonResponse = webClientUtil.get(
+                userApi + "/confirm/" + userName,
+                new ParameterizedTypeReference<CommonResponse<Long>>() {},
+                null,
+                headers()
+        );
+
+        return commonResponse.getData();
     }
 
     public List<CouponDto> getUserCouponApi (Long userId){
@@ -68,7 +79,6 @@ public class ModuleApiUtil {
         return commonResponse.getData();
     }
 
-    // cart
     //은미님께 요청
     public List<DeliveryAddressDto> getUserDeliveryAddressApi (Long userId){
         Map<String, String> headers = Map.of(
@@ -139,7 +149,6 @@ public class ModuleApiUtil {
                 headers());
     }
 
-    // image
     public Map<Long, String> uploadImageApi (List < ImageUploadDto > imageUploadDto) {
         CommonResponse<Map<Long, String>> uploadImageApi = webClientUtil.post(
                 imageApi + "/uploadImage",
