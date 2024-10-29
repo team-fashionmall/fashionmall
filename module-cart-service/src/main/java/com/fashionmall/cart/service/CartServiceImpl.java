@@ -46,7 +46,7 @@ public class CartServiceImpl implements CartService{
                 throw new CustomException(ErrorResponseCode.DUPLICATE_CART_DETAIL_ID);
             }
 
-            ItemDetailResponseDto itemDetail = moduleApiUtil.getItemDetail(cartRequestDtoList.getItemDetailId());
+            ItemDetailResponseDto itemDetail = moduleApiUtil.getItemDetailApi(cartRequestDtoList.getItemDetailId());
 
             Cart cart = cartRequestDtoList.toEntity(userId, itemDetail.getImageId(), itemDetail.getPrice(), itemDetail.getName());
 

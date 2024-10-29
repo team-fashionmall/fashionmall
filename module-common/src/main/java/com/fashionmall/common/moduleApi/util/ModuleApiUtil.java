@@ -41,7 +41,7 @@ public class ModuleApiUtil {
         return listCommonResponse.getData();
     }
 
-    public ItemDetailResponseDto getItemDetail(Long itemDetailId) {
+    public ItemDetailResponseDto getItemDetailApi(Long itemDetailId) {
         Map<String, String> headers = Map.of(
                 HttpHeaders.CONTENT_TYPE, "application/json");
 

@@ -441,14 +441,16 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public ItemDetailResponseDto getItemDetail (Long itemDetailId, Long workerId) {
+    public ItemDetailResponseDto getItemDetailApi (Long itemDetailId, Long workerId) {
         // 본인인증
 
         ItemDetail itemDetail = findByItemDetailIdAndWorkerId(itemDetailId, workerId);
+        Item item = itemRepository.findByItemDetails_id(itemDetail.getId()).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_DETAIL_ID));
 
         return ItemDetailResponseDto.builder()
                 .name(itemDetail.getName())
                 .price(itemDetail.getPrice())
+                .imageId(item.getImageId())
                 .build();
     }
 

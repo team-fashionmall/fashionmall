@@ -17,8 +17,11 @@ public class ItemApiController {
 
     private final ItemService itemService;
 
-    @GetMapping ("/{itemDetailId}/quantity")
-    public CommonResponse <Integer> getItemQuantityApi (@PathVariable Long itemDetailId) {
+    @GetMapping("/itemDetail/{itemDetailId}")
+    public CommonResponse <ItemDetailResponseDto> getItemDetailApi (@PathVariable Long itemDetailId) {
+        Long workerId = 1L;
+        return ApiResponseUtil.success(itemService.getItemDetailApi(itemDetailId, workerId));
+    }
         Long workerId = 1L;
         return ApiResponseUtil.success(itemService.getItemQuantityApi(itemDetailId, workerId));
     }
