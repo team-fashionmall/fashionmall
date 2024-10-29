@@ -21,7 +21,7 @@ public interface ItemService {
     String deleteItem (Long itemId, Long workerId);
 
     // gateway
-    int getItemQuantityApi (Long itemDetailId, Long workerId);
+    Map<Long, Integer> getItemStockApi (Long itemDetailId, Long workerId);
 
     Map<Long, String> getItemDetailNameApi (List<Long> itemDetailIds);
 

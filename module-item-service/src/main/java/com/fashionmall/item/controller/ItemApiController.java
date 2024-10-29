@@ -22,8 +22,11 @@ public class ItemApiController {
         Long workerId = 1L;
         return ApiResponseUtil.success(itemService.getItemDetailApi(itemDetailId, workerId));
     }
+
+    @GetMapping ("/getStock/{itemDetailId}")
+    public CommonResponse <Map<Long, Integer>> getItemStockApi (@PathVariable Long itemDetailId) {
         Long workerId = 1L;
-        return ApiResponseUtil.success(itemService.getItemQuantityApi(itemDetailId, workerId));
+        return ApiResponseUtil.success(itemService.getItemStockApi(itemDetailId, workerId));
     }
 
     @GetMapping ("/itemDetailName")

@@ -380,11 +380,14 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public int getItemQuantityApi (Long itemDetailId, Long workerId) {
+    public Map<Long, Integer> getItemStockApi (Long itemDetailId, Long workerId) {
 
         ItemDetail itemDetail = findByItemDetailIdAndWorkerId(itemDetailId, workerId);
 
-        return itemDetail.getQuantity();
+        Map<Long, Integer> itemStock = new HashMap<>();
+        itemStock.put(itemDetail.getId(), itemDetail.getQuantity());
+
+        return itemStock;
     }
 
     @Override

@@ -89,7 +89,7 @@ public class OrdersServiceImpl implements OrdersService {
                 .map(OrderItemRequestDto::getItemDetailId)
                 .toList();
 
-        Map<Long, Integer> itemQuantityApi = moduleApiUtil.getItemQuantityApi(itemDetailIds);
+        Map<Long, Integer> itemQuantityApi = moduleApiUtil.getItemStockApi(itemDetailIds);
         for (OrderItemRequestDto orderItem : orderItems) {
             Long itemDetailId = orderItem.getItemDetailId();
             int quantity = orderItem.getQuantity();
