@@ -36,20 +36,21 @@ public class CartRepositoryImpl implements CartRepositoryCustom {
         }
 
     @Override
-    public List<CartResponseDto> getCartList (Long userId, String imageUrl) {
+    public List<CartResponseDto> getCartList (Long userId, int discountPrice, String itemName, boolean isSelected, String imageUrl) {
 
         List<CartResponseDto> cartList = jpaQueryFactory
                 .select(Projections.constructor(CartResponseDto.class,
                         cart.id,
                         cart.itemDetailId,
-                        cart.imageId,
+                        Expressions.constant(itemName),
                         Expressions.constant(imageUrl),
                         cart.quantity,
                         cart.price,
+                        Expressions.constant(discountPrice),
                         cart.isSelected
                         ))
                 .from(cart)
-                .where(cart.userId.eq(userId))
+                .where(cart.userId.eq(userId).and(cart.isSelected.eq(isSelected)))
                 .orderBy(cart.id.desc())
                 .fetch();
 
