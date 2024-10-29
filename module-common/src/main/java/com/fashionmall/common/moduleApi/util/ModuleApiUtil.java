@@ -30,7 +30,7 @@ public class ModuleApiUtil {
     private final String itemApi = "http://localhost:8000/api/item";
     private final String imageApi = "http://localhost:8000/api/image";
 
-    public List<LikeItemListResponseDto> itemInfoApi (Long itemId, Long userId) {
+    public List<LikeItemListResponseDto> getItemInfoApi (Long itemId, Long userId) {
 
         CommonResponse<List<LikeItemListResponseDto>> commonResponse = webClientUtil.get(
                 itemApi + "/item/" + itemId + "/" + userId,
