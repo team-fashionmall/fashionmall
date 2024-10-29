@@ -19,4 +19,6 @@ public interface ItemRepositoryCustom {
     PageInfoResponseDto <AdminItemDetailResponseDto> adminItemDetailListPageNation (Long itemId, Pageable pageable);
 
     ItemPriceNameDto getDiscountPrice (Long itemDetailId, Long itemDiscountId);
+
+    List<CategoryResponseDto> getCategoryList();
 }

@@ -46,4 +46,6 @@ public interface ItemService {
 
     PageInfoResponseDto<AdminItemDetailResponseDto> getAdminItemDetailList(Long itemId, int pageNo, int size);
 
+    List<CategoryResponseDto> getCategoryList();
+
 }

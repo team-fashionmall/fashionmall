@@ -50,4 +50,9 @@ public class ItemQueryController {
                                                                                                     @RequestParam(defaultValue = "10") int size) {
         return ApiResponseUtil.success(itemService.getAdminItemDetailList(itemId, pageNo, size));
     }
+
+    @GetMapping("/category")
+    public CommonResponse<List<CategoryResponseDto>> getCategoryList (){
+        return ApiResponseUtil.success(itemService.getCategoryList());
+    }
 }

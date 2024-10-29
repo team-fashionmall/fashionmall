@@ -2,19 +2,20 @@ package com.fashionmall.item.service;
 
 import com.fashionmall.common.exception.CustomException;
 import com.fashionmall.common.exception.ErrorResponseCode;
-import com.fashionmall.common.moduleApi.dto.OrderItemDto;
+import com.fashionmall.common.moduleApi.dto.*;
+import com.fashionmall.common.moduleApi.enums.ImageTypeEnum;
+import com.fashionmall.common.moduleApi.enums.ReferenceTypeEnum;
 import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
 import com.fashionmall.item.dto.request.ItemDiscountRequestDto;
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.item.dto.request.ItemRequestDto;
 import com.fashionmall.item.dto.response.ItemDiscountResponseDto;
 import com.fashionmall.item.dto.request.ItemUpdateRequestDto;
-import com.fashionmall.common.moduleApi.dto.ItemDetailResponseDto;
 import com.fashionmall.item.dto.response.ItemResponseDto;
 import com.fashionmall.item.dto.response.*;
 import com.fashionmall.item.dto.response.ItemUpdateResponseDto;
 import com.fashionmall.item.entity.*;
-import com.fashionmall.item.enums.ItemDiscountTypeEnum;
+import com.fashionmall.common.moduleApi.enums.ItemDiscountTypeEnum;
 import com.fashionmall.item.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,10 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +40,11 @@ public class ItemServiceImpl implements ItemService {
     private final ItemCategoryMappingRepository itemCategoryMappingRepository;
     private final ItemDiscountRepository itemDiscountRepository;
     private final ModuleApiUtil moduleApiUtil;
+
+    @Override
+    public List<CategoryResponseDto> getCategoryList () {
+        return itemRepository.getCategoryList();
+    }
 
     @Override
     public PageInfoResponseDto<ItemListResponseDto> getItemList(int pageNo, int size, String itemName, Long category1, Long category2) {

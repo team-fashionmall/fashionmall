@@ -19,6 +19,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 
+import static com.fashionmall.item.entity.QCategory1.category1;
+import static com.fashionmall.item.entity.QCategory2.category2;
 import static com.fashionmall.item.entity.QItem.item;
 import static com.fashionmall.item.entity.QItemCategoryMapping.itemCategoryMapping;
 
@@ -30,6 +32,29 @@ import static com.fashionmall.item.entity.QItemDiscount.itemDiscount;
 public class ItemRepositoryImpl implements ItemRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
+
+    @Override
+    public List<CategoryResponseDto> getCategoryList() {
+
+        // 쿼리 실행
+        List<CategoryResponseDto> categoryList = queryFactory
+                .select(Projections.constructor(CategoryResponseDto.class,
+                        category1.id,
+                        category1.name,
+                        Projections.list(
+                                Projections.constructor(CategoryResponseDto.Category2Info.class,
+                                        category2.id,
+                                        category2.name
+                                )
+                        )
+                ))
+                .from(category1)
+                .innerJoin(category1.category2s, category2)
+                .orderBy(category1.id.asc())
+                .fetch();
+
+        return categoryList;
+    }
 
     @Override
     public PageInfoResponseDto <ItemListResponseDto> itemListPageNation (Pageable pageable, String itemName, Long category1, Long category2) {
