@@ -14,12 +14,13 @@ public class CartResponseDto {
 
     private Long id;
     private Long itemDetailId;
+    private String itemName;
 
-    private Long imageId;
     private String imageUrl;
 
     private int quantity;
     private int price;
+    private int discountPrice;
     private boolean isSelected;
 
 }
