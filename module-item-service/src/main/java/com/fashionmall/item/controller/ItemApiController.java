@@ -29,9 +29,9 @@ public class ItemApiController {
         return ApiResponseUtil.success(itemService.getItemStockApi(itemDetailId, workerId));
     }
 
-    @GetMapping ("/itemDetailName")
-    public CommonResponse <Map<Long, String>> getItemDetailNameApi (@RequestParam List<Long> itemDetailIds) {
-        return ApiResponseUtil.success(itemService.getItemDetailNameApi(itemDetailIds));
+    @GetMapping ("/getItemName/{itemId}")
+    public CommonResponse<String> getItemNameApi (@PathVariable Long itemId) {
+        return ApiResponseUtil.success(itemService.getItemNameApi(itemId));
     }
 
     @PatchMapping ("/deductItem")

@@ -98,12 +98,23 @@ public class ModuleApiUtil {
         return integerCommonResponse.getData();
     }
 
-    public Map<Long, ItemDetailDto> getItemDetailNameAndImageApi(List<Long> itemDetailIds) {
+    public String getItemNameApi (Long itemId) {
+
         Map<String, String> headers = Map.of(
                 HttpHeaders.CONTENT_TYPE, "application/json");
-        CommonResponse<Map<Long, ItemDetailDto>> post = webClientUtil.post(itemApi + "/ItemDetailNameApi", itemDetailIds, new ParameterizedTypeReference<CommonResponse<Map<Long, ItemDetailDto>>>() {
-        }, headers);
-        return post.getData();
+
+        CommonResponse<String> commonResponse = webClientUtil.get(
+                itemApi + "/getItemName" + itemId,
+                new ParameterizedTypeReference<CommonResponse<String>>() {
+                },
+                null,
+                headers
+        );
+
+        return commonResponse.getData();
+    }
+    public Map<Long, ItemDetailDto> getItemDetailNameAndImageApi (List<Long> itemDetailIds) {
+        return null; // 오류나서 만들어뒀습니다. 수정 후 지워주세요!
     }
 
     public void deductItemQuantityApi(List<OrderItemDto> orderItemDto) {

@@ -392,20 +392,12 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public Map<Long, String> getItemDetailNameApi (List<Long> itemDetailIds) {
+    public String getItemNameApi (Long itemId) {
 
-        Map<Long, String> itemDetailNames = new HashMap<>();
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
 
-        for (Long itemDetailId : itemDetailIds) {
-
-            ItemDetail itemDetail = itemDetailRepository.findById(itemDetailId)
-                    .orElseThrow(()-> new CustomException(ErrorResponseCode.BAD_REQUEST)); // findNameById 메서드는 예시입니다.
-
-            itemDetailNames.put(itemDetailId, itemDetail.getName());
-        }
-
-        return itemDetailNames;
-
+        return item.getName();
     }
 
     @Override

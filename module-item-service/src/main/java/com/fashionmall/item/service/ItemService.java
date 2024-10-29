@@ -23,7 +23,7 @@ public interface ItemService {
     // gateway
     Map<Long, Integer> getItemStockApi (Long itemDetailId, Long workerId);
 
-    Map<Long, String> getItemDetailNameApi (List<Long> itemDetailIds);
+    String getItemNameApi (Long itemId);
 
     void deductItemQuantityApi (List<OrderItemDto> orderItemDto, Long workerId);
 
