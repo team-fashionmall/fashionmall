@@ -162,7 +162,7 @@ public class UserServiceImpl implements UserService {
 
         // 회원 인증
 
-        List<LikeItemListResponseDto> itemInfos = moduleApiUtil.itemInfo(itemId, userId);
+        List<LikeItemListResponseDto> itemInfos = moduleApiUtil.itemInfoApi(itemId, userId);
         LikeItemListResponseDto itemInfo = itemInfos.stream()
                 .filter(info -> info.getItemInfo().getId() == itemId)
                 .findFirst()
@@ -195,7 +195,7 @@ public class UserServiceImpl implements UserService {
         PageRequest pageRequest = PageRequest.of(pageNo - 1, size);
         int totalCount = favoriteRepository.countByUserId(userId);
 
-        List<LikeItemListResponseDto> itemInfo = moduleApiUtil.itemInfo(itemId, userId);
+        List<LikeItemListResponseDto> itemInfo = moduleApiUtil.itemInfoApi(itemId, userId);
 
         return PageInfoResponseDto.of(pageRequest, itemInfo, totalCount);
 
