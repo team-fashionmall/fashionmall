@@ -41,8 +41,8 @@ public class ItemApiController {
     }
 
     @PatchMapping ("/restoreItem")
-    public void restoreItemApi (@RequestBody List<OrderItemDto> orderItemDto) {
+    public void restoreItemStockApi (@RequestBody List<OrderItemDto> orderItemDto) {
         Long workerId = 1L;
-        itemService.restoreItemApi(orderItemDto, workerId);
+        itemService.restoreItemStockApi(orderItemDto, workerId);
     }
 }

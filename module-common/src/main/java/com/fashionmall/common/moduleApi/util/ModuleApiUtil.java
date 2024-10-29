@@ -127,7 +127,7 @@ public class ModuleApiUtil {
                 headers());
     }
 
-    public void restoreItemQuantityApi(List<OrderItemDto> orderItemDto) {
+    public void restoreItemStockApi(List<OrderItemDto> orderItemDto) {
 
         webClientUtil.patch(
                 itemApi + "/restoreItem",

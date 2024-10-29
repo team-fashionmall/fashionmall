@@ -418,7 +418,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public void restoreItemApi (List<OrderItemDto> orderItemDto, Long workerId){
+    public void restoreItemStockApi (List<OrderItemDto> orderItemDto, Long workerId){
         //본인확인
 
         for (OrderItemDto orderItemDtoList : orderItemDto) {

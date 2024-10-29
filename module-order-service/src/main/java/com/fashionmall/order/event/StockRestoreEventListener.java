@@ -29,7 +29,7 @@ public class StockRestoreEventListener {
 
         try {
             List<OrderItemDto> orderItemsByOrderId = ordersRepository.findOrderItemsByOrderId(ordersId);
-            moduleApiUtil.restoreItemQuantityApi(orderItemsByOrderId);
+            moduleApiUtil.restoreItemStockApi(orderItemsByOrderId);
         } catch (Exception e) {
             log.error("stockRestore error", e);
         }
