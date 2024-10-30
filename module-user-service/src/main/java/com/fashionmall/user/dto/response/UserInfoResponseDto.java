@@ -1,7 +1,7 @@
 package com.fashionmall.user.dto.response;
 
 import com.fashionmall.user.entity.User;
-import com.fashionmall.user.jwt.UserRoleEnum;
+import com.fashionmall.common.jwt.UserRoleEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

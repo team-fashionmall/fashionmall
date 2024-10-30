@@ -1,6 +1,6 @@
 package com.fashionmall.user.entity;
 
-import com.fashionmall.user.jwt.UserRoleEnum;
+import com.fashionmall.common.jwt.UserRoleEnum;
 import jakarta.persistence.*;
 import lombok.*;
 

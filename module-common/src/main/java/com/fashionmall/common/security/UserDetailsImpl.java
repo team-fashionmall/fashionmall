@@ -1,6 +1,6 @@
-package com.fashionmall.user.security;
+package com.fashionmall.common.security;
 
-import com.fashionmall.user.jwt.UserRoleEnum;
+import com.fashionmall.common.jwt.UserRoleEnum;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 @Slf4j (topic = "UserDetailsImpl")
 @RequiredArgsConstructor
@@ -17,12 +18,12 @@ import java.util.Collection;
 public class UserDetailsImpl implements UserDetails {
 
     private final String email;
-    private final UserRoleEnum role;
     private final Long userId;
-    private final String password;
-
+    private final UserRoleEnum role;
+//    private final String password;
+//
     @Override
-    public String getPassword() { return password; }
+    public String getPassword() { return ""; }
 
     @Override
     public String getUsername(){
@@ -64,4 +65,18 @@ public class UserDetailsImpl implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof UserDetailsImpl)) return false;
+        UserDetailsImpl other = (UserDetailsImpl) obj;
+        return Objects.equals(email, other.email) && Objects.equals(userId, other.userId) && Objects.equals(role, other.role);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(email, userId, role);
+    }
+
 }

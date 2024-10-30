@@ -51,6 +51,11 @@ subprojects {
         // Security
         implementation 'org.springframework.boot:spring-boot-starter-security'
 
+        // JWT
+        compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
+        runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
+        runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
+
     }
     }
 
@@ -65,7 +70,6 @@ subprojects {
     tasks.named('test') {
         useJUnitPlatform()
     }
-}
 
 project(':module-common') {
     bootJar {
@@ -86,11 +90,6 @@ project(':module-user-service') {
         implementation project(':module-common')
 
         implementation 'org.springframework.boot:spring-boot-starter-validation'
-
-        // JWT
-        compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
-        runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
-        runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
 
         runtimeOnly 'com.h2database:h2'
     }

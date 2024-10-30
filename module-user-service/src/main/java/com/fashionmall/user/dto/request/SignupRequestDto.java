@@ -23,11 +23,11 @@ public class SignupRequestDto {
 
     @NotBlank (message = "이름을 입력해주세요")
     @Pattern (regexp = "^[a-zA-Z0-9가-힣]{1,15}$", message = "특수문자 제외, 15자 이내")
-    private String username;
+    private String userName;
 
     @NotBlank (message = "닉네임을 입력해주세요")
     @Pattern (regexp = "^[a-zA-Z0-9가-힣]{6,}$", message = "특수문자 제외, 6자 이상")
-    private String nickname;
+    private String nickName;
 
     @NotBlank (message = "연락처를 입력해주세요")
     @Pattern (regexp = "^\\d{2,3}-\\d{3,4}-\\d{4}$", message = "전화번호 형식이 올바르지 않습니다")

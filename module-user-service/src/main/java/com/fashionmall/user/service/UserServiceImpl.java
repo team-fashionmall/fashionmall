@@ -3,8 +3,8 @@ package com.fashionmall.user.service;
 import com.fashionmall.common.exception.CustomException;
 import com.fashionmall.common.exception.ErrorResponseCode;
 import com.fashionmall.user.dto.response.UserInfoResponseDto;
-import com.fashionmall.user.jwt.JwtUtil;
-import com.fashionmall.user.jwt.UserRoleEnum;
+import com.fashionmall.common.jwt.JwtUtil;
+import com.fashionmall.common.jwt.UserRoleEnum;
 import com.fashionmall.common.redis.RedisUtil;
 import com.fashionmall.user.dto.request.SignupRequestDto;
 import com.fashionmall.user.dto.request.UpdateUserInfoRequestDto;
@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
     public String signUp (SignupRequestDto signupRequestDto) {
 
         String email = signupRequestDto.getEmail();
-        String nickname = signupRequestDto.getNickname();
+        String nickname = signupRequestDto.getNickName();
         String password = passwordEncoder.encode(signupRequestDto.getPassword());
 
         log.info("Received SignupRequestDto: {}", signupRequestDto.isAdmin());
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
         User user = User.builder()
                 .email(email)
                 .password(password)
-                .username(signupRequestDto.getUsername())
+                .username(signupRequestDto.getUserName())
                 .nickname(nickname)
                 .contact(signupRequestDto.getContact())
                 .role(role)

@@ -1,0 +1,9 @@
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+#spring.redis.connection-type=single
+#spring.redis.host=localhost
+#spring.redis.port=6379

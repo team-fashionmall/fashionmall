@@ -1,4 +1,4 @@
-package com.fashionmall.user.jwt;
+package com.fashionmall.common.jwt;
 
 import com.fashionmall.common.exception.CustomException;
 import com.fashionmall.common.exception.ErrorResponseCode;
@@ -25,7 +25,7 @@ import java.util.Date;
 public class JwtUtil {
 
     // 사용자 권한 Key 값
-    public static final String AUTHORIZATION_ADMIN_KEY = "role";
+    public static final String AUTHORIZATION_ROLE_KEY = "role";
 
     // Token 식별자
     public static final String BEARER_PREFIX = "Bearer ";
@@ -55,7 +55,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(email) // 사용자 식별자값
                 .setId(String.valueOf(userId))
-                .claim(AUTHORIZATION_ADMIN_KEY, role) // 사용자 권한
+                .claim(AUTHORIZATION_ROLE_KEY, role) // 사용자 권한
                 .setIssuedAt(date) // 발급일
                 .setExpiration(new Date (date.getTime() + expirationTime)) // Access Token 만료시간
                 .signWith(key, signatureAlgorithm) // 암호화 알고리즘

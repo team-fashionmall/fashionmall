@@ -1,8 +1,8 @@
-package com.fashionmall.user.jwt;
+package com.fashionmall.common.jwt;
 
 import com.fashionmall.common.redis.RedisUtil;
 import com.fashionmall.common.redis.RefreshToken;
-import com.fashionmall.user.security.UserDetailsImpl;
+import com.fashionmall.common.security.UserDetailsImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -42,9 +42,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                     )
             );
         } catch (IOException e){
-
             throw new RuntimeException(e.getMessage());
-
         }
     }
 

@@ -1,9 +1,9 @@
 package com.fashionmall.user.controller;
 
-import com.fashionmall.user.jwt.JwtUtil;
+import com.fashionmall.common.jwt.JwtUtil;
 import com.fashionmall.common.redis.RefreshToken;
 import com.fashionmall.common.response.CommonResponse;
-import com.fashionmall.user.security.UserDetailsImpl;
+import com.fashionmall.common.security.UserDetailsImpl;
 import com.fashionmall.common.util.ApiResponseUtil;
 import com.fashionmall.user.dto.request.SignupRequestDto;
 import com.fashionmall.user.dto.request.UpdateUserInfoRequestDto;
@@ -24,7 +24,7 @@ public class UserController {
     private final UserService userService;
     private final JwtUtil jwtUtil;
 
-    @PostMapping ("/signup")
+    @PostMapping ("/signUp")
     public CommonResponse<String> signUp (@Valid @RequestBody SignupRequestDto signupRequestDto) {
 
         return ApiResponseUtil.success(userService.signUp(signupRequestDto));

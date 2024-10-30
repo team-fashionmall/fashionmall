@@ -1,16 +1,19 @@
 spring:
-  #h2:
-  #  console:
-  #    enabled: true
-   #   path: /h2-console
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
 
-  #datasource:
-  #  driver-class-name: org.h2.Driver
-   # url: jdbc:h2:mem:test
-    #username: sa
-    #password:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test
+    username: sa
+    password:
 
+jwt:
+  secret:
+    key: "7Iqk7YyM66W07YOA7L2U65Sp7YG065+9U3ByaW5n6rCV7J2Y7Yqc7YSw7LWc7JuQ67mI7J6F64uI64ukLg=="

@@ -1,4 +1,4 @@
-package com.fashionmall.user.jwt;
+package com.fashionmall.common.jwt;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
