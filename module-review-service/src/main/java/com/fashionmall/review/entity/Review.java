@@ -22,8 +22,8 @@ public class Review extends BaseEntity {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column(name = "nickname", nullable = false)
-    private String nickname;
+    @Column(name = "nick_name", nullable = false)
+    private String nickName;
 
     @Column(name = "item_id", nullable = false)
     private Long itemId;
@@ -39,9 +39,9 @@ public class Review extends BaseEntity {
     private ReviewStatus status;
 
     @Builder
-    public Review(Long userId, String nickname, Long itemId, String itemName, String content) {
+    public Review(Long userId, String nickName, Long itemId, String itemName, String content) {
         this.userId = userId;
-        this.nickname = nickname;
+        this.nickName = nickName;
         this.itemId = itemId;
         this.itemName = itemName;
         this.content = content;

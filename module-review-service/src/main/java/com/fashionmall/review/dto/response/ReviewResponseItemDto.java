@@ -13,7 +13,7 @@ public class ReviewResponseItemDto {
 
     private Long id;
     private Long userId;
-    private String nickname;
+    private String nickName;
     private String content;
     private LocalDateTime createdAt;
 

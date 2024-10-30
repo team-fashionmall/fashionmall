@@ -58,7 +58,7 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
                 .select(Projections.constructor(ReviewResponseItemDto.class,
                         review.id,
                         review.userId,
-                        review.nickname,
+                        review.nickName,
                         review.content,
                         review.createdAt))
                 .from(review)

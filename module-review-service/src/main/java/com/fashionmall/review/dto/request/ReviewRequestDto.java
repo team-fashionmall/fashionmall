@@ -11,7 +11,7 @@ import lombok.Setter;
 public class ReviewRequestDto {
 
     private Long userId;
-    private String nickname;
+    private String nickName;
     private Long itemId;
     private String content;
 
@@ -19,7 +19,7 @@ public class ReviewRequestDto {
         return Review
                 .builder()
                 .userId(userId)
-                .nickname(nickname)
+                .nickName(nickName)
                 .itemId(itemId)
                 .itemName(itemName)
                 .content(content)

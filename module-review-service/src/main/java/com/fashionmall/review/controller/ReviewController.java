@@ -34,7 +34,7 @@ public class ReviewController {
     public CommonResponse<Long> postReview(@PathVariable("itemId") Long itemId,
                                            @RequestBody ReviewRequestDto reviewRequestDto) {
         reviewRequestDto.setUserId(1L);
-        reviewRequestDto.setNickname("nick");
+        reviewRequestDto.setNickName("nick");
         return ApiResponseUtil.success(reviewService.createReview(reviewRequestDto));
     }
 
