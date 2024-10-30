@@ -13,7 +13,7 @@ public enum ErrorResponseCode {
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "필수 값을 입력해 주세요"),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다"),
     OUT_OF_STOCK(HttpStatus.CONFLICT, "재고가 부족합니다"),
-    NOT_FOUND(HttpStatus.NOT_FOUND,"해당 요청을 찾을 수 없습니다"),
+    NOT_FOUND(HttpStatus.NOT_FOUND, "해당 요청을 찾을 수 없습니다"),
     FORBIDDEN(HttpStatus.FORBIDDEN, "권한이 없습니다."),
 
     //커스텀 코드
@@ -41,7 +41,11 @@ public enum ErrorResponseCode {
 
     // cart
     DUPLICATE_CART_DETAIL_ID(HttpStatus.BAD_REQUEST, "이미 존재하는 itemDetail Id 입니다."),
-    WRONG_CART_ID(HttpStatus.BAD_REQUEST, "올바르지 않는 CartId 입니다.");
+    WRONG_CART_ID(HttpStatus.BAD_REQUEST, "올바르지 않는 CartId 입니다."),
+
+    // webclient
+    CLIENT_ERROR(HttpStatus.BAD_REQUEST, "클라이언트 요청 오류"),
+    SERVER_ERROR_FROM_SERVICE(HttpStatus.INTERNAL_SERVER_ERROR, "외부 서비스 서버 오류");
 
     private final HttpStatus status;
     private final String message;
