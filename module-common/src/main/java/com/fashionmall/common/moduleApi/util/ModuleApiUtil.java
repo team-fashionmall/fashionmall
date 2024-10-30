@@ -1,5 +1,6 @@
 package com.fashionmall.common.moduleApi.util;
 
+
 import com.fashionmall.common.exception.ErrorResponseCode;
 import com.fashionmall.common.moduleApi.dto.*;
 import com.fashionmall.common.response.CommonResponse;
@@ -169,7 +170,18 @@ public class ModuleApiUtil {
         return deleteImageApi.getData();
     }
 
-    private Map<String, String> headers () {
+    public String getItemNameApi(Long itemId) {
+        CommonResponse<String> stringCommonResponse = webClientUtil.get(
+                itemApi + "itemName/" + itemId,
+                new ParameterizedTypeReference<CommonResponse<String>>() {
+                },
+                null,
+                headers()
+        );
+        return stringCommonResponse.getData();
+    }
+
+    private Map<String, String> headers() {
         return Map.of(HttpHeaders.CONTENT_TYPE, "application/json");
     }
 }
