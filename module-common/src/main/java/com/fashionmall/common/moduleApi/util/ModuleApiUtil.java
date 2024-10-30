@@ -121,7 +121,7 @@ public class ModuleApiUtil {
     public String getItemNameApi(Long itemId) {
 
         CommonResponse<String> commonResponse = webClientUtil.get(
-                itemApi + "/getItemName" + itemId,
+                itemApi + "/getItemName/" + itemId,
                 new ParameterizedTypeReference<CommonResponse<String>>() {
                 },
                 null,
