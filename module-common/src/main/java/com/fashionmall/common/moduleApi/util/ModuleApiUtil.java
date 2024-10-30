@@ -169,12 +169,7 @@ public class ModuleApiUtil {
         return deleteImageApi.getData();
     }
 
-    public String callExternalApi() {
-        String uri = "http://localhost:8000/api/coupon/test";  // 실제 테스트할 API 엔드포인트
-        return webClientUtil.get(uri, String.class, headers(), ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE);
-    }
-
-    private Map<String, String> headers() {
+    private Map<String, String> headers () {
         return Map.of(HttpHeaders.CONTENT_TYPE, "application/json");
     }
 }

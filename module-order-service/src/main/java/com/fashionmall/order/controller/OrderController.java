@@ -26,7 +26,8 @@ public class OrderController {
     }
 
     @GetMapping("/order")
-    public CommonResponse<PageInfoResponseDto<OrdersResponseDto>> getUserOrderList(int pageNo, int size) {
+    public CommonResponse<PageInfoResponseDto<OrdersResponseDto>> getUserOrderList(@RequestParam(defaultValue = "1") int pageNo,
+                                                                                   @RequestParam(defaultValue = "10") int size) {
         Long userId = 1L;
         return ApiResponseUtil.success(ordersService.getOrders(userId, pageNo, size));
     }
