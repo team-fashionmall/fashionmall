@@ -85,20 +85,18 @@ public class ItemServiceImpl implements ItemService {
         log.info("상품 등록: {}", item);
 
         // 카테고리 등록
-        for (ItemRequestDto.CategoryRequestDto categoryRequestDto : itemRequestDto.getCategoryRequestDtoList()) {
+        ItemRequestDto.CategoryRequestDto categoryRequestDto = itemRequestDto.getCategoryRequestDtoList();
 
-            Category1 category1 = findCategory1(categoryRequestDto.getCategory1Id());
-            Category2 category2 = findCategory2(categoryRequestDto.getCategory2Id(), categoryRequestDto.getCategory1Id());
+        Category1 category1 = findCategory1(categoryRequestDto.getCategory1Id());
+        Category2 category2 = findCategory2(categoryRequestDto.getCategory2Id(), categoryRequestDto.getCategory1Id());
 
-            ItemCategoryMapping itemCategoryMapping = ItemCategoryMapping.builder()
-                    .item(item)
-                    .category1(category1)
-                    .category2Id(category2.getId())
-                    .build();
-            itemCategoryMappingRepository.save(itemCategoryMapping);
-            log.info("카테고리 저장 완료: {}", itemCategoryMapping);
-
-        }
+        ItemCategoryMapping itemCategoryMapping = ItemCategoryMapping.builder()
+                .item(item)
+                .category1(category1)
+                .category2Id(category2.getId())
+                .build();
+        itemCategoryMappingRepository.save(itemCategoryMapping);
+        log.info("카테고리 저장 완료: {}", itemCategoryMapping);
 
         // 상품 상세 등록
         for (ItemRequestDto.ItemDetailRequestDto itemDetailRequestDto : itemRequestDto.getItemDetailRequestDtoList()) {
