@@ -196,6 +196,8 @@ public class ItemServiceImpl implements ItemService {
         // 해당 아이템이 있는지 확인하기
         Item item = findByIdAndWorkerId(itemDiscountRequestDto.getId(), workerId);
 
+        List<ItemDiscount> itemDiscounts = new ArrayList<>();
+
         for (ItemDiscountRequestDto.ItemDiscountDtos itemDiscountDtos : itemDiscountRequestDto.getItemDiscountRequestDtoList()) {
 
             validateItemDiscountValue(itemDiscountDtos.getType(), itemDiscountDtos.getValue());
@@ -205,10 +207,10 @@ public class ItemServiceImpl implements ItemService {
                     .type(itemDiscountDtos.getType())
                     .value(itemDiscountDtos.getValue())
                     .build();
-            itemDiscountRepository.save(itemDiscount);
+            itemDiscounts.add(itemDiscountRepository.save(itemDiscount));
         }
 
-        return ItemDiscountResponseDto.from(item);
+        return ItemDiscountResponseDto.fromItemDiscounts(item.getId(), itemDiscounts);
     }
 
     @Override
