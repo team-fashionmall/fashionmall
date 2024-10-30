@@ -13,8 +13,6 @@ import lombok.NoArgsConstructor;
 public class ItemDetailListResponseDto {
 
     private ItemInfo itemInfo;
-    private ItemDetailInfo itemDetailInfo;
-    private ItemDiscountInfo itemDiscountInfo;
 
     @Getter
     @Builder
@@ -25,6 +23,9 @@ public class ItemDetailListResponseDto {
         private long id;
         private String name;
         private String imageUrl;
+
+        private ItemDetailInfo itemDetailInfo;
+        private ItemDiscountInfo itemDiscountInfo;
 
     }
 
@@ -56,9 +57,5 @@ public class ItemDetailListResponseDto {
         private int value;
 
     }
-
-
-    //찜개수
-
 
 }

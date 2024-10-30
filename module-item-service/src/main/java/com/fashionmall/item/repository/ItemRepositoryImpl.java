@@ -102,29 +102,28 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
                         Projections.constructor(ItemDetailListResponseDto.ItemInfo.class,
                                 item.id,
                                 item.name,
-                                item.imageUrl
-                        ),
-                        Projections.constructor(ItemDetailListResponseDto.ItemDetailInfo.class,
-                                itemDetail.id,
-                                itemDetail.itemColor.color,
-                                itemDetail.itemSize.size,
-                                itemDetail.name,
-                                itemDetail.price,
-                                ExpressionUtils.as(calculateDiscount(itemDetail.price, itemDiscount.status, itemDiscount.type, itemDiscount.value),
-                                        "discountPrice"),
-                                itemDetail.quantity,
-                                itemDetail.imageId,
-                                itemDetail.imageUrl
-                        ),
-                        Projections.constructor(ItemDetailListResponseDto.ItemDiscountInfo.class,
-                                itemDiscount.type,
-                                itemDiscount.value
+                                item.imageUrl,
+                                Projections.constructor(ItemDetailListResponseDto.ItemDetailInfo.class,
+                                        itemDetail.id,
+                                        itemDetail.itemColor.color,
+                                        itemDetail.itemSize.size,
+                                        itemDetail.name,
+                                        itemDetail.price,
+                                        ExpressionUtils.as(calculateDiscount(itemDetail.price, itemDiscount.status, itemDiscount.type, itemDiscount.value),
+                                                "discountPrice"),
+                                        itemDetail.quantity,
+                                        itemDetail.imageId,
+                                        itemDetail.imageUrl
+                                ),
+                                Projections.constructor(ItemDetailListResponseDto.ItemDiscountInfo.class,
+                                        itemDiscount.type
+                                        itemDiscount.value
+                                )
                         )
                 ))
                 .from(item)
                 .innerJoin(item.itemDetails, itemDetail)
                 .innerJoin(item.itemDiscounts, itemDiscount)
-//                .innerJoin(item.itemCategoryMappings, itemCategoryMapping)
                 .where(item.id.eq(itemId))
                 .fetch();
 
