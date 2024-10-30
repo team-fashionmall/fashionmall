@@ -3,7 +3,7 @@ package com.fashionmall.item.repository;
 import com.fashionmall.common.moduleApi.dto.ItemPriceNameDto;
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.item.dto.response.*;
-import com.fashionmall.common.moduleApi.enums.ItemDiscountTypeEnum;
+import com.fashionmall.item.enums.ItemDiscountTypeEnum;
 import com.fashionmall.item.enums.StatusEnum;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;

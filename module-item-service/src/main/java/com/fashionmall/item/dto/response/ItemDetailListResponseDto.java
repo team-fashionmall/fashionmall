@@ -1,6 +1,6 @@
 package com.fashionmall.item.dto.response;
 
-import com.fashionmall.common.moduleApi.enums.ItemDiscountTypeEnum;
+import com.fashionmall.item.enums.ItemDiscountTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

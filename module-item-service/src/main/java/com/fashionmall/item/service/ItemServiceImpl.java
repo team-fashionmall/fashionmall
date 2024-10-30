@@ -15,7 +15,7 @@ import com.fashionmall.item.dto.response.ItemResponseDto;
 import com.fashionmall.item.dto.response.*;
 import com.fashionmall.item.dto.response.ItemUpdateResponseDto;
 import com.fashionmall.item.entity.*;
-import com.fashionmall.common.moduleApi.enums.ItemDiscountTypeEnum;
+import com.fashionmall.item.enums.ItemDiscountTypeEnum;
 import com.fashionmall.item.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -419,15 +419,22 @@ public class ItemServiceImpl implements ItemService {
             int price = itemDetail.getPrice();
             String imageUrl = itemDetail.getImageUrl();
 
-            for (ItemDiscount itemDiscount : itemDiscounts) {
-
-                ItemPriceNameDto itemPriceNameDto = itemRepository.getDiscountPrice(itemDetail.getId(), itemDiscount.getId());
-
-                int itemDiscountValue = itemPriceNameDto.getPrice();
-                ItemDiscountTypeEnum discountType = itemDiscount.getType();
-
+            if (itemDiscounts.isEmpty()) {
+                String discountType = "none";
+                int itemDiscountValue = price;
                 ItemDetailInfoDto itemDetailInfoDto = new ItemDetailInfoDto(itemDetailName, price, itemDiscountValue, discountType, imageUrl);
                 itemDetailInfoDtoList.add(itemDetailInfoDto);
+            } else {
+                for (ItemDiscount itemDiscount : itemDiscounts) {
+
+                    ItemPriceNameDto itemPriceNameDto = itemRepository.getDiscountPrice(itemDetail.getId(), itemDiscount.getId());
+
+                    int itemDiscountValue = itemPriceNameDto.getPrice();
+                    String discountType = itemDiscount.getType().name();
+
+                    ItemDetailInfoDto itemDetailInfoDto = new ItemDetailInfoDto(itemDetailName, price, itemDiscountValue, discountType, imageUrl);
+                    itemDetailInfoDtoList.add(itemDetailInfoDto);
+                }
             }
         }
 
