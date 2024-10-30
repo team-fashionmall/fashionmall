@@ -118,17 +118,14 @@ public class ModuleApiUtil {
         return integerCommonResponse.getData();
     }
 
-    public String getItemNameApi (Long itemId) {
-
-        Map<String, String> headers = Map.of(
-                HttpHeaders.CONTENT_TYPE, "application/json");
+    public String getItemNameApi(Long itemId) {
 
         CommonResponse<String> commonResponse = webClientUtil.get(
                 itemApi + "/getItemName" + itemId,
                 new ParameterizedTypeReference<CommonResponse<String>>() {
                 },
                 null,
-                headers
+                headers()
         );
 
         return commonResponse.getData();
