@@ -1,5 +1,7 @@
 package com.fashionmall.common.moduleApi.util;
 
+
+import com.fashionmall.common.exception.ErrorResponseCode;
 import com.fashionmall.common.moduleApi.dto.*;
 import com.fashionmall.common.response.CommonResponse;
 import com.fashionmall.common.util.WebClientUtil;
@@ -29,7 +31,7 @@ public class ModuleApiUtil {
         Map<String, String> headers = Map.of(
                 HttpHeaders.CONTENT_TYPE, "application/json");
         CommonResponse<List<CouponDto>> listCommonResponse = webClientUtil.get(couponApi + "/getCoupon", new ParameterizedTypeReference<CommonResponse<List<CouponDto>>>() {
-        }, null, headers);
+        }, headers, ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE);
         return listCommonResponse.getData();
     }
 
@@ -42,8 +44,7 @@ public class ModuleApiUtil {
                 itemApi + "/itemDetail/" + itemDetailId,
                 new ParameterizedTypeReference<CommonResponse<ItemDetailResponseDto>>() {
                 },
-                null,
-                headers
+                headers, ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE
         );
 
         return commonResponse.getData();
@@ -55,7 +56,7 @@ public class ModuleApiUtil {
         Map<String, String> headers = Map.of(
                 HttpHeaders.CONTENT_TYPE, "application/json");
         CommonResponse<List<DeliveryAddressDto>> listCommonResponse = webClientUtil.get(userApi + "/DeliveryAddressApi/" + userId, new ParameterizedTypeReference<CommonResponse<List<DeliveryAddressDto>>>() {
-        }, null, headers);
+        }, headers, ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE);
         return listCommonResponse.getData();
     }
 
@@ -72,8 +73,8 @@ public class ModuleApiUtil {
                 cartApi + "/itemDetail/" + userId,
                 new ParameterizedTypeReference<CommonResponse<List<ItemDetailDto>>>() {
                 },
-                null,
-                headers()
+                headers(),
+                ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE
         );
 
         return listCommonResponse.getData();
@@ -85,8 +86,8 @@ public class ModuleApiUtil {
                 itemApi + itemDetailId + "/quantity",
                 new ParameterizedTypeReference<CommonResponse<Map<Long, Integer>>>() {
                 },
-                null,
-                headers()
+                headers(),
+                ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE
         );
 
         return integerCommonResponse.getData();
@@ -96,7 +97,7 @@ public class ModuleApiUtil {
         Map<String, String> headers = Map.of(
                 HttpHeaders.CONTENT_TYPE, "application/json");
         CommonResponse<Map<Long, ItemDetailDto>> post = webClientUtil.post(itemApi + "/ItemDetailNameApi", itemDetailIds, new ParameterizedTypeReference<CommonResponse<Map<Long, ItemDetailDto>>>() {
-        }, headers);
+        }, headers, ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE);
         return post.getData();
     }
 
@@ -107,7 +108,7 @@ public class ModuleApiUtil {
                 orderItemDto,
                 new ParameterizedTypeReference<Void>() {
                 },
-                headers());
+                headers(), ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE);
     }
 
     public void restoreItemQuantityApi(List<OrderItemDto> orderItemDto) {
@@ -117,7 +118,7 @@ public class ModuleApiUtil {
                 orderItemDto,
                 new ParameterizedTypeReference<Void>() {
                 },
-                headers());
+                headers(), ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE);
     }
 
     // image
@@ -127,7 +128,8 @@ public class ModuleApiUtil {
                 imageUploadDto,
                 new ParameterizedTypeReference<CommonResponse<Map<Long, String>>>() {
                 },
-                headers()
+                headers(),
+                ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE
         );
 
         return uploadImageApi.getData();
@@ -144,8 +146,8 @@ public class ModuleApiUtil {
                 imageApi + "/getImage?" + imageIdParam,
                 new ParameterizedTypeReference<CommonResponse<List<ImageDataDto>>>() {
                 },
-                null, // 쿼리 파라미터는 URL에 포함되므로 null
-                headers()
+                headers(),
+                ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE
         );
 
         return getImageApi.getData();
@@ -161,7 +163,8 @@ public class ModuleApiUtil {
                 imageApi + "/deleteImage?" + imageIdParam,
                 new ParameterizedTypeReference<CommonResponse<List<Long>>>() {
                 },
-                headers()
+                headers(),
+                ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE
         );
 
         return deleteImageApi.getData();
