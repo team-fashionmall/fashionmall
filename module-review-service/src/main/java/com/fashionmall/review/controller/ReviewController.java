@@ -35,6 +35,7 @@ public class ReviewController {
                                            @RequestBody ReviewRequestDto reviewRequestDto) {
         reviewRequestDto.setUserId(1L);
         reviewRequestDto.setNickName("nick");
+        reviewRequestDto.setItemId(itemId);
         return ApiResponseUtil.success(reviewService.createReview(reviewRequestDto));
     }
 
