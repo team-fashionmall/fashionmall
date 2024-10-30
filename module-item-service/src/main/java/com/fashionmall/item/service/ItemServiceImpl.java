@@ -16,6 +16,7 @@ import com.fashionmall.item.dto.response.*;
 import com.fashionmall.item.dto.response.ItemUpdateResponseDto;
 import com.fashionmall.item.entity.*;
 import com.fashionmall.item.enums.ItemDiscountTypeEnum;
+import com.fashionmall.item.enums.StatusEnum;
 import com.fashionmall.item.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -203,7 +204,6 @@ public class ItemServiceImpl implements ItemService {
                     .item(item)
                     .type(itemDiscountDtos.getType())
                     .value(itemDiscountDtos.getValue())
-                    .status(itemDiscountDtos.getStatus())
                     .build();
             itemDiscountRepository.save(itemDiscount);
         }
@@ -333,8 +333,20 @@ public class ItemServiceImpl implements ItemService {
                 }
 
                 if (itemDiscountDto.getStatus() != null) {
+
+                    int activate = 0;
                     itemDiscount.updateStatus(itemDiscountDto.getStatus());
+
+                    for (ItemDiscount itemDiscounts : item.getItemDiscounts()) {
+                        if (itemDiscounts.getStatus().equals(StatusEnum.ACTIVATED)) {
+                            activate++;
+                        }
+                    }
+                    if (activate > 1) {
+                        throw new CustomException(ErrorResponseCode.DUPLICATE_DISCOUNT_STATUS);
+                    }
                 }
+
                 updatedItemDiscounts.add(itemDiscount);
             }
         }
