@@ -116,7 +116,7 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
                                         itemDetail.imageUrl
                                 ),
                                 Projections.constructor(ItemDetailListResponseDto.ItemDiscountInfo.class,
-                                        itemDiscount.type
+                                        itemDiscount.type,
                                         itemDiscount.value
                                 )
                         )
