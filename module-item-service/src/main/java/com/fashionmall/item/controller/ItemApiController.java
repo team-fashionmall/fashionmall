@@ -1,5 +1,8 @@
 package com.fashionmall.item.controller;
 
+import com.fashionmall.common.moduleApi.dto.ItemDetailInfoDto;
+import com.fashionmall.common.moduleApi.dto.ItemDetailResponseDto;
+import com.fashionmall.common.moduleApi.dto.ItemPriceNameDto;
 import com.fashionmall.common.moduleApi.dto.OrderItemDto;
 import com.fashionmall.common.response.CommonResponse;
 import com.fashionmall.common.util.ApiResponseUtil;
@@ -17,26 +20,44 @@ public class ItemApiController {
 
     private final ItemService itemService;
 
-    @GetMapping ("/{itemDetailId}/quantity")
-    public CommonResponse <Integer> getItemQuantityApi (@PathVariable Long itemDetailId) {
+    @GetMapping("/itemDetail/{itemDetailId}")
+    public CommonResponse <ItemDetailResponseDto> getItemDetailApi (@PathVariable Long itemDetailId) {
         Long workerId = 1L;
-        return ApiResponseUtil.success(itemService.getItemQuantityApi(itemDetailId, workerId));
+        return ApiResponseUtil.success(itemService.getItemDetailApi(itemDetailId, workerId));
     }
 
-    @GetMapping ("/itemDetailName")
-    public CommonResponse <Map<Long, String>> getItemDetailNameApi (@RequestParam List<Long> itemDetailIds) {
-        return ApiResponseUtil.success(itemService.getItemDetailNameApi(itemDetailIds));
+    @GetMapping ("/getStock/{itemDetailId}")
+    public CommonResponse <Map<Long, Integer>> getItemStockApi (@PathVariable Long itemDetailId) {
+        Long workerId = 1L;
+        return ApiResponseUtil.success(itemService.getItemStockApi(itemDetailId, workerId));
+    }
+
+    @GetMapping ("/getItemName/{itemId}")
+    public CommonResponse<String> getItemNameApi (@PathVariable Long itemId) {
+        return ApiResponseUtil.success(itemService.getItemNameApi(itemId));
+    }
+
+    @GetMapping ("/getItemDetail/{itemDetailId}")
+    public CommonResponse<List<ItemDetailInfoDto>> getItemDetailInfoApi (@PathVariable List<Long> itemDetailId) {
+        return ApiResponseUtil.success(itemService.getItemDetailInfoApi(itemDetailId));
     }
 
     @PatchMapping ("/deductItem")
-    public void deductItemQuantityApi (@RequestBody List<OrderItemDto> orderItemDto) {
+    public void deductItemStockApi (@RequestBody List<OrderItemDto> orderItemDto) {
         Long workerId = 1L;
-        itemService.deductItemQuantityApi(orderItemDto, workerId);
+        itemService.deductItemStockApi(orderItemDto, workerId);
     }
 
     @PatchMapping ("/restoreItem")
-    public void restoreItemApi (@RequestBody List<OrderItemDto> orderItemDto) {
+    public void restoreItemStockApi (@RequestBody List<OrderItemDto> orderItemDto) {
         Long workerId = 1L;
-        itemService.restoreItemApi(orderItemDto, workerId);
+        itemService.restoreItemStockApi(orderItemDto, workerId);
+    }
+
+    // 카트
+    @GetMapping("/itemPriceAndName")
+    public CommonResponse<List<ItemPriceNameDto>> getItemPriceAneNameApi (@RequestParam List<Long> itemDetailId) {
+        Long workerId = 1L;
+        return ApiResponseUtil.success(itemService.getItemPriceAndNameApi(itemDetailId, workerId));
     }
 }

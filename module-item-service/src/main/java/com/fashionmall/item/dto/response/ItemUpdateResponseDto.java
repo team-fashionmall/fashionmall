@@ -1,6 +1,5 @@
 package com.fashionmall.item.dto.response;
 
-import com.fashionmall.item.dto.request.ItemUpdateRequestDto;
 import com.fashionmall.item.entity.*;
 import com.fashionmall.item.enums.ItemDiscountTypeEnum;
 import com.fashionmall.item.enums.StatusEnum;
@@ -9,7 +8,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Comparator;
 import java.util.List;
 
 @Getter

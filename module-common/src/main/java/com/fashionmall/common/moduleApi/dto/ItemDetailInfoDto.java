@@ -1,18 +1,18 @@
 package com.fashionmall.common.moduleApi.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ItemDetailResponseDto {
+public class ItemDetailInfoDto {
 
-    private Long imageId;
-    private String name;
+    private String itemDetailName;
     private int price;
+    private int itemDiscountValue;
+    private String discountType;
+    private String imageUrl;
 
 }

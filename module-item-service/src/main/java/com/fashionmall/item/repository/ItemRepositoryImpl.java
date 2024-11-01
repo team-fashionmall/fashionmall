@@ -1,14 +1,10 @@
 package com.fashionmall.item.repository;
 
+import com.fashionmall.common.moduleApi.dto.ItemPriceNameDto;
 import com.fashionmall.common.response.PageInfoResponseDto;
-import com.fashionmall.item.dto.response.AdminItemDetailResponseDto;
-import com.fashionmall.item.dto.response.AdminItemResponseDto;
-import com.fashionmall.item.dto.response.ItemDetailListResponseDto;
-import com.fashionmall.item.dto.response.ItemListResponseDto;
-import com.fashionmall.item.entity.QItemCategoryMapping;
+import com.fashionmall.item.dto.response.*;
 import com.fashionmall.item.enums.ItemDiscountTypeEnum;
 import com.fashionmall.item.enums.StatusEnum;
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -20,12 +16,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.security.Principal;
 import java.util.List;
 
 
+import static com.fashionmall.item.entity.QCategory1.category1;
+import static com.fashionmall.item.entity.QCategory2.category2;
 import static com.fashionmall.item.entity.QItem.item;
 import static com.fashionmall.item.entity.QItemCategoryMapping.itemCategoryMapping;
+
 import static com.fashionmall.item.entity.QItemDetail.itemDetail;
 import static com.fashionmall.item.entity.QItemDiscount.itemDiscount;
 
@@ -34,6 +32,29 @@ import static com.fashionmall.item.entity.QItemDiscount.itemDiscount;
 public class ItemRepositoryImpl implements ItemRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
+
+    @Override
+    public List<CategoryResponseDto> getCategoryList() {
+
+        // 쿼리 실행
+        List<CategoryResponseDto> categoryList = queryFactory
+                .select(Projections.constructor(CategoryResponseDto.class,
+                        category1.id,
+                        category1.name,
+                        Projections.list(
+                                Projections.constructor(CategoryResponseDto.Category2Info.class,
+                                        category2.id,
+                                        category2.name
+                                )
+                        )
+                ))
+                .from(category1)
+                .innerJoin(category1.category2s, category2)
+                .orderBy(category1.id.asc())
+                .fetch();
+
+        return categoryList;
+    }
 
     @Override
     public PageInfoResponseDto <ItemListResponseDto> itemListPageNation (Pageable pageable, String itemName, Long category1, Long category2) {
@@ -74,53 +95,39 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
     }
 
     @Override
-    public PageInfoResponseDto <ItemDetailListResponseDto> itemDetailListPageNation (Long itemId, Pageable pageable) {
+    public List<ItemDetailListResponseDto> itemDetailListPageNation (Long itemId) {
 
         List<ItemDetailListResponseDto> itemDetailList = queryFactory
                 .select(Projections.constructor(ItemDetailListResponseDto.class,
                         Projections.constructor(ItemDetailListResponseDto.ItemInfo.class,
                                 item.id,
-                                item.name
-                        ),
-                        Projections.constructor(ItemDetailListResponseDto.ItemDetailInfo.class,
-                                itemDetail.itemColor.color,
-                                itemDetail.itemSize.size,
-                                itemDetail.name,
-                                itemDetail.price,
-                                ExpressionUtils.as(calculateDiscount(itemDetail.price, itemDiscount.status, itemDiscount.type, itemDiscount.value),
-                                        "discountPrice"),
-                                itemDetail.quantity,
-                                itemDetail.imageId,
-                                itemDetail.imageUrl
-                        ),
-                        Projections.constructor(ItemDetailListResponseDto.ItemDiscountInfo.class,
-                                itemDiscount.type,
-                                itemDiscount.value
-                        ),
-                        Projections.constructor(ItemDetailListResponseDto.ItemCategoryInfo.class,
-                                itemCategoryMapping.category1.id,
-                                itemCategoryMapping.category2Id
+                                item.name,
+                                item.imageUrl,
+                                Projections.constructor(ItemDetailListResponseDto.ItemDetailInfo.class,
+                                        itemDetail.id,
+                                        itemDetail.itemColor.color,
+                                        itemDetail.itemSize.size,
+                                        itemDetail.name,
+                                        itemDetail.price,
+                                        ExpressionUtils.as(calculateDiscount(itemDetail.price, itemDiscount.status, itemDiscount.type, itemDiscount.value),
+                                                "discountPrice"),
+                                        itemDetail.quantity,
+                                        itemDetail.imageId,
+                                        itemDetail.imageUrl
+                                ),
+                                Projections.constructor(ItemDetailListResponseDto.ItemDiscountInfo.class,
+                                        itemDiscount.type,
+                                        itemDiscount.value
+                                )
                         )
                 ))
                 .from(item)
                 .innerJoin(item.itemDetails, itemDetail)
                 .innerJoin(item.itemDiscounts, itemDiscount)
-                .innerJoin(item.itemCategoryMappings, itemCategoryMapping)
                 .where(item.id.eq(itemId))
-                .orderBy(item.id.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
                 .fetch();
 
-        Long countList = queryFactory
-                .select(item.count())
-                .from(item)
-                .where(item.id.eq(itemId))
-                .fetchOne();
-
-        int totalCount = countList.intValue();
-
-        return PageInfoResponseDto.of(pageable, itemDetailList, totalCount);
+        return itemDetailList;
     }
 
     @Override
@@ -238,12 +245,31 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
         return filters;
     }
 
-    private NumberExpression<Integer> calculateDiscount (NumberExpression<Integer> price, EnumPath<StatusEnum> status, EnumPath <ItemDiscountTypeEnum> type, NumberExpression<Integer> value) {
+    public ItemPriceNameDto getDiscountPrice (Long itemDetailId, Long itemDiscountId) {
+
+        return queryFactory
+                .select(Projections.fields(ItemPriceNameDto.class,
+                        itemDetail.id.as("itemDetailId"),
+                        ExpressionUtils.as(calculateDiscount(itemDetail.price, itemDiscount.status, itemDiscount.type, itemDiscount.value),
+                                "price"),
+                        item.name
+                        )
+                )
+                .from(item)
+                .innerJoin(item.itemDetails, itemDetail)
+                .innerJoin(item.itemDiscounts, itemDiscount)
+                .where(itemDetail.id.eq(itemDetailId)
+                        .and(itemDiscount.id.eq(itemDiscountId)))
+                .orderBy(itemDetail.id.desc())
+                .fetchOne();
+    }
+
+    private NumberExpression<Integer> calculateDiscount (NumberExpression<Integer> price, EnumPath<StatusEnum> status, EnumPath<ItemDiscountTypeEnum> type, NumberExpression<Integer> value) {
         return new CaseBuilder()
                 .when(status.eq(StatusEnum.ACTIVATED).and(type.eq(ItemDiscountTypeEnum.RATE)))
                 .then(price.subtract(price.multiply(value).divide(100)))
                 .when(status.eq(StatusEnum.ACTIVATED).and(type.eq(ItemDiscountTypeEnum.AMOUNT)))
                 .then(price.subtract(value))
-                .otherwise(0);
+                .otherwise(price);
     }
 }

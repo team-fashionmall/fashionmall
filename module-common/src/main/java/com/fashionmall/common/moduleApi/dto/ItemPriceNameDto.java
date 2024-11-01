@@ -6,13 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ItemDetailResponseDto {
+public class ItemPriceNameDto {
 
-    private Long imageId;
-    private String name;
+    private long itemDetailId;
     private int price;
-
+    private String name;
 }

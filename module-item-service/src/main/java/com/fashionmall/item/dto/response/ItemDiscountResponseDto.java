@@ -1,12 +1,9 @@
 package com.fashionmall.item.dto.response;
 
-import com.fashionmall.item.dto.request.ItemDiscountRequestDto;
 import com.fashionmall.item.entity.Item;
 import com.fashionmall.item.entity.ItemDiscount;
 import com.fashionmall.item.enums.ItemDiscountTypeEnum;
 import com.fashionmall.item.enums.StatusEnum;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,14 +20,25 @@ public class ItemDiscountResponseDto {
     private Long id;
     private List<ItemDiscountDtos> itemDiscountDtoList;
 
-    public static ItemDiscountResponseDto from (Item item) {
-        List <ItemDiscountDtos> itemDiscountResponseDtoList = item.getItemDiscounts().stream()
+//    public static ItemDiscountResponseDto from (Item item) {
+//        List <ItemDiscountDtos> itemDiscountResponseDtoList = item.getItemDiscounts().stream()
+//                .map(ItemDiscountDtos::from)
+//                .toList();
+//
+//        return ItemDiscountResponseDto.builder()
+//                .id(item.getId())
+//                .itemDiscountDtoList(itemDiscountResponseDtoList)
+//                .build();
+//    }
+
+    public static ItemDiscountResponseDto fromItemDiscounts (Long itemId, List<ItemDiscount> newlyCreatedDiscounts) {
+        List<ItemDiscountDtos> itemDiscountDtoList = newlyCreatedDiscounts.stream()
                 .map(ItemDiscountDtos::from)
                 .toList();
 
         return ItemDiscountResponseDto.builder()
-                .id(item.getId())
-                .itemDiscountDtoList(itemDiscountResponseDtoList)
+                .id(itemId)
+                .itemDiscountDtoList(itemDiscountDtoList)
                 .build();
     }
 

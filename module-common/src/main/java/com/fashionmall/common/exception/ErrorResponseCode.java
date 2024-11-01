@@ -35,6 +35,7 @@ public enum ErrorResponseCode {
     WRONG_AMOUNT(HttpStatus.BAD_REQUEST, "정액(원)에 맞는 값을 입력해주세요."),
     BAD_DEDUCT_QUANTITY(HttpStatus.BAD_REQUEST, "재고 수량보다 더 큰 수량 입니다. 수량을 다시 확인해주세요"),
     BAD_RESTORE_QUANTITY(HttpStatus.BAD_REQUEST, "수령이 0보다 작습니다. 수량을 다시 확인해주세요"),
+    DUPLICATE_DISCOUNT_STATUS(HttpStatus.BAD_REQUEST, "활성화된 할인 정보가 있습니다."),
 
     // Image
     NOT_FOUND_S3(HttpStatus.NOT_FOUND, "이미지가 S3에 존재하지 않습니다."),
