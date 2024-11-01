@@ -2,11 +2,13 @@ package com.fashionmall.item.controller;
 
 import com.fashionmall.common.response.CommonResponse;
 import com.fashionmall.common.response.PageInfoResponseDto;
+import com.fashionmall.common.security.UserDetailsImpl;
 import com.fashionmall.common.util.ApiResponseUtil;
 import com.fashionmall.item.dto.response.*;
 import com.fashionmall.item.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,13 +28,15 @@ public class ItemQueryController {
                                                                                  @RequestParam(defaultValue = "10") int size,
                                                                                  @RequestParam(required = false) String itemName,
                                                                                  @RequestParam(required = false) Long category1,
-                                                                                 @RequestParam(required = false) Long category2) {
-        return ApiResponseUtil.success(itemService.getItemList(pageNo, size, itemName, category1, category2));
+                                                                                 @RequestParam(required = false) Long category2,
+                                                                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ApiResponseUtil.success(itemService.getItemList(pageNo, size, itemName, category1, category2, userDetails.getUserid()));
     }
 
     @GetMapping("/item/{itemId}")
-    public CommonResponse<List<ItemDetailListResponseDto>> getItemDetailList (@PathVariable Long itemId) {
-        return ApiResponseUtil.success(itemService.getItemDetailList(itemId));
+    public CommonResponse<List<ItemDetailListResponseDto>> getItemDetailList (@PathVariable Long itemId,
+                                                                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ApiResponseUtil.success(itemService.getItemDetailList(itemId, userDetails.getUserid()));
     }
 
     @GetMapping ("/admin/item")
@@ -40,19 +44,21 @@ public class ItemQueryController {
                                                                                         @RequestParam(defaultValue = "10") int size,
                                                                                         @RequestParam(required = false) String itemName,
                                                                                         @RequestParam(required = false) Long category1,
-                                                                                        @RequestParam(required = false) Long category2) {
-        return ApiResponseUtil.success(itemService.getAdminItemList(pageNo, size, itemName, category1, category2));
+                                                                                        @RequestParam(required = false) Long category2,
+                                                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ApiResponseUtil.success(itemService.getAdminItemList(pageNo, size, itemName, category1, category2, userDetails.getUserid()));
     }
 
     @GetMapping("/admin/item/{itemId}")
     public CommonResponse <PageInfoResponseDto<AdminItemDetailResponseDto>> getAdminItemDetailList (@PathVariable Long itemId,
                                                                                                     @RequestParam(defaultValue = "1") int pageNo,
-                                                                                                    @RequestParam(defaultValue = "10") int size) {
-        return ApiResponseUtil.success(itemService.getAdminItemDetailList(itemId, pageNo, size));
+                                                                                                    @RequestParam(defaultValue = "10") int size,
+                                                                                                    @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ApiResponseUtil.success(itemService.getAdminItemDetailList(itemId, pageNo, size, userDetails.getUserid()));
     }
 
     @GetMapping("/category")
-    public CommonResponse<List<CategoryResponseDto>> getCategoryList (){
+    public CommonResponse<List<CategoryResponseDto>> getCategoryList(){
         return ApiResponseUtil.success(itemService.getCategoryList());
     }
 }

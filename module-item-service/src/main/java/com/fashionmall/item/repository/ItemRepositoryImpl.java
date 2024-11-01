@@ -9,7 +9,6 @@ import com.fashionmall.item.dto.response.ItemDetailListResponseDto;
 import com.fashionmall.item.dto.response.ItemListResponseDto;
 import com.fashionmall.common.moduleApi.enums.ItemDiscountTypeEnum;
 import com.fashionmall.item.dto.response.*;
-import com.fashionmall.item.enums.ItemDiscountTypeEnum;
 import com.fashionmall.item.enums.StatusEnum;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
@@ -42,7 +41,6 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
     @Override
     public List<CategoryResponseDto> getCategoryList() {
 
-        // 쿼리 실행
         List<CategoryResponseDto> categoryList = queryFactory
                 .select(Projections.constructor(CategoryResponseDto.class,
                         category1.id,
@@ -154,8 +152,8 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
                         )
                 ))
                 .from(item)
-                .innerJoin(item.itemDetails, itemDetail)
-                .innerJoin(item.itemDiscounts, itemDiscount)
+                .leftJoin(item.itemDetails, itemDetail)
+                .leftJoin(item.itemDiscounts, itemDiscount)
                 .where(item.id.eq(itemId))
                 .fetch();
 

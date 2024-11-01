@@ -8,7 +8,6 @@ import com.fashionmall.item.dto.response.AdminItemResponseDto;
 import com.fashionmall.item.dto.response.ItemDetailListResponseDto;
 import com.fashionmall.item.dto.response.ItemListResponseDto;
 import com.fashionmall.item.dto.response.*;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
