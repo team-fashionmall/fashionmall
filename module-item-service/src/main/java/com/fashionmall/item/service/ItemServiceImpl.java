@@ -2,23 +2,17 @@ package com.fashionmall.item.service;
 
 import com.fashionmall.common.exception.CustomException;
 import com.fashionmall.common.exception.ErrorResponseCode;
-import com.fashionmall.common.moduleApi.dto.LikeItemListResponseDto;
-import com.fashionmall.item.dto.response.ItemListResponseDto;
-import com.fashionmall.common.moduleApi.dto.OrderItemDto;
 import com.fashionmall.common.moduleApi.dto.*;
 import com.fashionmall.common.moduleApi.enums.ImageTypeEnum;
+import com.fashionmall.common.moduleApi.enums.ItemDiscountTypeEnum;
 import com.fashionmall.common.moduleApi.enums.ReferenceTypeEnum;
 import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
-import com.fashionmall.item.dto.request.ItemDiscountRequestDto;
 import com.fashionmall.common.response.PageInfoResponseDto;
+import com.fashionmall.item.dto.request.ItemDiscountRequestDto;
 import com.fashionmall.item.dto.request.ItemRequestDto;
-import com.fashionmall.item.dto.response.ItemDiscountResponseDto;
 import com.fashionmall.item.dto.request.ItemUpdateRequestDto;
-import com.fashionmall.item.dto.response.ItemResponseDto;
 import com.fashionmall.item.dto.response.*;
-import com.fashionmall.item.dto.response.ItemUpdateResponseDto;
 import com.fashionmall.item.entity.*;
-import com.fashionmall.common.moduleApi.enums.ItemDiscountTypeEnum;
 import com.fashionmall.item.enums.StatusEnum;
 import com.fashionmall.item.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +28,8 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j (topic = "itemService")
-@Transactional (readOnly = true)
+@Slf4j(topic = "itemService")
+@Transactional(readOnly = true)
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
@@ -49,30 +43,30 @@ public class ItemServiceImpl implements ItemService {
     private final ModuleApiUtil moduleApiUtil;
 
     @Override
-    public List<CategoryResponseDto> getCategoryList () {
+    public List<CategoryResponseDto> getCategoryList() {
         return itemRepository.getCategoryList();
     }
 
     @Override
     public PageInfoResponseDto<ItemListResponseDto> getItemList(int pageNo, int size, String itemName, Long category1, Long category2) {
-        PageRequest pageRequest = PageRequest.of(pageNo -1, size);
-        return itemRepository.itemListPageNation (pageRequest, itemName, category1, category2);
+        PageRequest pageRequest = PageRequest.of(pageNo - 1, size);
+        return itemRepository.itemListPageNation(pageRequest, itemName, category1, category2);
     }
 
     @Override
     @Transactional
-    public List<LikeItemListResponseDto> getItemInfoApi (Long itemId, Long userId) {
+    public List<LikeItemListResponseDto> getItemInfoApi(Long itemId, Long userId) {
         return itemRepository.getItemInfo(itemId, userId);
     }
 
     @Override
     public List<ItemDetailListResponseDto> getItemDetailList(Long itemId) {
-        return itemRepository.itemDetailListPageNation (itemId);
+        return itemRepository.itemDetailListPageNation(itemId);
     }
 
     @Override
     @Transactional
-    public ItemResponseDto createItem (ItemRequestDto itemRequestDto, Long workerId) {
+    public ItemResponseDto createItem(ItemRequestDto itemRequestDto, Long workerId) {
 
         // 유저 검증 코드 (관리자) -> 추후 연결
 
@@ -132,7 +126,6 @@ public class ItemServiceImpl implements ItemService {
             itemDetailRepository.save(itemDetail);
 
 
-
             Map<Long, String> subImage = uploadImageApi(itemDetailRequestDto.getImageFileName(), itemDetail.getId(), ReferenceTypeEnum.ITEM, ImageTypeEnum.DESCRIPTION);
 
             Long subImageId = subImage.keySet().iterator().next(); // 첫 번째 키 가져오기
@@ -154,55 +147,55 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public PageInfoResponseDto<AdminItemResponseDto> getAdminItemList(int pageNo, int size, String itemName, Long category1, Long category2) {
         // 유저 검증코드 추가
-        PageRequest pageRequest = PageRequest.of(pageNo -1, size);
-        return itemRepository.adminItemListPageNation (pageRequest, itemName, category1, category2);
+        PageRequest pageRequest = PageRequest.of(pageNo - 1, size);
+        return itemRepository.adminItemListPageNation(pageRequest, itemName, category1, category2);
     }
 
     @Override
     public PageInfoResponseDto<AdminItemDetailResponseDto> getAdminItemDetailList(Long itemId, int pageNo, int size) {
         // 유저 검증코드 추가
-        PageRequest pageRequest = PageRequest.of(pageNo -1, size);
-        return itemRepository.adminItemDetailListPageNation (itemId, pageRequest);
+        PageRequest pageRequest = PageRequest.of(pageNo - 1, size);
+        return itemRepository.adminItemDetailListPageNation(itemId, pageRequest);
     }
 
     // 색 찾기
-    private ItemColor findColorId (Long colorId) {
-        return itemColorRepository.findById(colorId).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
+    private ItemColor findColorId(Long colorId) {
+        return itemColorRepository.findById(colorId).orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
     }
 
     // 사이즈 찾기
-    private ItemSize findSizeId (Long sizeId) {
-        return itemSizeRepository.findById(sizeId).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
+    private ItemSize findSizeId(Long sizeId) {
+        return itemSizeRepository.findById(sizeId).orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
     }
 
     // 카테고리 찾기
-    private Category1 findCategory1 (Long category1) {
-        return category1Repository.findById (category1).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_CATEGORY_ID));
+    private Category1 findCategory1(Long category1) {
+        return category1Repository.findById(category1).orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_CATEGORY_ID));
     }
 
-    private Category2 findCategory2 (Long category2, Long category1) {
-        return category2Repository.findByIdAndCategory1Id (category2, category1).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_CATEGORY_ID));
+    private Category2 findCategory2(Long category2, Long category1) {
+        return category2Repository.findByIdAndCategory1Id(category2, category1).orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_CATEGORY_ID));
     }
 
-    private Map<Long, String> uploadImageApi (String fileName, Long referenceId, ReferenceTypeEnum referenceType, ImageTypeEnum imageType) {
+    private Map<Long, String> uploadImageApi(String fileName, Long referenceId, ReferenceTypeEnum referenceType, ImageTypeEnum imageType) {
 
-        ImageUploadDto imageUploadDto = ImageUploadDto.builder ()
-                .fileName (fileName)
-                .referenceId (referenceId)
-                .referenceType (referenceType)
-                .imageType (imageType)
+        ImageUploadDto imageUploadDto = ImageUploadDto.builder()
+                .fileName(fileName)
+                .referenceId(referenceId)
+                .referenceType(referenceType)
+                .imageType(imageType)
                 .build();
         List<ImageUploadDto> imageUploadDtoList = new ArrayList<>();
         imageUploadDtoList.add(imageUploadDto);
 
-        Map<Long,String> response = moduleApiUtil.uploadImageApi(imageUploadDtoList);
+        Map<Long, String> response = moduleApiUtil.uploadImageApi(imageUploadDtoList);
 
         return response;
     }
 
     @Override
     @Transactional
-    public ItemDiscountResponseDto createItemDiscount (ItemDiscountRequestDto itemDiscountRequestDto, Long workerId) {
+    public ItemDiscountResponseDto createItemDiscount(ItemDiscountRequestDto itemDiscountRequestDto, Long workerId) {
 
         // 본인 인증
         // 해당 아이템이 있는지 확인하기
@@ -227,7 +220,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public ItemUpdateResponseDto updateItem (Long itemId, ItemUpdateRequestDto itemUpdateRequestDto, Long workerId) {
+    public ItemUpdateResponseDto updateItem(Long itemId, ItemUpdateRequestDto itemUpdateRequestDto, Long workerId) {
 
         // 관리자 확인
         // 어떤 사람의 데이터를 수정해야하는걸까? & 해당 관리자인지 검증 -> 추후
@@ -240,7 +233,7 @@ public class ItemServiceImpl implements ItemService {
 
         // 검증 null "" // 데이터 수정하기
         if (!itemUpdateRequestDto.getName().isEmpty()) {
-            item.updateItemName (itemUpdateRequestDto.getName());
+            item.updateItemName(itemUpdateRequestDto.getName());
         }
 
         item.updateItemState(itemUpdateRequestDto.getState());
@@ -249,7 +242,7 @@ public class ItemServiceImpl implements ItemService {
 
             moduleApiUtil.deleteImageApi(item.getImageId());
 
-            Map<Long,String> updateImage = uploadImageApi(itemUpdateRequestDto.getImageFileName(), item.getId(), ReferenceTypeEnum.ITEM, ImageTypeEnum.MAIN);
+            Map<Long, String> updateImage = uploadImageApi(itemUpdateRequestDto.getImageFileName(), item.getId(), ReferenceTypeEnum.ITEM, ImageTypeEnum.MAIN);
 
             Long imageId = updateImage.keySet().iterator().next(); // 첫 번째 키 가져오기
             String imageUrl = updateImage.get(imageId); // 키에 해당하는 값 가져오기
@@ -263,7 +256,7 @@ public class ItemServiceImpl implements ItemService {
 
             if (categoryDto.getId() != null) {
                 ItemCategoryMapping itemCategoryMapping = itemCategoryMappingRepository.findByIdAndItemId(categoryDto.getId(), itemId)
-                        .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
+                        .orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
 
                 if (categoryDto.getCategory1Id() != null) {
                     Category1 category1 = findCategory1(categoryDto.getCategory1Id());
@@ -288,7 +281,7 @@ public class ItemServiceImpl implements ItemService {
 
             if (itemDetailDto.getId() != null) {
                 ItemDetail itemDetail = itemDetailRepository.findByIdAndItemId(itemDetailDto.getId(), itemId)
-                        .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
+                        .orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
 
                 if (itemDetailDto.getName() != null) {
                     itemDetail.updateName(itemDetailDto.getName());
@@ -300,7 +293,7 @@ public class ItemServiceImpl implements ItemService {
 
                     moduleApiUtil.deleteImageApi(itemDetail.getImageId());
 
-                    Map<Long,String> updateImage = uploadImageApi(itemDetailDto.getImageFileName(), itemDetail.getImageId(), ReferenceTypeEnum.ITEM, ImageTypeEnum.DESCRIPTION);
+                    Map<Long, String> updateImage = uploadImageApi(itemDetailDto.getImageFileName(), itemDetail.getImageId(), ReferenceTypeEnum.ITEM, ImageTypeEnum.DESCRIPTION);
 
                     Long imageId = updateImage.keySet().iterator().next(); // 첫 번째 키 가져오기
                     String imageUrl = updateImage.get(imageId); // 키에 해당하는 값 가져오기
@@ -334,8 +327,8 @@ public class ItemServiceImpl implements ItemService {
         for (ItemUpdateRequestDto.ItemDiscountRequestDto itemDiscountDto : itemUpdateRequestDto.getItemDiscountRequestDtoList()) {
 
             if (itemDiscountDto.getId() != null) {
-                ItemDiscount itemDiscount = itemDiscountRepository.findByIdAndItemId(itemDiscountDto.getId(),itemId)
-                        .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_DISCOUNT_ID));
+                ItemDiscount itemDiscount = itemDiscountRepository.findByIdAndItemId(itemDiscountDto.getId(), itemId)
+                        .orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ITEM_DISCOUNT_ID));
 
                 if (itemDiscountDto.getType() != null) {
                     itemDiscount.updateItemDiscountType(itemDiscountDto.getType());
@@ -370,11 +363,11 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public String deleteItem (Long itemId, Long workerId) {
+    public String deleteItem(Long itemId, Long workerId) {
 
         // 관리자 확인
         // 상품 아이디가 맞는지 확인 & 해당 관리자인지 확인 (추후)
-        Item item = findByIdAndWorkerId(itemId,workerId);
+        Item item = findByIdAndWorkerId(itemId, workerId);
 
         moduleApiUtil.deleteImageApi(item.getImageId());
 
@@ -388,11 +381,11 @@ public class ItemServiceImpl implements ItemService {
         return "상품 삭제가 완료되었습니다.";
     }
 
-    private Item findByIdAndWorkerId (Long itemId, Long workerId) {
-        return itemRepository.findByIdAndWorkerId(itemId, workerId).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
+    private Item findByIdAndWorkerId(Long itemId, Long workerId) {
+        return itemRepository.findByIdAndWorkerId(itemId, workerId).orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
     }
 
-    private void validateItemDiscountValue (ItemDiscountTypeEnum type, int value) {
+    private void validateItemDiscountValue(ItemDiscountTypeEnum type, int value) {
 
         if (type == ItemDiscountTypeEnum.RATE) {
             if (value < 0 || value > 100) {
@@ -407,7 +400,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public Map<Long, Integer> getItemStockApi (Long itemDetailId, Long workerId) {
+    public Map<Long, Integer> getItemStockApi(Long itemDetailId, Long workerId) {
 
         ItemDetail itemDetail = findByItemDetailIdAndWorkerId(itemDetailId, workerId);
 
@@ -419,24 +412,24 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public String getItemNameApi (Long itemId) {
+    public String getItemNameApi(Long itemId) {
 
         Item item = itemRepository.findById(itemId)
-                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
+                .orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
 
         return item.getName();
     }
 
     @Override
     @Transactional
-    public List<ItemDetailInfoDto> getItemDetailInfoApi (List<Long> itemDetailId) {
+    public List<ItemDetailInfoDto> getItemDetailInfoApi(List<Long> itemDetailId) {
         // 회원인증
 
         List<ItemDetailInfoDto> itemDetailInfoDtoList = new ArrayList<>();
 
         for (Long id : itemDetailId) {
-            ItemDetail itemDetail = itemDetailRepository.findById(id).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_DETAIL_ID));
-            Item item = itemRepository.findById(itemDetail.getItem().getId()).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
+            ItemDetail itemDetail = itemDetailRepository.findById(id).orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ITEM_DETAIL_ID));
+            Item item = itemRepository.findById(itemDetail.getItem().getId()).orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
             List<ItemDiscount> itemDiscounts = item.getItemDiscounts();
 
             String itemDetailName = itemDetail.getName();
@@ -446,7 +439,7 @@ public class ItemServiceImpl implements ItemService {
             if (itemDiscounts.isEmpty()) {
                 String discountType = "none";
                 int itemDiscountValue = price;
-                ItemDetailInfoDto itemDetailInfoDto = new ItemDetailInfoDto(itemDetailName, price, itemDiscountValue, discountType, imageUrl);
+                ItemDetailInfoDto itemDetailInfoDto = new ItemDetailInfoDto(itemDetail.getId(), itemDetailName, price, itemDiscountValue, discountType, imageUrl);
                 itemDetailInfoDtoList.add(itemDetailInfoDto);
             } else {
                 for (ItemDiscount itemDiscount : itemDiscounts) {
@@ -456,7 +449,7 @@ public class ItemServiceImpl implements ItemService {
                     int itemDiscountValue = itemPriceNameDto.getPrice();
                     String discountType = itemDiscount.getType().name();
 
-                    ItemDetailInfoDto itemDetailInfoDto = new ItemDetailInfoDto(itemDetailName, price, itemDiscountValue, discountType, imageUrl);
+                    ItemDetailInfoDto itemDetailInfoDto = new ItemDetailInfoDto(itemDetail.getId(), itemDetailName, price, itemDiscountValue, discountType, imageUrl);
                     itemDetailInfoDtoList.add(itemDetailInfoDto);
                 }
             }
@@ -467,7 +460,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public void deductItemStockApi (List<OrderItemDto> orderItemDto, Long workerId) {
+    public void deductItemStockApi(List<OrderItemDto> orderItemDto, Long workerId) {
         // 본인 확인
 
         for (OrderItemDto orderItemDtoList : orderItemDto) {
@@ -483,14 +476,14 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public void restoreItemStockApi (List<OrderItemDto> orderItemDto, Long workerId){
+    public void restoreItemStockApi(List<OrderItemDto> orderItemDto, Long workerId) {
         //본인확인
 
         for (OrderItemDto orderItemDtoList : orderItemDto) {
 
             ItemDetail itemDetail = findByItemDetailIdAndWorkerId(orderItemDtoList.getItemDetailId(), workerId);
 
-            if (orderItemDtoList.getQuantity() > 0){
+            if (orderItemDtoList.getQuantity() > 0) {
                 itemDetail.restoreQuantity(orderItemDtoList.getQuantity());
             } else {
                 throw new CustomException(ErrorResponseCode.BAD_RESTORE_QUANTITY);
@@ -501,11 +494,11 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public ItemDetailResponseDto getItemDetailApi (Long itemDetailId, Long workerId) {
+    public ItemDetailResponseDto getItemDetailApi(Long itemDetailId, Long workerId) {
         // 본인인증
 
         ItemDetail itemDetail = findByItemDetailIdAndWorkerId(itemDetailId, workerId);
-        Item item = itemRepository.findByItemDetails_id(itemDetail.getId()).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_DETAIL_ID));
+        Item item = itemRepository.findByItemDetails_id(itemDetail.getId()).orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ITEM_DETAIL_ID));
 
         return ItemDetailResponseDto.builder()
                 .name(itemDetail.getName())
@@ -514,22 +507,22 @@ public class ItemServiceImpl implements ItemService {
                 .build();
     }
 
-    private ItemDetail findByItemDetailIdAndWorkerId (Long itemDetailId, Long workerId) {
+    private ItemDetail findByItemDetailIdAndWorkerId(Long itemDetailId, Long workerId) {
         return itemDetailRepository.findByIdAndItem_WorkerId(itemDetailId, workerId)
-                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_DETAIL_ID));
+                .orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ITEM_DETAIL_ID));
     }
 
     @Override
     @Transactional
-    public List<ItemPriceNameDto> getItemPriceAndNameApi (List<Long> itemDetailId, Long workerId) {
+    public List<ItemPriceNameDto> getItemPriceAndNameApi(List<Long> itemDetailId, Long workerId) {
         // 본인인증
 
         List<ItemPriceNameDto> itemPriceNameDtos = new ArrayList<>();
 
         for (Long itemDetailIds : itemDetailId) {
 
-            ItemDetail itemDetail = itemDetailRepository.findById(itemDetailIds).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_DETAIL_ID));
-            Item item = itemRepository.findById(itemDetail.getItem().getId()).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
+            ItemDetail itemDetail = itemDetailRepository.findById(itemDetailIds).orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ITEM_DETAIL_ID));
+            Item item = itemRepository.findById(itemDetail.getItem().getId()).orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
             List<ItemDiscount> itemDiscounts = item.getItemDiscounts();
 
             for (ItemDiscount itemDiscount : itemDiscounts) {

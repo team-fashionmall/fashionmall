@@ -2,9 +2,7 @@ package com.fashionmall.order.service;
 
 import com.fashionmall.common.exception.CustomException;
 import com.fashionmall.common.exception.ErrorResponseCode;
-import com.fashionmall.common.moduleApi.dto.CouponDto;
-import com.fashionmall.common.moduleApi.dto.DeliveryAddressDto;
-import com.fashionmall.common.moduleApi.dto.ItemDetailDto;
+import com.fashionmall.common.moduleApi.dto.*;
 import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.order.dto.request.OrderItemRequestDto;
@@ -34,8 +32,10 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
 @Service
@@ -61,8 +61,36 @@ public class OrdersServiceImpl implements OrdersService {
         //데이터 가져오기
         List<CouponDto> userCouponApi = moduleApiUtil.getUserCouponApi(userId);
         List<DeliveryAddressDto> userDeliveryAddressApi = moduleApiUtil.getUserDeliveryAddressApi(userId);
-        List<ItemDetailDto> itemDetailApi = moduleApiUtil.getItemDetailFromCartApi(userId);
         List<BillingKey> billingKeys = billingKeyRepository.findByUserId(userId);
+        List<CartItemDto> isSelectedItemApi = moduleApiUtil.getIsSelectedItemApi();
+        List<Long> itemIds = isSelectedItemApi.stream()
+                .map(CartItemDto::getId)
+                .toList();
+        List<ItemDetailInfoDto> itemDetailInfoApi = moduleApiUtil.getItemDetailInfoApi(itemIds);
+
+        List<ItemDetailDto> list = itemDetailInfoApi.stream()
+                .map(itemInfo -> new ItemDetailDto(
+                        itemInfo.getId(),
+                        itemInfo.getItemDetailName(),
+                        itemInfo.getPrice(),
+                        itemInfo.getItemDiscountValue(),
+                        itemInfo.getDiscountType(),
+                        0,
+                        itemInfo.getImageUrl()
+                )).toList();
+
+        Map<Long, ItemDetailDto> collect = list.stream().collect(Collectors.toMap(ItemDetailDto::getId, itemDetailDto -> itemDetailDto));
+
+        for (CartItemDto cartItemDto : isSelectedItemApi) {
+            ItemDetailDto itemDetailDto = collect.get(cartItemDto.getId());
+            if (itemDetailDto != null) {
+                itemDetailDto.setQuantity(cartItemDto.getQuantity());
+            } else {
+                throw new CustomException(ErrorResponseCode.WRONG_ITEM_DETAIL_ID);
+            }
+        }
+
+        List<ItemDetailDto> itemDetailApi = List.copyOf(collect.values());
 
         //주문 항목 생성
         List<OrderItemRequestDto> orderItems = itemDetailApi.stream()
@@ -198,20 +226,28 @@ public class OrdersServiceImpl implements OrdersService {
     public OrdersDetailResponseDto getOrderDetail(Long userId, Long orderId) {
         OrdersDetailResponseDto ordersDetails = ordersRepository.findOrdersDetailsByUserIdAndOrderId(userId, orderId);
 
-        //item name, image,
         List<Long> itemDetailIds = ordersDetails.getOrderItemsDto().stream()
                 .map(OrderItemDetailResponseDto::getItemDetailId)
                 .toList();
-        //상품명, 이미지, 상품할인값, 타입
-        Map<Long, ItemDetailDto> itemDetailNameAndImageApi = moduleApiUtil.getItemDetailNameAndImageApi(itemDetailIds);
 
+        List<Long> imageList = new ArrayList<>();
+        
         ordersDetails.getOrderItemsDto().forEach(orderItemDetail -> {
             Long itemDetailId = orderItemDetail.getItemDetailId();
-            ItemDetailDto itemDetailDto = itemDetailNameAndImageApi.get(itemDetailId);
+            ItemDetailResponseDto itemDetailApi = moduleApiUtil.getItemDetailApi(itemDetailId);
 
-            if (itemDetailDto != null) {
-                orderItemDetail.setItemDetailName(itemDetailDto.getName());
-                orderItemDetail.setItemImageUrl(itemDetailDto.getImageUrl());
+            if (itemDetailApi != null) {
+                orderItemDetail.setItemDetailName(itemDetailApi.getName());
+                Long imageId = itemDetailApi.getImageId();
+                imageList.add(imageId);
+
+                List<ImageDataDto> imageApi = moduleApiUtil.getImageApi(imageList);
+
+                if (!imageApi.isEmpty()) {
+                    orderItemDetail.setItemImageUrl(imageApi.get(0).getUrl());
+                }
+
+                imageList.remove(imageId);
             }
         });
 
