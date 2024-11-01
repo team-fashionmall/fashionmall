@@ -2,32 +2,53 @@ package com.fashionmall.user.service;
 
 import com.fashionmall.common.exception.CustomException;
 import com.fashionmall.common.exception.ErrorResponseCode;
+import com.fashionmall.common.jwt.JwtUtil;
+import com.fashionmall.common.jwt.LoginRequestDto;
+import com.fashionmall.common.jwt.UserRoleEnum;
 import com.fashionmall.common.moduleApi.dto.DeliveryAddressDto;
 import com.fashionmall.common.moduleApi.dto.LikeItemListResponseDto;
 import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
+import com.fashionmall.common.redis.RedisUtil;
+import com.fashionmall.common.redis.RefreshToken;
+import com.fashionmall.common.response.CommonResponse;
 import com.fashionmall.common.response.PageInfoResponseDto;
+import com.fashionmall.common.util.ApiResponseUtil;
 import com.fashionmall.user.dto.request.DeliveryAddressRequestDto;
 import com.fashionmall.user.dto.request.FavoriteRequestDto;
 import com.fashionmall.user.dto.request.SignUpRequestDto;
 import com.fashionmall.user.dto.request.UpdateUserInfoRequestDto;
 import com.fashionmall.user.dto.response.FavoriteResponseDto;
+import com.fashionmall.user.dto.response.LoginResponseDto;
 import com.fashionmall.user.dto.response.UserInfoResponseDto;
 import com.fashionmall.user.entity.DeliveryAddress;
 import com.fashionmall.user.entity.User;
-import com.fashionmall.user.entity.UserRoleEnum;
 import com.fashionmall.user.repository.DeliveryAddressRepository;
 import com.fashionmall.user.repository.FavoriteRepository;
 import com.fashionmall.user.repository.UserRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.fashionmall.user.entity.Favorite;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j(topic = "favoriteService")
 @Service
@@ -35,8 +56,11 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
+    private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
+    private final RedisUtil redisUtil;
     private final FavoriteRepository favoriteRepository;
     private final DeliveryAddressRepository deliveryAddressRepository;
     private final ModuleApiUtil moduleApiUtil;
@@ -66,6 +90,50 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         return user.getId();
+    }
+
+    @Override
+    @Transactional
+    public LoginResponseDto login (@RequestBody LoginRequestDto loginRequestDto, HttpServletRequest request, HttpServletResponse response) {
+
+        String emails = loginRequestDto.getEmail();
+        String password = loginRequestDto.getPassword();
+
+
+        User user = userRepository.findByEmail(emails)
+                .orElseThrow(() -> new RuntimeException("해당 이메일을 찾을 수 없습니다."));
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        }
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(emails, password)
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String email = user.getUserName();
+        UserRoleEnum role = user.getRole();
+        Long userId = user.getId();
+
+        String accessToken = jwtUtil.createToken(email, role,userId, jwtUtil.ACCESS_TOKEN_EXPIRATION_TIME);
+        String refreshToken = jwtUtil.createToken(email, role, userId, jwtUtil.REFRESH_TOKEN_EXPIRATION_TIME);
+        System.out.println("Generated refresh token: " + refreshToken);
+
+        jwtUtil.createTokenToCookie("access_token", accessToken, jwtUtil.ACCESS_TOKEN_EXPIRATION_TIME);
+        jwtUtil.createTokenToCookie("refresh_token", refreshToken, jwtUtil.REFRESH_TOKEN_EXPIRATION_TIME);
+
+        RefreshToken redisToken = new RefreshToken(userId, refreshToken);
+        redisUtil.set("refreshToken:" + userId, String.valueOf(redisToken), 86400);
+
+        jwtUtil.addCookiesToResponse(response, accessToken, refreshToken);
+        response.setStatus(HttpServletResponse.SC_OK);
+
+        return LoginResponseDto.builder()
+                .userId(user.getId())
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 
     @Override
