@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ItemDetailInfoDto {
 
+    private Long id;
     private String itemDetailName;
     private int price;
     private int itemDiscountValue;
