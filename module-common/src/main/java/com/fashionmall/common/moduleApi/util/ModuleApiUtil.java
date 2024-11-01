@@ -2,9 +2,11 @@ package com.fashionmall.common.moduleApi.util;
 
 
 import com.fashionmall.common.exception.ErrorResponseCode;
+import com.fashionmall.common.jwt.JwtUtil;
 import com.fashionmall.common.moduleApi.dto.*;
 import com.fashionmall.common.response.CommonResponse;
 import com.fashionmall.common.util.WebClientUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -19,6 +21,8 @@ import java.util.stream.Collectors;
 public class ModuleApiUtil {
 
     private final WebClientUtil webClientUtil;
+    private final HttpServletRequest request;
+    private final JwtUtil jwtUtil;
 
     private final String cartApi = "http://localhost:8000/api/cart";
     private final String userApi = "http://localhost:8000/api/user";
@@ -32,7 +36,7 @@ public class ModuleApiUtil {
                 itemApi + "/itemInfo/" + itemId + "/" + userId,
                 new ParameterizedTypeReference<CommonResponse<List<LikeItemListResponseDto>>>() {
                 },
-                headers(),
+                headers(getAccessToken(request)),
                 ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE
         );
 
@@ -40,24 +44,28 @@ public class ModuleApiUtil {
 
     }
 
-    public Long confirmUserInfoApi(String userName) {
+    public Long confirmUserInfoApi (Long userId) {
 
         CommonResponse<Long> commonResponse = webClientUtil.get(
-                userApi + "/confirm/" + userName,
+                userApi + "/confirm/" + userId,
                 new ParameterizedTypeReference<CommonResponse<Long>>() {
                 },
-                headers(),
+                headers(getAccessToken(request)),
                 ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE
         );
 
         return commonResponse.getData();
     }
 
-    public List<CouponDto> getUserCouponApi(Long userId) {
-        Map<String, String> headers = Map.of(
-                HttpHeaders.CONTENT_TYPE, "application/json");
-        CommonResponse<List<CouponDto>> listCommonResponse = webClientUtil.get(couponApi + "/getCoupon", new ParameterizedTypeReference<CommonResponse<List<CouponDto>>>() {
-        }, headers, ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE);
+    public List<CouponDto> getUserCouponApi (Long userId){
+
+        CommonResponse<List<CouponDto>> listCommonResponse = webClientUtil.get(
+                couponApi + "/getCoupon", new ParameterizedTypeReference<CommonResponse<List<CouponDto>>>() {
+                },
+                headers(getAccessToken(request)),
+                ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE
+        );
+
         return listCommonResponse.getData();
     }
 
@@ -67,7 +75,7 @@ public class ModuleApiUtil {
                 cartApi + "/getIsSelectedItem",
                 new ParameterizedTypeReference<CommonResponse<List<CartItemDto>>>() {
                 },
-                headers(),
+                headers(getAccessToken(request)),
                 ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE
         );
 
@@ -75,26 +83,27 @@ public class ModuleApiUtil {
     }
 
     public ItemDetailResponseDto getItemDetailApi(Long itemDetailId) {
-        Map<String, String> headers = Map.of(
-                HttpHeaders.CONTENT_TYPE, "application/json");
 
         CommonResponse<ItemDetailResponseDto> commonResponse = webClientUtil.get(
                 itemApi + "/itemDetail/" + itemDetailId,
                 new ParameterizedTypeReference<CommonResponse<ItemDetailResponseDto>>() {
                 },
-                headers, ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE
+                headers(getAccessToken(request)),
+                ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE
         );
 
         return commonResponse.getData();
     }
 
-    // cart
-    //은미님께 요청
     public List<DeliveryAddressDto> getUserDeliveryAddressApi(Long userId) {
-        Map<String, String> headers = Map.of(
-                HttpHeaders.CONTENT_TYPE, "application/json");
-        CommonResponse<List<DeliveryAddressDto>> listCommonResponse = webClientUtil.get(userApi + "/DeliveryAddressApi/" + userId, new ParameterizedTypeReference<CommonResponse<List<DeliveryAddressDto>>>() {
-        }, headers, ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE);
+
+        CommonResponse<List<DeliveryAddressDto>> listCommonResponse = webClientUtil.get(
+                userApi + "/DeliveryAddressApi/" + userId, new ParameterizedTypeReference<CommonResponse<List<DeliveryAddressDto>>>() {
+                },
+                headers(getAccessToken(request)),
+                ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE
+        );
+
         return listCommonResponse.getData();
     }
 
@@ -102,9 +111,9 @@ public class ModuleApiUtil {
 
         CommonResponse<List<ItemDetailInfoDto>> commonResponse = webClientUtil.get(
                 itemApi + "/getItemDetail/" + itemDetailId,
-                new ParameterizedTypeReference<CommonResponse<List<ItemDetailInfoDto>>>() {
+                new ParameterizedTypeReference<CommonResponse<List<ItemDetailInfoDto>>>(){
                 },
-                headers(),
+                headers(getAccessToken(request)),
                 ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE
         );
 
@@ -117,7 +126,7 @@ public class ModuleApiUtil {
                 itemApi + "/getStock/" + itemDetailId,
                 new ParameterizedTypeReference<CommonResponse<Map<Long, Integer>>>() {
                 },
-                headers(),
+                headers(getAccessToken(request)),
                 ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE
         );
 
@@ -130,7 +139,7 @@ public class ModuleApiUtil {
                 itemApi + "/getItemName/" + itemId,
                 new ParameterizedTypeReference<CommonResponse<String>>() {
                 },
-                headers(),
+                headers(getAccessToken(request)),
                 ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE
         );
 
@@ -144,7 +153,8 @@ public class ModuleApiUtil {
                 orderItemDto,
                 new ParameterizedTypeReference<Void>() {
                 },
-                headers(), ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE);
+                headers(getAccessToken(request)),
+                ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE);
     }
 
     public void restoreItemStockApi(List<OrderItemDto> orderItemDto) {
@@ -154,17 +164,18 @@ public class ModuleApiUtil {
                 orderItemDto,
                 new ParameterizedTypeReference<Void>() {
                 },
-                headers(), ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE);
+                headers(getAccessToken(request)),
+                ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE);
     }
 
     // image
     public Map<Long, String> uploadImageApi(List<ImageUploadDto> imageUploadDto) {
+
         CommonResponse<Map<Long, String>> uploadImageApi = webClientUtil.post(
-                imageApi + "/uploadImage",
-                imageUploadDto,
+                imageApi + "/uploadImage", imageUploadDto,
                 new ParameterizedTypeReference<CommonResponse<Map<Long, String>>>() {
                 },
-                headers(),
+                headers(getAccessToken(request)),
                 ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE
         );
 
@@ -181,7 +192,7 @@ public class ModuleApiUtil {
                 imageApi + "/getImage?" + imageIdParam,
                 new ParameterizedTypeReference<CommonResponse<List<ImageDataDto>>>() {
                 },
-                headers(),
+                headers(getAccessToken(request)),
                 ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE
         );
 
@@ -198,7 +209,7 @@ public class ModuleApiUtil {
                 itemApi + "/itemPriceAndName?" + itemDetailId,
                 new ParameterizedTypeReference<CommonResponse<List<ItemPriceNameDto>>>() {
                 },
-                headers(),
+                headers(getAccessToken(request)),
                 ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE
         );
 
@@ -211,14 +222,20 @@ public class ModuleApiUtil {
                 imageApi + "/deleteImage/" + imageId,
                 new ParameterizedTypeReference<CommonResponse<Long>>() {
                 },
-                headers(),
+                headers(getAccessToken(request)),
                 ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE
         );
 
         return deleteImageApi.getData();
     }
 
-    private Map<String, String> headers() {
-        return Map.of(HttpHeaders.CONTENT_TYPE, "application/json");
+    private String getAccessToken (HttpServletRequest request){
+        return jwtUtil.getJwtFromHeader(request);
+    }
+
+    private Map<String, String> headers(String accessToken) {
+        return Map.of(
+                HttpHeaders.AUTHORIZATION, "Bearer " + accessToken,
+                HttpHeaders.CONTENT_TYPE, "application/json");
     }
 }
