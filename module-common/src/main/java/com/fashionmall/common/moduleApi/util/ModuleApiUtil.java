@@ -1,8 +1,6 @@
 package com.fashionmall.common.moduleApi.util;
 
-
 import com.fashionmall.common.exception.ErrorResponseCode;
-import com.fashionmall.common.moduleApi.dto.*;
 import com.fashionmall.common.moduleApi.dto.*;
 import com.fashionmall.common.moduleApi.dto.OrderItemDto;
 import com.fashionmall.common.moduleApi.dto.ImageDataDto;
@@ -10,7 +8,6 @@ import com.fashionmall.common.moduleApi.dto.ImageUploadDto;
 import com.fashionmall.common.moduleApi.dto.ItemDetailDto;
 import com.fashionmall.common.moduleApi.dto.ItemDetailResponseDto;
 import com.fashionmall.common.response.CommonResponse;
-import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.common.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
@@ -46,10 +43,10 @@ public class ModuleApiUtil {
 
     }
 
-    public Long confirmUserInfoApi (String userName) {
+    public Long confirmUserInfoApi (Long userId) {
 
         CommonResponse<Long> commonResponse = webClientUtil.get(
-                userApi + "/confirm/" + userName,
+                userApi + "/confirm/" + userId,
                 new ParameterizedTypeReference<CommonResponse<Long>>() {},
                 headers(),
                 ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE

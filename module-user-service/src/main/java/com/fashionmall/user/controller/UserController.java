@@ -4,6 +4,7 @@ import com.fashionmall.common.jwt.JwtUtil;
 import com.fashionmall.common.jwt.LoginRequestDto;
 import com.fashionmall.common.redis.RefreshToken;
 import com.fashionmall.common.response.CommonResponse;
+import com.fashionmall.common.security.UserDetailsImpl;
 import com.fashionmall.common.util.ApiResponseUtil;
 import com.fashionmall.user.dto.request.SignUpRequestDto;
 import com.fashionmall.user.dto.request.UpdateUserInfoRequestDto;
@@ -13,33 +14,31 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
     private final JwtUtil jwtUtil;
 
-    @PostMapping("/user/signUp")
+    @PostMapping("/signUp")
     public CommonResponse<Long> signUp (@Valid @RequestBody SignUpRequestDto signUpRequestDto) {
-
         return ApiResponseUtil.success(userService.signUp(signUpRequestDto));
     }
 
-    @PostMapping("/user/login")
+    @PostMapping("/login")
     public CommonResponse<LoginResponseDto> login (@RequestBody LoginRequestDto loginRequestDto, HttpServletRequest request, HttpServletResponse response) {
         return ApiResponseUtil.success(userService.login(loginRequestDto, request, response));
     }
 
-    @PatchMapping("/user/{userId}")
-    public CommonResponse<Long> updateUserInfo (@Valid @RequestBody UpdateUserInfoRequestDto updateUserInfoRequestDto) {
-        Long userId = 1L;
-        return ApiResponseUtil.success(userService.updateUserInfo(updateUserInfoRequestDto, userId));
+    @PatchMapping("/{userId}")
+    public CommonResponse<Long> updateUserInfo (@Valid @RequestBody UpdateUserInfoRequestDto updateUserInfoRequestDto,
+                                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ApiResponseUtil.success(userService.updateUserInfo(updateUserInfoRequestDto, userDetails.getUserid()));
     }
 
     @PostMapping ("/auth/refresh")

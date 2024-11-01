@@ -31,7 +31,7 @@ public interface UserService {
 
     Void logout(String accessToken);
 
-    Long confirmUserInfoApi (String userName);
+    Long confirmUserInfoApi (Long userId);
 
     // DeliveryAddress
     Long createDeliveryAddress (DeliveryAddressRequestDto deliveryAddressRequestDto, Long userId);

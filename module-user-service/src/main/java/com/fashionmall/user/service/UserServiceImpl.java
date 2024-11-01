@@ -94,7 +94,6 @@ public class UserServiceImpl implements UserService {
         String emails = loginRequestDto.getEmail();
         String password = loginRequestDto.getPassword();
 
-
         User user = userRepository.findByEmail(emails)
                 .orElseThrow(() -> new RuntimeException("해당 이메일을 찾을 수 없습니다."));
 
@@ -135,8 +134,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public Long updateUserInfo (UpdateUserInfoRequestDto updateUserInfoRequestDto, Long userId) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_USER_ID));
+        User user = findByUserId(userId);
 
         if (updateUserInfoRequestDto.getOldPassword() != null && updateUserInfoRequestDto.getOldPassword().equals(user.getPassword())) {
             user.updatePassword(updateUserInfoRequestDto.getNewPassword());
@@ -156,8 +154,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserInfoResponseDto userInfo (Long userId) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_USER_ID));
+        User user = findByUserId(userId);
 
         UserRoleEnum role = user.getRole() == UserRoleEnum.ADMIN ? user.getRole() : null;
 
@@ -178,7 +175,6 @@ public class UserServiceImpl implements UserService {
 
         Long userId = Long.valueOf(info.getId());
 
-        // Redis에서 RefreshToken 문자열 가져오기
         String redisTokenStr = (String) redisUtil.get("refreshToken:" + userId);
         if (redisTokenStr == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Refresh token not found in Redis");
@@ -205,6 +201,7 @@ public class UserServiceImpl implements UserService {
         }
 
         Long userId = Long.valueOf(info.getId());
+        findByUserId(userId);
 
         Set<String> keys = redisUtil.getKeys("refreshToken:" + userId);
         for (String key : keys) {
@@ -230,19 +227,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Long confirmUserInfoApi (String userName) {
-
-        User user = userRepository.findByUserName(userName)
-                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_USER_NAME));
-
+    public Long confirmUserInfoApi (Long userId) {
+        User user = findByUserId(userId);
         return user.getId();
+    }
+
+    private User findByUserId (Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_USER_ID));
     }
 
     // DeliveryAddress
     @Override
     @Transactional
     public Long createDeliveryAddress (DeliveryAddressRequestDto deliveryAddressRequestDto, Long userId) {
-        // 회원 인증
+
+        findByUserId(userId);
 
         DeliveryAddress deliveryAddress = DeliveryAddress.builder()
                 .userId(userId)
@@ -257,6 +257,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public List<DeliveryAddressDto> getDeliveryAddress (Long userId) {
+
+        findByUserId(userId);
 
         List<DeliveryAddress> deliveryAddresses = deliveryAddressRepository.findAllByUserId(userId);
 
@@ -279,7 +281,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public FavoriteResponseDto updateFavorite (Long itemId, FavoriteRequestDto favoriteRequestDto, Long userId) {
 
-        // 회원 인증
+        findByUserId(userId);
 
         List<LikeItemListResponseDto> itemInfos = moduleApiUtil.getItemInfoApi(itemId, userId);
         LikeItemListResponseDto itemInfo = itemInfos.stream()
@@ -289,14 +291,14 @@ public class UserServiceImpl implements UserService {
 
         Favorite existingFavorite = favoriteRepository.findByItemId(itemId);
 
-        if (existingFavorite != null) {  // DB에 itemId가 존재하는 경우
+        if (existingFavorite != null) {
             if (favoriteRequestDto.isSelected()) {
                 throw new CustomException(ErrorResponseCode.DUPLICATE_TRUE);
             } else {
                 favoriteRepository.delete(existingFavorite);
                 return FavoriteResponseDto.from(buildFavorite(itemInfo.getItemInfo().getId(), favoriteRequestDto.isSelected(), userId));
             }
-        } else {  // DB에 itemId가 존재하지 않는 경우
+        } else {
             if (favoriteRequestDto.isSelected()) {
                 Favorite newFavorite = buildFavorite(itemInfo.getItemInfo().getId(), favoriteRequestDto.isSelected(), userId);
                 favoriteRepository.save(newFavorite);
@@ -310,6 +312,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public PageInfoResponseDto <LikeItemListResponseDto> favoriteList (int pageNo, int size, Long itemId, Long userId) {
+
+        findByUserId(userId);
 
         PageRequest pageRequest = PageRequest.of(pageNo - 1, size);
         int totalCount = favoriteRepository.countByUserId(userId);
