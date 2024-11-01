@@ -2,32 +2,53 @@ package com.fashionmall.user.service;
 
 import com.fashionmall.common.exception.CustomException;
 import com.fashionmall.common.exception.ErrorResponseCode;
+import com.fashionmall.common.jwt.JwtUtil;
+import com.fashionmall.common.jwt.LoginRequestDto;
+import com.fashionmall.common.jwt.UserRoleEnum;
 import com.fashionmall.common.moduleApi.dto.DeliveryAddressDto;
 import com.fashionmall.common.moduleApi.dto.LikeItemListResponseDto;
 import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
+import com.fashionmall.common.redis.RedisUtil;
+import com.fashionmall.common.redis.RefreshToken;
+import com.fashionmall.common.response.CommonResponse;
 import com.fashionmall.common.response.PageInfoResponseDto;
+import com.fashionmall.common.util.ApiResponseUtil;
 import com.fashionmall.user.dto.request.DeliveryAddressRequestDto;
 import com.fashionmall.user.dto.request.FavoriteRequestDto;
 import com.fashionmall.user.dto.request.SignUpRequestDto;
 import com.fashionmall.user.dto.request.UpdateUserInfoRequestDto;
 import com.fashionmall.user.dto.response.FavoriteResponseDto;
+import com.fashionmall.user.dto.response.LoginResponseDto;
 import com.fashionmall.user.dto.response.UserInfoResponseDto;
 import com.fashionmall.user.entity.DeliveryAddress;
 import com.fashionmall.user.entity.User;
-import com.fashionmall.user.entity.UserRoleEnum;
 import com.fashionmall.user.repository.DeliveryAddressRepository;
 import com.fashionmall.user.repository.FavoriteRepository;
 import com.fashionmall.user.repository.UserRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.fashionmall.user.entity.Favorite;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j(topic = "favoriteService")
 @Service
@@ -35,8 +56,11 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
+    private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
+    private final RedisUtil redisUtil;
     private final FavoriteRepository favoriteRepository;
     private final DeliveryAddressRepository deliveryAddressRepository;
     private final ModuleApiUtil moduleApiUtil;
@@ -67,6 +91,84 @@ public class UserServiceImpl implements UserService {
 
         return user.getId();
     }
+
+    @Override
+    @Transactional
+    public LoginResponseDto login (@RequestBody LoginRequestDto loginRequestDto, HttpServletRequest request, HttpServletResponse response) {
+
+//        LoginRequestDto loginRequestDto = new ObjectMapper().readValue(request.getInputStream(), LoginRequestDto.class);
+        String emails = loginRequestDto.getEmail();
+        String password = loginRequestDto.getPassword();
+
+        // DB에서 유저 정보 가져오기
+        User user = userRepository.findByEmail(emails)
+                .orElseThrow(() -> new RuntimeException("해당 이메일을 찾을 수 없습니다."));
+
+        // 비밀번호 검증
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 이게 예외처리인가?
+            log.error("Authentication failed: 잘못된 비밀번호");
+//            return;
+        }
+
+        // 인증 생성
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(emails, password)
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String email = user.getUserName();
+        UserRoleEnum role = user.getRole();
+        Long userId = user.getId();
+
+        String accessToken = jwtUtil.createToken(email, role,userId, jwtUtil.ACCESS_TOKEN_EXPIRATION_TIME);
+        String refreshToken = jwtUtil.createToken(email, role, userId, jwtUtil.REFRESH_TOKEN_EXPIRATION_TIME);
+        System.out.println("Generated refresh token: " + refreshToken);
+
+        jwtUtil.createTokenToCookie("access_token", accessToken, jwtUtil.ACCESS_TOKEN_EXPIRATION_TIME);
+        jwtUtil.createTokenToCookie("refresh_token", refreshToken, jwtUtil.REFRESH_TOKEN_EXPIRATION_TIME);
+
+        RefreshToken redisToken = new RefreshToken(userId, refreshToken);
+        redisUtil.set("refreshToken:" + userId, String.valueOf(redisToken), 86400);
+        System.out.println("Stored in Redis: refreshToken:" + userId + " = " + redisToken);
+
+        jwtUtil.addCookiesToResponse(response, accessToken, refreshToken);
+        // 추가 응답 처리
+        response.setStatus(HttpServletResponse.SC_OK);
+
+        return LoginResponseDto.builder()
+                .userId(user.getId())
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
+//    @PostMapping("/login")
+//    public CommonResponse<Object> login(@Valid @RequestBody LoginRequestDto loginRequestDto) {
+//        User user = userRepository.findByEmail(loginRequestDto.getEmail())
+//                .orElseThrow(() -> {
+//                    throw new RuntimeException("이메일을 확인해주세요");
+//                });
+//
+//        if (user.getPassword().equals(loginRequestDto.getPassword())) {
+//            throw new RuntimeException("패스워드가 맞지 않습니다");
+//        }
+//
+//        String email = user.getEmail();
+//        UserRoleEnum role = user.getRole();
+//        Long userId = user.getId();
+//
+//        String accessToken = jwtUtil.createToken(email, role, userId, jwtUtil.ACCESS_TOKEN_EXPIRATION_TIME);
+//        String refreshToken = jwtUtil.createToken(email, role, userId, jwtUtil.REFRESH_TOKEN_EXPIRATION_TIME);
+//
+//        jwtUtil.createTokenToCookie("access_token", accessToken, jwtUtil.ACCESS_TOKEN_EXPIRATION_TIME);
+//        jwtUtil.createTokenToCookie("refresh_token", refreshToken, jwtUtil.REFRESH_TOKEN_EXPIRATION_TIME);
+//
+//        RefreshToken redisToken = new RefreshToken(userId, refreshToken);
+//        redisUtil.set("refreshToken:" + userId, String.valueOf(redisToken), 86400);
+//
+//        return ApiResponseUtil.success();
+//    }
 
     @Override
     @Transactional
@@ -107,6 +209,60 @@ public class UserServiceImpl implements UserService {
                 .role(role)
                 .build();
     }
+
+    @Override
+    @Transactional
+    public String getRefreshToken (String refreshToken) {
+
+        Claims info = jwtUtil.getUserInfoFromToken(refreshToken);
+
+        Long userId = Long.valueOf(info.getId());
+
+        // Redis에서 RefreshToken 문자열 가져오기
+        String redisTokenStr = (String) redisUtil.get("refreshToken:" + userId);
+        if (redisTokenStr == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Refresh token not found in Redis");
+        }
+
+        User user = userRepository.findById(Long.valueOf(info.getId()))
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        return jwtUtil.createToken(user.getEmail(), user.getRole(), user.getId(), jwtUtil.ACCESS_TOKEN_EXPIRATION_TIME);
+    }
+
+
+    @Override
+    @Transactional
+    public Void logout (String accessToken) {
+
+        // accessToken 검증 : 로그아웃 됐는지
+        if (!jwtUtil.validateToken(accessToken)) {
+            throw new CustomException(ErrorResponseCode.UNAUTHORIZED_MEMBER);
+        }
+
+        Claims info = jwtUtil.getUserInfoFromToken(accessToken);
+
+        if (info.getId() == null) {
+            throw new CustomException(ErrorResponseCode.UNAUTHORIZED_MEMBER);
+        }
+
+        // 레디스에 저장된 refreshtoken 제거
+        Long userId = Long.valueOf(info.getId());
+
+        // 모든 refreshToken 삭제
+        Set<String> keys = redisUtil.getKeys("refreshToken:" + userId);
+        for (String key : keys) {
+            redisUtil.delete(key);
+            log.info("Deleted refresh token from Redis: {}", key);
+        }
+
+        // 레디스 blacklist에 accesstoken 등록
+        Long expiration = info.getExpiration().getTime() / 1000;
+        redisUtil.setBlackList(accessToken, expiration);
+
+        return null;
+    }
+
 
     private void validateUser (String email, String nickName) {
 

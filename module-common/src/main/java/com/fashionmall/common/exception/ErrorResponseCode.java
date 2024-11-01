@@ -29,6 +29,7 @@ public enum ErrorResponseCode {
     WRONG_USER_ID(HttpStatus.BAD_REQUEST, "userId를 다시 확인해주세요"),
     WRONG_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 동일하지 않습니다"),
     WRONG_USER_NAME(HttpStatus.BAD_REQUEST, "UserName에 맞는 유저가 존재하지 않습니다."),
+    UNAUTHORIZED_MEMBER(HttpStatus.UNAUTHORIZED, "권한 정보가 없는 회원입니다."),
 
     // Item
     WRONG_ITEM_ID(HttpStatus.BAD_REQUEST, "상품 관련 ID를 다시 확인해주세요"),
