@@ -1,12 +1,12 @@
 package com.fashionmall.order.repository;
 
-import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.order.dto.response.UserBillingKeyResponseDto;
-import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface BillingKeyRepositoryCustom {
 
-    PageInfoResponseDto<UserBillingKeyResponseDto> findBillingKeyByUserId(Long userId, Pageable pageable);
+    List<UserBillingKeyResponseDto> findBillingKeyByUserId(Long userId);
 
     String findCustomerUidById(Long id);
 }

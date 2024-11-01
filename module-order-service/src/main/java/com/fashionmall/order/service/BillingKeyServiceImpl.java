@@ -1,6 +1,5 @@
 package com.fashionmall.order.service;
 
-import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.order.dto.request.BillingKeyRequestDto;
 import com.fashionmall.order.dto.response.BillingKeyResponseDto;
 import com.fashionmall.order.dto.response.UserBillingKeyResponseDto;
@@ -9,10 +8,10 @@ import com.fashionmall.order.infra.iamPort.dto.IamPortResponseDto;
 import com.fashionmall.order.infra.iamPort.util.IamPortClient;
 import com.fashionmall.order.repository.BillingKeyRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -48,18 +47,18 @@ public class BillingKeyServiceImpl implements BillingKeyService {
             cardType = "체크카드";
         }
 
+        String cardNumber = maskCardNumber(billingKeyRequestDto.getCardNumber());
 
-        BillingKey billingKey = billingKeyRequestDto.toEntity(cardName, cardType, customerUid);
+        BillingKey billingKey = billingKeyRequestDto.toEntity(cardNumber, cardName, cardType, customerUid);
         billingKeyRepository.save(billingKey);
 
         return billingKey.getId();
     }
 
     @Override
-    public PageInfoResponseDto<UserBillingKeyResponseDto> getUserBillingKeyList(Long userId, int pageNo, int size) {
-        PageRequest pageRequest = PageRequest.of(pageNo - 1, size);
+    public List<UserBillingKeyResponseDto> getUserBillingKeyList(Long userId) {
 
-        return billingKeyRepository.findBillingKeyByUserId(userId, pageRequest);
+        return billingKeyRepository.findBillingKeyByUserId(userId);
     }
 
     @Transactional
@@ -73,5 +72,11 @@ public class BillingKeyServiceImpl implements BillingKeyService {
         billingKeyRepository.deleteById(billingKeyId);
 
         return billingKeyId;
+    }
+
+    private String maskCardNumber(String cardNumber) {
+        int length = cardNumber.length();
+        String last4Digits = cardNumber.substring(length - 4);
+        return "*".repeat(length - 4) + last4Digits;
     }
 }

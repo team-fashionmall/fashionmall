@@ -2,7 +2,10 @@ package com.fashionmall.coupon.dto.response;
 
 import com.fashionmall.coupon.entity.Coupon;
 import com.fashionmall.coupon.enums.DiscountType;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
@@ -12,6 +15,7 @@ import java.time.LocalDateTime;
 @ToString
 public class UserCouponResponseDto {
 
+    private Long couponId;
     private String name;
     private DiscountType discountType;
     private int discountValue;
@@ -23,6 +27,7 @@ public class UserCouponResponseDto {
 
     public static UserCouponResponseDto from(Coupon coupon) {
         return new UserCouponResponseDto(
+                coupon.getId(),
                 coupon.getName(),
                 coupon.getDiscountType(),
                 coupon.getDiscountValue(),

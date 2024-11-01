@@ -1,5 +1,6 @@
 package com.fashionmall.order.infra.iamPort.util;
 
+import com.fashionmall.common.exception.ErrorResponseCode;
 import com.fashionmall.common.util.WebClientUtil;
 import com.fashionmall.order.dto.request.OrderPaymentRequestDto;
 import com.fashionmall.order.dto.request.PaymentCancelRequestDto;
@@ -39,7 +40,7 @@ public class IamPortClient {
         Map<String, String> headers = Map.of(HttpHeaders.CONTENT_TYPE, "application/json");
 
         IamPortResponseDto<TokenResponseDto> post = webClientUtil.post(iamPortUrl + "/users/getToken", requestDto, new ParameterizedTypeReference<IamPortResponseDto<TokenResponseDto>>() {
-        }, headers);
+        }, headers, ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR);
 
         String accessToken = post.getResponse().getAccessToken();
 
@@ -55,7 +56,9 @@ public class IamPortClient {
                 request,
                 new ParameterizedTypeReference<IamPortResponseDto<BillingKeyResponseDto>>() {
                 },
-                accessToken);
+                accessToken,
+                ErrorResponseCode.CLIENT_ERROR,
+                ErrorResponseCode.SERVER_ERROR);
     }
 
     public IamPortResponseDto<PaymentResponseDto> billingKeyPayment(OrderPaymentRequestDto orderPaymentRequestDto) {
@@ -65,7 +68,9 @@ public class IamPortClient {
                 orderPaymentRequestDto,
                 new ParameterizedTypeReference<IamPortResponseDto<PaymentResponseDto>>() {
                 },
-                accessToken);
+                accessToken,
+                ErrorResponseCode.CLIENT_ERROR,
+                ErrorResponseCode.SERVER_ERROR);
     }
 
     public void deleteBillingKey(String customerUid) {
@@ -73,7 +78,9 @@ public class IamPortClient {
         webClientUtil.delete(iamPortUrl + "/subscribe/customers/" + customerUid,
                 new ParameterizedTypeReference<IamPortResponseDto<UserBillingKeyResponseDto>>() {
                 },
-                accessToken);
+                accessToken,
+                ErrorResponseCode.CLIENT_ERROR,
+                ErrorResponseCode.SERVER_ERROR);
     }
 
     public IamPortResponseDto<PaymentResponseDto> onetimePayment(OrderPaymentRequestDto orderPaymentRequestDto) {
@@ -83,7 +90,9 @@ public class IamPortClient {
                 orderPaymentRequestDto,
                 new ParameterizedTypeReference<IamPortResponseDto<PaymentResponseDto>>() {
                 },
-                accessToken);
+                accessToken,
+                ErrorResponseCode.CLIENT_ERROR,
+                ErrorResponseCode.SERVER_ERROR);
     }
 
     public IamPortResponseDto<PaymentResponseDto> cancelPayment(PaymentCancelRequestDto paymentCancelRequestDto) {
@@ -93,6 +102,8 @@ public class IamPortClient {
                 paymentCancelRequestDto,
                 new ParameterizedTypeReference<IamPortResponseDto<PaymentResponseDto>>() {
                 },
-                accessToken);
+                accessToken,
+                ErrorResponseCode.CLIENT_ERROR,
+                ErrorResponseCode.SERVER_ERROR);
     }
 }
