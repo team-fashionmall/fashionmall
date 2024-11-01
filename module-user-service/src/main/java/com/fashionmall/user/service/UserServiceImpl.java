@@ -176,6 +176,26 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    @Override
+    @Transactional
+    public String getRefreshToken (String refreshToken) {
+
+        Claims info = jwtUtil.getUserInfoFromToken(refreshToken);
+
+        Long userId = Long.valueOf(info.getId());
+
+        // Redis에서 RefreshToken 문자열 가져오기
+        String redisTokenStr = (String) redisUtil.get("refreshToken:" + userId);
+        if (redisTokenStr == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Refresh token not found in Redis");
+        }
+
+        User user = userRepository.findById(Long.valueOf(info.getId()))
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        return jwtUtil.createToken(user.getEmail(), user.getRole(), user.getId(), jwtUtil.ACCESS_TOKEN_EXPIRATION_TIME);
+    }
+
     private void validateUser (String email, String nickName) {
 
         if (userRepository.existsByEmail(email)) {

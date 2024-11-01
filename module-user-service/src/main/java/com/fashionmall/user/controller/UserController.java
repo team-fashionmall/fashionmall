@@ -41,4 +41,10 @@ public class UserController {
         Long userId = 1L;
         return ApiResponseUtil.success(userService.updateUserInfo(updateUserInfoRequestDto, userId));
     }
+
+    @PostMapping ("/auth/refresh")
+    public CommonResponse<String> getRefreshToken (@RequestBody RefreshToken refreshToken) {
+        return ApiResponseUtil.success(userService.getRefreshToken (refreshToken.getRefreshToken()));
+    }
+
 }

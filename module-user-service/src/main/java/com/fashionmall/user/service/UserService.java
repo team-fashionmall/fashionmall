@@ -27,6 +27,8 @@ public interface UserService {
 
     UserInfoResponseDto userInfo(Long userId);
 
+    String getRefreshToken (String refreshToken);
+
     Long confirmUserInfoApi (String userName);
 
     // DeliveryAddress
