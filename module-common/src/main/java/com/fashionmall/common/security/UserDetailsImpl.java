@@ -78,5 +78,4 @@ public class UserDetailsImpl implements UserDetails {
     public int hashCode() {
         return Objects.hash(email, userId, role);
     }
-
 }
