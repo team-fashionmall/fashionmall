@@ -1,6 +1,5 @@
 package com.fashionmall.common.jwt;
 
-
 import com.fashionmall.common.redis.RedisUtil;
 import com.fashionmall.common.security.UserDetailsImpl;
 import io.jsonwebtoken.Claims;
@@ -49,18 +48,24 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
             if (redisUtil.hasKeyBlackList(tokenValue)) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
             }
 
             if (!jwtUtil.validateToken(tokenValue)) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
             }
 
             Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
 
             try {
-                setAuthentication(info.getSubject(), info.getId(), info.get(AUTHORIZATION_ROLE_KEY, UserRoleEnum.class));
+                String roleString = info.get(AUTHORIZATION_ROLE_KEY, String.class);
+                UserRoleEnum role = UserRoleEnum.valueOf(roleString);
+
+                setAuthentication(info.getSubject(), info.getId(), role);
             } catch (Exception e) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
             }
         }
 
