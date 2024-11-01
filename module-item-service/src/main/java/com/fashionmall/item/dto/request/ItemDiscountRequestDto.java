@@ -33,7 +33,5 @@ public class ItemDiscountRequestDto {
         @Min(value = 0, message = "0보다 큰 수를 입력해주세요")
         private int value;
 
-        @NotNull(message = "상품 할인 전시 상태 여부를 입력해주세요(enum)")
-        private StatusEnum status;
     }
 }

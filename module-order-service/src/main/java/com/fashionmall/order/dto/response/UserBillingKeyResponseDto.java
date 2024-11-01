@@ -1,6 +1,7 @@
 package com.fashionmall.order.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,6 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserBillingKeyResponseDto {
 
     private Long id;
@@ -21,10 +23,6 @@ public class UserBillingKeyResponseDto {
     @JsonProperty("card_type")
     private String cardType;
 
-    public UserBillingKeyResponseDto(Long id, String cardNickname, String cardName, String cardType) {
-        this.id = id;
-        this.cardNickname = cardNickname;
-        this.cardName = cardName;
-        this.cardType = cardType;
-    }
+    @JsonProperty("card_number")
+    private String cardNumber;
 }

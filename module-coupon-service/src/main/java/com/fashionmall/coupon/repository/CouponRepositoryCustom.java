@@ -14,7 +14,7 @@ public interface CouponRepositoryCustom {
 
     PageInfoResponseDto<UserCouponResponseDto> findUserCouponByUserIdToApi(Long userId, Pageable pageable);
 
-    PageInfoResponseDto<UserCouponResponseDto> findDownloadableCoupon(Long userId, Pageable pageable);
+    List<UserCouponResponseDto> findDownloadableCoupon(Long userId);
 
     List<CouponDto> findUserCouponByUserIdToApi(Long userId);
 

@@ -8,8 +8,7 @@ import com.fashionmall.cart.dto.response.CartCalculateResponseDto;
 import com.fashionmall.cart.dto.response.CartResponseDto;
 import com.fashionmall.cart.entity.Cart;
 import com.fashionmall.cart.repository.CartRepository;
-import com.fashionmall.common.moduleApi.dto.ItemDetailDto;
-import com.fashionmall.common.moduleApi.dto.ItemDetailResponseDto;
+import com.fashionmall.common.moduleApi.dto.*;
 import com.fashionmall.common.exception.CustomException;
 import com.fashionmall.common.exception.ErrorResponseCode;
 import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
@@ -18,8 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +45,7 @@ public class CartServiceImpl implements CartService{
                 throw new CustomException(ErrorResponseCode.DUPLICATE_CART_DETAIL_ID);
             }
 
-            ItemDetailResponseDto itemDetail = moduleApiUtil.getItemDetail(cartRequestDtoList.getItemDetailId());
+            ItemDetailResponseDto itemDetail = moduleApiUtil.getItemDetailApi(cartRequestDtoList.getItemDetailId());
 
             Cart cart = cartRequestDtoList.toEntity(userId, itemDetail.getImageId(), itemDetail.getPrice(), itemDetail.getName());
 
@@ -105,14 +104,47 @@ public class CartServiceImpl implements CartService{
 
         // 회원 여부 인증
 
-        List<Cart> carts = cartRepository.findByUserId(userId);
-        Cart cart = carts.get(0);
+        List<CartResponseDto> cartResponseDtoList = new ArrayList<>();
 
-        // gateway로 연결예정
-//        String imageUrl = moduleApiUtil.getImageApi(cart.getImageId());
-        String imageUrl = "이미지 Id / Url 중 뭐가 필요할까?";
+        List<Cart> carts = cartRepository.findByUserId(userId)
+                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_USER_ID));
 
-        return cartRepository.getCartList(userId, imageUrl);
+        List<Long> itemDetailIds = carts.stream()
+                .map(Cart::getItemDetailId)
+                .collect(Collectors.toList());
+
+        List<Long> imageIds = carts.stream()
+                .map(Cart::getImageId)
+                .collect(Collectors.toList());
+
+        List<ItemPriceNameDto> discountPrices = moduleApiUtil.getItemPriceAndNameApi(itemDetailIds);
+        List<ImageDataDto> imageUrls = moduleApiUtil.getImageApi(imageIds);
+
+
+        for (Cart cart : carts) {
+
+            int discountPrice = 0;
+            String itemName = "";
+
+            for (ItemPriceNameDto response : discountPrices) {
+                if (response.getItemDetailId() == cart.getItemDetailId()) {
+                    discountPrice = response.getPrice();
+                    itemName = response.getName();
+                }
+            }
+
+            String imageUrl = "";
+            for (ImageDataDto response : imageUrls) {
+                if (response.getId().equals(cart.getImageId())) {
+                    imageUrl = response.getUrl();
+                }
+            }
+
+            List<CartResponseDto> cartList = cartRepository.getCartList(userId, discountPrice, itemName, cart.isSelected(), imageUrl);
+            cartResponseDtoList.addAll(cartList);
+        }
+
+        return cartResponseDtoList;
     }
 
     @Override
@@ -128,13 +160,43 @@ public class CartServiceImpl implements CartService{
             Cart cart = cartRepository.findByIdAndUserId(cartItem.getId(), userId)
                     .orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_CART_ID));
 
-            CartCalculateResponseDto responseDto = CartCalculateResponseDto.of(cart.getId(), cart.getPrice() * cart.getQuantity());
-            responseDtoList.add(responseDto);
+            List<ItemPriceNameDto> discountPrices = moduleApiUtil.getItemPriceAndNameApi(Collections.singletonList(cart.getItemDetailId()));
 
+            int quantity = cart.getQuantity();
+
+
+            for (ItemPriceNameDto discountPriceDto : discountPrices) {
+                if (discountPriceDto.getItemDetailId() == cart.getItemDetailId()) {
+                    int discountPrice = discountPriceDto.getPrice(); // 할인 가격으로 설정
+                    int calculatePrice = discountPrice * quantity;
+
+                    CartCalculateResponseDto responseDto = CartCalculateResponseDto.of(cart.getId(), calculatePrice);
+                    responseDtoList.add(responseDto);
+
+                }
+            }
         }
-
         return responseDtoList;
-
     }
 
+    @Override
+    @Transactional
+    public List<CartItemDto> getIsSelectedItemApi (Long userId) {
+
+        List<Cart> carts = cartRepository.findByUserId(userId)
+                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_USER_ID));
+
+        List<CartItemDto> cartItemDtoList = new ArrayList<>();
+
+        for (Cart cart : carts) {
+
+            Long id = cart.getId();
+            int quantity = cart.getQuantity();
+
+            CartItemDto cartItemDto = new CartItemDto(id, quantity);
+            cartItemDtoList.add(cartItemDto);
+        }
+
+        return cartItemDtoList;
+    }
 }

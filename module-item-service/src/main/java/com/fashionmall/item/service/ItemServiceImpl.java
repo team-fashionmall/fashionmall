@@ -5,18 +5,21 @@ import com.fashionmall.common.exception.ErrorResponseCode;
 import com.fashionmall.common.moduleApi.dto.LikeItemListResponseDto;
 import com.fashionmall.item.dto.response.ItemListResponseDto;
 import com.fashionmall.common.moduleApi.dto.OrderItemDto;
+import com.fashionmall.common.moduleApi.dto.*;
+import com.fashionmall.common.moduleApi.enums.ImageTypeEnum;
+import com.fashionmall.common.moduleApi.enums.ReferenceTypeEnum;
 import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
 import com.fashionmall.item.dto.request.ItemDiscountRequestDto;
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.item.dto.request.ItemRequestDto;
 import com.fashionmall.item.dto.response.ItemDiscountResponseDto;
 import com.fashionmall.item.dto.request.ItemUpdateRequestDto;
-import com.fashionmall.common.moduleApi.dto.ItemDetailResponseDto;
 import com.fashionmall.item.dto.response.ItemResponseDto;
 import com.fashionmall.item.dto.response.*;
 import com.fashionmall.item.dto.response.ItemUpdateResponseDto;
 import com.fashionmall.item.entity.*;
 import com.fashionmall.common.moduleApi.enums.ItemDiscountTypeEnum;
+import com.fashionmall.item.enums.StatusEnum;
 import com.fashionmall.item.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +49,11 @@ public class ItemServiceImpl implements ItemService {
     private final ModuleApiUtil moduleApiUtil;
 
     @Override
+    public List<CategoryResponseDto> getCategoryList () {
+        return itemRepository.getCategoryList();
+    }
+
+    @Override
     public PageInfoResponseDto<ItemListResponseDto> getItemList(int pageNo, int size, String itemName, Long category1, Long category2) {
         PageRequest pageRequest = PageRequest.of(pageNo -1, size);
         return itemRepository.itemListPageNation (pageRequest, itemName, category1, category2);
@@ -58,9 +66,8 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public PageInfoResponseDto<ItemDetailListResponseDto> getItemDetailList(Long itemId, int pageNo, int size) {
-        PageRequest pageRequest = PageRequest.of(pageNo -1, size);
-        return itemRepository.itemDetailListPageNation (itemId, pageRequest);
+    public List<ItemDetailListResponseDto> getItemDetailList(Long itemId) {
+        return itemRepository.itemDetailListPageNation (itemId);
     }
 
     @Override
@@ -79,33 +86,30 @@ public class ItemServiceImpl implements ItemService {
                 .build();
         itemRepository.save(item);
 
-//        Map<Long, String> mainImage = uploadImageApi(itemRequestDto.getImageFileName(), item.getId(), ReferencTypeEnum.ITEM, ImageTypeEnum.MAIN);
-//        Long imageId = mainImage.keySet().iterator().next(); // 첫 번째 키 가져오기
-//        String imageUrl = mainImage.get(imageId); // 키에 해당하는 값 가져오기
-//        item.updateImageId(imageId);
-        // 연결 후 위에껄로 수정 예정
-        String imageUrl = "메인이다";
-        item.updateImageId(2L);
+        Map<Long, String> mainImage = uploadImageApi(itemRequestDto.getImageFileName(), item.getId(), ReferenceTypeEnum.ITEM, ImageTypeEnum.MAIN);
+
+        Long imageId = mainImage.keySet().iterator().next(); // 첫 번째 키 가져오기
+        String imageUrl = mainImage.get(imageId); // 키에 해당하는 값 가져오기
+
+        item.updateImageId(imageId);
         item.updateImageUrl(imageUrl);
         itemRepository.save(item);
 
         log.info("상품 등록: {}", item);
 
         // 카테고리 등록
-        for (ItemRequestDto.CategoryRequestDto categoryRequestDto : itemRequestDto.getCategoryRequestDtoList()) {
+        ItemRequestDto.CategoryRequestDto categoryRequestDto = itemRequestDto.getCategoryRequestDtoList();
 
-            Category1 category1 = findCategory1(categoryRequestDto.getCategory1Id());
-            Category2 category2 = findCategory2(categoryRequestDto.getCategory2Id(), categoryRequestDto.getCategory1Id());
+        Category1 category1 = findCategory1(categoryRequestDto.getCategory1Id());
+        Category2 category2 = findCategory2(categoryRequestDto.getCategory2Id(), categoryRequestDto.getCategory1Id());
 
-            ItemCategoryMapping itemCategoryMapping = ItemCategoryMapping.builder()
-                    .item(item)
-                    .category1(category1)
-                    .category2Id(category2.getId())
-                    .build();
-            itemCategoryMappingRepository.save(itemCategoryMapping);
-            log.info("카테고리 저장 완료: {}", itemCategoryMapping);
-
-        }
+        ItemCategoryMapping itemCategoryMapping = ItemCategoryMapping.builder()
+                .item(item)
+                .category1(category1)
+                .category2Id(category2.getId())
+                .build();
+        itemCategoryMappingRepository.save(itemCategoryMapping);
+        log.info("카테고리 저장 완료: {}", itemCategoryMapping);
 
         // 상품 상세 등록
         for (ItemRequestDto.ItemDetailRequestDto itemDetailRequestDto : itemRequestDto.getItemDetailRequestDtoList()) {
@@ -127,16 +131,17 @@ public class ItemServiceImpl implements ItemService {
                     .build();
             itemDetailRepository.save(itemDetail);
 
-//            Map<Long, String> subImage = uploadImageApi(itemDetailRequestDto.getImageFileName(), itemDetail.getId(), ReferencTypeEnum.ITEM, ImageTypeEnum.DESCRIPTION);
-//            Long subImageId = subImage.keySet().iterator().next(); // 첫 번째 키 가져오기
-//            String subImageUrl = subImage.get(imageId); // 키에 해당하는 값 가져오기
-//            itemDetail.updateImageId(subImageId);
 
-            // msa 연결 예정
-            itemDetail.updateImageId(5L);
-            itemDetail.updateImageUrl("서브다");
+
+            Map<Long, String> subImage = uploadImageApi(itemDetailRequestDto.getImageFileName(), itemDetail.getId(), ReferenceTypeEnum.ITEM, ImageTypeEnum.DESCRIPTION);
+
+            Long subImageId = subImage.keySet().iterator().next(); // 첫 번째 키 가져오기
+            String subImageUrl = subImage.get(subImageId); // 키에 해당하는 값 가져오기
+
+            itemDetail.updateImageId(subImageId);
+            itemDetail.updateImageUrl(subImageUrl);
+
             itemDetailRepository.save(itemDetail);
-
 
             item.getItemDetails().add(itemDetail);
             log.info("상품 상세 등록: {}", itemDetail);
@@ -179,19 +184,21 @@ public class ItemServiceImpl implements ItemService {
         return category2Repository.findByIdAndCategory1Id (category2, category1).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_CATEGORY_ID));
     }
 
-//    private Map<Long, String> uploadImageApi (String fileName, Long referenceId, ReferenceTypeEnum referenceType, ImageTypeEnum imageType) {
-//
-//        ImageUploadDto imageUploadDtoList = ImageUploadDto.builder ()
-//                .fileName (fileName)
-//                .referenceId (referenceId)
-//                .referenceType (referenceType)
-//                .imageType (imageType)
-//                .build();
-//
-//        Map<Long,String> response = moduleApiUtil.uploadImageApi(imageUploadDtoList);
-//
-//        return response;
-//    }
+    private Map<Long, String> uploadImageApi (String fileName, Long referenceId, ReferenceTypeEnum referenceType, ImageTypeEnum imageType) {
+
+        ImageUploadDto imageUploadDto = ImageUploadDto.builder ()
+                .fileName (fileName)
+                .referenceId (referenceId)
+                .referenceType (referenceType)
+                .imageType (imageType)
+                .build();
+        List<ImageUploadDto> imageUploadDtoList = new ArrayList<>();
+        imageUploadDtoList.add(imageUploadDto);
+
+        Map<Long,String> response = moduleApiUtil.uploadImageApi(imageUploadDtoList);
+
+        return response;
+    }
 
     @Override
     @Transactional
@@ -201,6 +208,8 @@ public class ItemServiceImpl implements ItemService {
         // 해당 아이템이 있는지 확인하기
         Item item = findByIdAndWorkerId(itemDiscountRequestDto.getId(), workerId);
 
+        List<ItemDiscount> itemDiscounts = new ArrayList<>();
+
         for (ItemDiscountRequestDto.ItemDiscountDtos itemDiscountDtos : itemDiscountRequestDto.getItemDiscountRequestDtoList()) {
 
             validateItemDiscountValue(itemDiscountDtos.getType(), itemDiscountDtos.getValue());
@@ -209,12 +218,11 @@ public class ItemServiceImpl implements ItemService {
                     .item(item)
                     .type(itemDiscountDtos.getType())
                     .value(itemDiscountDtos.getValue())
-                    .status(itemDiscountDtos.getStatus())
                     .build();
-            itemDiscountRepository.save(itemDiscount);
+            itemDiscounts.add(itemDiscountRepository.save(itemDiscount));
         }
 
-        return ItemDiscountResponseDto.from(item);
+        return ItemDiscountResponseDto.fromItemDiscounts(item.getId(), itemDiscounts);
     }
 
     @Override
@@ -238,13 +246,13 @@ public class ItemServiceImpl implements ItemService {
         item.updateItemState(itemUpdateRequestDto.getState());
 
         if (!itemUpdateRequestDto.getImageFileName().isEmpty()) {
-//            moduleApiUtil.deleteImageApi(item.getImageId());
-//
-//            Map<Long,String> updateImage = moduleApiUtil.uploadImageApi(itemUpdateRequestDto.getImageFileName(), item.getImageId(), ReferencTypeEnum.ITEM, ImageTypeEnum.MAIN);
-//            Long imageId = updateImage.keySet().iterator().next(); // 첫 번째 키 가져오기
-//            String imageUrl = updateImage.get(imageId); // 키에 해당하는 값 가져오기
-            Long imageId = 27L;
-            String imageUrl = "수정된 메인 이미지 url";
+
+            moduleApiUtil.deleteImageApi(item.getImageId());
+
+            Map<Long,String> updateImage = uploadImageApi(itemUpdateRequestDto.getImageFileName(), item.getId(), ReferenceTypeEnum.ITEM, ImageTypeEnum.MAIN);
+
+            Long imageId = updateImage.keySet().iterator().next(); // 첫 번째 키 가져오기
+            String imageUrl = updateImage.get(imageId); // 키에 해당하는 값 가져오기
 
             item.updateImageId(imageId);
             item.updateImageUrl(imageUrl);
@@ -289,14 +297,13 @@ public class ItemServiceImpl implements ItemService {
                 itemDetail.updateState(itemDetailDto.getStatus());
 
                 if (!itemDetailDto.getImageFileName().isEmpty()) {
-//                    moduleApiUtil.deleteImageApi(itemDetail.getImageId());
-//
-//                    Map<Long,String> updateImage = moduleApiUtil.uploadImageApi(itemDetailDto.getImageFileName(), itemDetail.getImageId(), ReferencTypeEnum.ITEM, ImageTypeEnum.DESCRIPTION);
-//                    Long imageId = updateImage.keySet().iterator().next(); // 첫 번째 키 가져오기
-//                    String imageUrl = updateImage.get(imageId); // 키에 해당하는 값 가져오기
 
-                    Long imageId = 13L;
-                    String imageUrl = "수정된 서브 이미지 url";
+                    moduleApiUtil.deleteImageApi(itemDetail.getImageId());
+
+                    Map<Long,String> updateImage = uploadImageApi(itemDetailDto.getImageFileName(), itemDetail.getImageId(), ReferenceTypeEnum.ITEM, ImageTypeEnum.DESCRIPTION);
+
+                    Long imageId = updateImage.keySet().iterator().next(); // 첫 번째 키 가져오기
+                    String imageUrl = updateImage.get(imageId); // 키에 해당하는 값 가져오기
 
                     itemDetail.updateImageId(imageId);
                     itemDetail.updateImageUrl(imageUrl);
@@ -340,8 +347,20 @@ public class ItemServiceImpl implements ItemService {
                 }
 
                 if (itemDiscountDto.getStatus() != null) {
+
+                    int activate = 0;
                     itemDiscount.updateStatus(itemDiscountDto.getStatus());
+
+                    for (ItemDiscount itemDiscounts : item.getItemDiscounts()) {
+                        if (itemDiscounts.getStatus().equals(StatusEnum.ACTIVATED)) {
+                            activate++;
+                        }
+                    }
+                    if (activate > 1) {
+                        throw new CustomException(ErrorResponseCode.DUPLICATE_DISCOUNT_STATUS);
+                    }
                 }
+
                 updatedItemDiscounts.add(itemDiscount);
             }
         }
@@ -356,12 +375,12 @@ public class ItemServiceImpl implements ItemService {
         // 관리자 확인
         // 상품 아이디가 맞는지 확인 & 해당 관리자인지 확인 (추후)
         Item item = findByIdAndWorkerId(itemId,workerId);
-//        moduleApiUtil.deleteImageApi(item.getImageId());
-//        moduleApiUtil.deleteImageApi(item.getItemDetails().getImageId);
-//
-//        for (ItemDetail itemDetail : item.getItemDetails()) {
-//            moduleApiUtil.deleteImageApi(itemDetail.getImageId());
-//        }
+
+        moduleApiUtil.deleteImageApi(item.getImageId());
+
+        for (ItemDetail itemDetail : item.getItemDetails()) {
+            moduleApiUtil.deleteImageApi(itemDetail.getImageId());
+        }
 
         // 상품 삭제
         itemRepository.deleteById(itemId);
@@ -388,34 +407,67 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public int getItemQuantityApi (Long itemDetailId, Long workerId) {
+    public Map<Long, Integer> getItemStockApi (Long itemDetailId, Long workerId) {
 
         ItemDetail itemDetail = findByItemDetailIdAndWorkerId(itemDetailId, workerId);
 
-        return itemDetail.getQuantity();
+        Map<Long, Integer> itemStock = new HashMap<>();
+        itemStock.put(itemDetail.getId(), itemDetail.getQuantity());
+
+        return itemStock;
     }
 
     @Override
     @Transactional
-    public Map<Long, String> getItemDetailNameApi (List<Long> itemDetailIds) {
+    public String getItemNameApi (Long itemId) {
 
-        Map<Long, String> itemDetailNames = new HashMap<>();
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
 
-        for (Long itemDetailId : itemDetailIds) {
+        return item.getName();
+    }
 
-            ItemDetail itemDetail = itemDetailRepository.findById(itemDetailId)
-                    .orElseThrow(()-> new CustomException(ErrorResponseCode.BAD_REQUEST)); // findNameById 메서드는 예시입니다.
+    @Override
+    @Transactional
+    public List<ItemDetailInfoDto> getItemDetailInfoApi (List<Long> itemDetailId) {
+        // 회원인증
 
-            itemDetailNames.put(itemDetailId, itemDetail.getName());
+        List<ItemDetailInfoDto> itemDetailInfoDtoList = new ArrayList<>();
+
+        for (Long id : itemDetailId) {
+            ItemDetail itemDetail = itemDetailRepository.findById(id).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_DETAIL_ID));
+            Item item = itemRepository.findById(itemDetail.getItem().getId()).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
+            List<ItemDiscount> itemDiscounts = item.getItemDiscounts();
+
+            String itemDetailName = itemDetail.getName();
+            int price = itemDetail.getPrice();
+            String imageUrl = itemDetail.getImageUrl();
+
+            if (itemDiscounts.isEmpty()) {
+                String discountType = "none";
+                int itemDiscountValue = price;
+                ItemDetailInfoDto itemDetailInfoDto = new ItemDetailInfoDto(itemDetailName, price, itemDiscountValue, discountType, imageUrl);
+                itemDetailInfoDtoList.add(itemDetailInfoDto);
+            } else {
+                for (ItemDiscount itemDiscount : itemDiscounts) {
+
+                    ItemPriceNameDto itemPriceNameDto = itemRepository.getDiscountPrice(itemDetail.getId(), itemDiscount.getId());
+
+                    int itemDiscountValue = itemPriceNameDto.getPrice();
+                    String discountType = itemDiscount.getType().name();
+
+                    ItemDetailInfoDto itemDetailInfoDto = new ItemDetailInfoDto(itemDetailName, price, itemDiscountValue, discountType, imageUrl);
+                    itemDetailInfoDtoList.add(itemDetailInfoDto);
+                }
+            }
         }
 
-        return itemDetailNames;
-
+        return itemDetailInfoDtoList;
     }
 
     @Override
     @Transactional
-    public void deductItemQuantityApi (List<OrderItemDto> orderItemDto, Long workerId) {
+    public void deductItemStockApi (List<OrderItemDto> orderItemDto, Long workerId) {
         // 본인 확인
 
         for (OrderItemDto orderItemDtoList : orderItemDto) {
@@ -431,7 +483,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public void restoreItemApi (List<OrderItemDto> orderItemDto, Long workerId){
+    public void restoreItemStockApi (List<OrderItemDto> orderItemDto, Long workerId){
         //본인확인
 
         for (OrderItemDto orderItemDtoList : orderItemDto) {
@@ -449,20 +501,44 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public ItemDetailResponseDto getItemDetail (Long itemDetailId, Long workerId) {
+    public ItemDetailResponseDto getItemDetailApi (Long itemDetailId, Long workerId) {
         // 본인인증
 
         ItemDetail itemDetail = findByItemDetailIdAndWorkerId(itemDetailId, workerId);
+        Item item = itemRepository.findByItemDetails_id(itemDetail.getId()).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_DETAIL_ID));
 
         return ItemDetailResponseDto.builder()
                 .name(itemDetail.getName())
                 .price(itemDetail.getPrice())
+                .imageId(item.getImageId())
                 .build();
     }
 
     private ItemDetail findByItemDetailIdAndWorkerId (Long itemDetailId, Long workerId) {
         return itemDetailRepository.findByIdAndItem_WorkerId(itemDetailId, workerId)
                 .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_DETAIL_ID));
+    }
+
+    @Override
+    @Transactional
+    public List<ItemPriceNameDto> getItemPriceAndNameApi (List<Long> itemDetailId, Long workerId) {
+        // 본인인증
+
+        List<ItemPriceNameDto> itemPriceNameDtos = new ArrayList<>();
+
+        for (Long itemDetailIds : itemDetailId) {
+
+            ItemDetail itemDetail = itemDetailRepository.findById(itemDetailIds).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_DETAIL_ID));
+            Item item = itemRepository.findById(itemDetail.getItem().getId()).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
+            List<ItemDiscount> itemDiscounts = item.getItemDiscounts();
+
+            for (ItemDiscount itemDiscount : itemDiscounts) {
+                ItemPriceNameDto itemPriceNameDto = itemRepository.getDiscountPrice(itemDetail.getId(), itemDiscount.getId());
+                itemPriceNameDtos.add(itemPriceNameDto);
+            }
+        }
+
+        return itemPriceNameDtos;
     }
 
 }

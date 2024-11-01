@@ -2,6 +2,8 @@ package com.fashionmall.item.service;
 
 import com.fashionmall.common.moduleApi.dto.LikeItemListResponseDto;
 import com.fashionmall.item.dto.response.ItemListResponseDto;
+import com.fashionmall.common.moduleApi.dto.ItemDetailInfoDto;
+import com.fashionmall.common.moduleApi.dto.ItemPriceNameDto;
 import com.fashionmall.common.moduleApi.dto.OrderItemDto;
 import com.fashionmall.item.dto.request.ItemDiscountRequestDto;
 import com.fashionmall.common.response.PageInfoResponseDto;
@@ -23,25 +25,31 @@ public interface ItemService {
     String deleteItem (Long itemId, Long workerId);
 
     // gateway
-    int getItemQuantityApi (Long itemDetailId, Long workerId);
+    Map<Long, Integer> getItemStockApi (Long itemDetailId, Long workerId);
 
-    Map<Long, String> getItemDetailNameApi (List<Long> itemDetailIds);
+    String getItemNameApi (Long itemId);
 
-    void deductItemQuantityApi (List<OrderItemDto> orderItemDto, Long workerId);
+    List<ItemDetailInfoDto> getItemDetailInfoApi (List<Long> itemDetailId);
 
-    void restoreItemApi (List<OrderItemDto> orderItemDto, Long workerId);
+    void deductItemStockApi (List<OrderItemDto> orderItemDto, Long workerId);
 
-    ItemDetailResponseDto getItemDetail (Long itemDetailId, Long workerId);
+    void restoreItemStockApi (List<OrderItemDto> orderItemDto, Long workerId);
+
+    ItemDetailResponseDto getItemDetailApi (Long itemDetailId, Long workerId);
+
+    List<ItemPriceNameDto> getItemPriceAndNameApi (List<Long> itemDetailId, Long workerId);
 
     List<LikeItemListResponseDto> getItemInfoApi (Long itemId, Long userId);
 
     // 조회
     PageInfoResponseDto<ItemListResponseDto> getItemList(int pageNo, int size, String itemName, Long category1, Long category2);
 
-    PageInfoResponseDto<ItemDetailListResponseDto> getItemDetailList(Long itemId, int pageNo, int size);
+    List<ItemDetailListResponseDto> getItemDetailList(Long itemId);
 
     PageInfoResponseDto<AdminItemResponseDto> getAdminItemList(int pageNo, int size, String itemName, Long category1, Long category2);
 
     PageInfoResponseDto<AdminItemDetailResponseDto> getAdminItemDetailList(Long itemId, int pageNo, int size);
+
+    List<CategoryResponseDto> getCategoryList();
 
 }

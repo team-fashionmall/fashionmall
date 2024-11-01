@@ -24,7 +24,7 @@ public class ItemRequestDto {
     private String imageFileName;
 
     @NotNull (message = "상품의 카테고리를 입력해주세요")
-    private List<CategoryRequestDto> categoryRequestDtoList;
+    private CategoryRequestDto categoryRequestDtoList;
 
     @NotNull (message = "상품의 상세 정보들을 입력해주세요")
     private List <ItemDetailRequestDto> itemDetailRequestDtoList;

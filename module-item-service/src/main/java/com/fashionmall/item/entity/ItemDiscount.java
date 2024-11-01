@@ -30,14 +30,14 @@ public class ItemDiscount extends BaseEntity {
     private int value; // '할인 값(정률: %, 정액: 원)'
 
     @Enumerated (EnumType.STRING)
-    private StatusEnum status;
+    private StatusEnum status = StatusEnum.INACTIVATED;
 
     @Builder
     public ItemDiscount (Item item, ItemDiscountTypeEnum type, int value, StatusEnum status) {
         this.item = item;
         this.type = type;
         this.value = value;
-        this.status = status;
+        this.status = (status != null) ? status : StatusEnum.INACTIVATED;;
     }
     public void updateItemDiscountType (ItemDiscountTypeEnum itemDiscountType) {
         this.type = itemDiscountType;

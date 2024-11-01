@@ -5,7 +5,6 @@ import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.common.util.ApiResponseUtil;
 import com.fashionmall.order.dto.request.OrderPaymentRequestDto;
 import com.fashionmall.order.dto.request.PaymentCancelRequestDto;
-import com.fashionmall.order.dto.response.OrdersCompleteResponseDto;
 import com.fashionmall.order.dto.response.OrdersDetailResponseDto;
 import com.fashionmall.order.dto.response.OrdersResponseDto;
 import com.fashionmall.order.service.OrdersService;
@@ -21,13 +20,14 @@ public class OrderController {
     private final PaymentService paymentService;
 
     @PostMapping("/order")
-    public CommonResponse<OrdersCompleteResponseDto> createOrderAndPayment(@RequestBody OrderPaymentRequestDto orderPaymentRequestDto) {
+    public CommonResponse<Long> createOrderAndPayment(@RequestBody OrderPaymentRequestDto orderPaymentRequestDto) {
 
         return ApiResponseUtil.success(ordersService.createAndPaymentOrder(orderPaymentRequestDto));
     }
 
     @GetMapping("/order")
-    public CommonResponse<PageInfoResponseDto<OrdersResponseDto>> getUserOrderList(int pageNo, int size) {
+    public CommonResponse<PageInfoResponseDto<OrdersResponseDto>> getUserOrderList(@RequestParam(defaultValue = "1") int pageNo,
+                                                                                   @RequestParam(defaultValue = "10") int size) {
         Long userId = 1L;
         return ApiResponseUtil.success(ordersService.getOrders(userId, pageNo, size));
     }

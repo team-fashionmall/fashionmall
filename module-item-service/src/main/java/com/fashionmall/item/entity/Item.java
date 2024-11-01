@@ -28,7 +28,7 @@ public class Item extends BaseEntity {
     @Column (name = "image_main_id", nullable = false)
     private Long imageId;
 
-    @Column (name = "image_main_url", nullable = false)
+    @Column (name = "image_main_url", length = 500, nullable = false)
     private String imageUrl;
 
     @Column (name = "item_name", nullable = false)

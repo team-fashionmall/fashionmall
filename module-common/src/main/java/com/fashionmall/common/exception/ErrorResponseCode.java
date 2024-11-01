@@ -13,7 +13,7 @@ public enum ErrorResponseCode {
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "필수 값을 입력해 주세요"),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다"),
     OUT_OF_STOCK(HttpStatus.CONFLICT, "재고가 부족합니다"),
-    NOT_FOUND(HttpStatus.NOT_FOUND,"해당 요청을 찾을 수 없습니다"),
+    NOT_FOUND(HttpStatus.NOT_FOUND, "해당 요청을 찾을 수 없습니다"),
     FORBIDDEN(HttpStatus.FORBIDDEN, "권한이 없습니다."),
 
     //커스텀 코드
@@ -39,6 +39,7 @@ public enum ErrorResponseCode {
     WRONG_AMOUNT(HttpStatus.BAD_REQUEST, "정액(원)에 맞는 값을 입력해주세요."),
     BAD_DEDUCT_QUANTITY(HttpStatus.BAD_REQUEST, "재고 수량보다 더 큰 수량 입니다. 수량을 다시 확인해주세요"),
     BAD_RESTORE_QUANTITY(HttpStatus.BAD_REQUEST, "수령이 0보다 작습니다. 수량을 다시 확인해주세요"),
+    DUPLICATE_DISCOUNT_STATUS(HttpStatus.BAD_REQUEST, "활성화된 할인 정보가 있습니다."),
 
     // Image
     NOT_FOUND_S3(HttpStatus.NOT_FOUND, "이미지가 S3에 존재하지 않습니다."),
@@ -49,7 +50,11 @@ public enum ErrorResponseCode {
 
     // favorite
     DUPLICATE_TRUE(HttpStatus.CONFLICT, "이미 좋아요가 되어있습니다."),
-    DUPLICATE_FALSE(HttpStatus.CONFLICT, "이미 좋아요가 취소 되어있습니다.");
+    DUPLICATE_FALSE(HttpStatus.CONFLICT, "이미 좋아요가 취소 되어있습니다."),
+
+    // webclient
+    CLIENT_ERROR(HttpStatus.BAD_REQUEST, "클라이언트 요청 오류"),
+    SERVER_ERROR_FROM_SERVICE(HttpStatus.INTERNAL_SERVER_ERROR, "외부 서비스 서버 오류");
 
     private final HttpStatus status;
     private final String message;

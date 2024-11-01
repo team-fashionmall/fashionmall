@@ -31,7 +31,7 @@ public class ItemDetail extends BaseEntity {
     @Column (name = "image_description_id", nullable = false)
     private Long imageId;
 
-    @Column (name = "image_description_url", nullable = false)
+    @Column (name = "image_description_url", length = 500, nullable = false)
     private String imageUrl;
 
     @Column (name = "item_detail_name", nullable = false)

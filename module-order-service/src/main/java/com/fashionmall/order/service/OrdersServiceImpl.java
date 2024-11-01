@@ -9,7 +9,10 @@ import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.order.dto.request.OrderItemRequestDto;
 import com.fashionmall.order.dto.request.OrderPaymentRequestDto;
-import com.fashionmall.order.dto.response.*;
+import com.fashionmall.order.dto.response.OrderItemDetailResponseDto;
+import com.fashionmall.order.dto.response.OrdersDetailResponseDto;
+import com.fashionmall.order.dto.response.OrdersResponseDto;
+import com.fashionmall.order.dto.response.PaymentResponseDto;
 import com.fashionmall.order.entity.BillingKey;
 import com.fashionmall.order.entity.Orders;
 import com.fashionmall.order.entity.Payment;
@@ -48,7 +51,7 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Transactional
     @Override
-    public OrdersCompleteResponseDto createAndPaymentOrder(OrderPaymentRequestDto orderPaymentRequestDto) {
+    public Long createAndPaymentOrder(OrderPaymentRequestDto orderPaymentRequestDto) {
         //<<주문>>
         Long userId = orderPaymentRequestDto.getUserId();
         Long couponId = orderPaymentRequestDto.getCouponId();
@@ -89,7 +92,7 @@ public class OrdersServiceImpl implements OrdersService {
                 .map(OrderItemRequestDto::getItemDetailId)
                 .toList();
 
-        Map<Long, Integer> itemQuantityApi = moduleApiUtil.getItemQuantityApi(itemDetailIds);
+        Map<Long, Integer> itemQuantityApi = moduleApiUtil.getItemStockApi(itemDetailIds);
         for (OrderItemRequestDto orderItem : orderItems) {
             Long itemDetailId = orderItem.getItemDetailId();
             int quantity = orderItem.getQuantity();
@@ -182,7 +185,7 @@ public class OrdersServiceImpl implements OrdersService {
         //재고차감
         eventPublisher.publishEvent(new StockDeductEvent(order.getId()));
 
-        return ordersRepository.findByOrderId(order.getId());
+        return order.getId();
     }
 
     @Override
@@ -215,6 +218,7 @@ public class OrdersServiceImpl implements OrdersService {
         return ordersDetails;
     }
 
+    @Transactional
     @Override
     public Long cancelOrder(Long userId, Long orderId) {
 
