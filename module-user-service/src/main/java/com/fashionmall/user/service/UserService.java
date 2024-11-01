@@ -29,6 +29,8 @@ public interface UserService {
 
     String getRefreshToken (String refreshToken);
 
+    Void logout(String accessToken);
+
     Long confirmUserInfoApi (String userName);
 
     // DeliveryAddress

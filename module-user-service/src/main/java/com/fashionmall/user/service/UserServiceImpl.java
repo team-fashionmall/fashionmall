@@ -10,9 +10,7 @@ import com.fashionmall.common.moduleApi.dto.LikeItemListResponseDto;
 import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
 import com.fashionmall.common.redis.RedisUtil;
 import com.fashionmall.common.redis.RefreshToken;
-import com.fashionmall.common.response.CommonResponse;
 import com.fashionmall.common.response.PageInfoResponseDto;
-import com.fashionmall.common.util.ApiResponseUtil;
 import com.fashionmall.user.dto.request.DeliveryAddressRequestDto;
 import com.fashionmall.user.dto.request.FavoriteRequestDto;
 import com.fashionmall.user.dto.request.SignUpRequestDto;
@@ -25,11 +23,9 @@ import com.fashionmall.user.entity.User;
 import com.fashionmall.user.repository.DeliveryAddressRepository;
 import com.fashionmall.user.repository.FavoriteRepository;
 import com.fashionmall.user.repository.UserRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -42,7 +38,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.fashionmall.user.entity.Favorite;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -194,6 +189,33 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         return jwtUtil.createToken(user.getEmail(), user.getRole(), user.getId(), jwtUtil.ACCESS_TOKEN_EXPIRATION_TIME);
+    }
+
+    @Override
+    @Transactional
+    public Void logout (String accessToken) {
+
+        if (!jwtUtil.validateToken(accessToken)) {
+            throw new CustomException(ErrorResponseCode.UNAUTHORIZED_MEMBER);
+        }
+
+        Claims info = jwtUtil.getUserInfoFromToken(accessToken);
+
+        if (info.getId() == null) {
+            throw new CustomException(ErrorResponseCode.UNAUTHORIZED_MEMBER);
+        }
+
+        Long userId = Long.valueOf(info.getId());
+
+        Set<String> keys = redisUtil.getKeys("refreshToken:" + userId);
+        for (String key : keys) {
+            redisUtil.delete(key);
+        }
+
+        Long expiration = info.getExpiration().getTime() / 1000;
+        redisUtil.setBlackList(accessToken, expiration);
+
+        return null;
     }
 
     private void validateUser (String email, String nickName) {

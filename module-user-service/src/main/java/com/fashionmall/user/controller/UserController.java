@@ -47,4 +47,11 @@ public class UserController {
         return ApiResponseUtil.success(userService.getRefreshToken (refreshToken.getRefreshToken()));
     }
 
+    @PostMapping ("/logout")
+    public CommonResponse<Void> logout (HttpServletRequest request) {
+
+        String accessToken = jwtUtil.getJwtFromHeader(request);
+
+        return ApiResponseUtil.success(userService.logout(accessToken));
+    }
 }
