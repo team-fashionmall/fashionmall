@@ -1,10 +1,13 @@
 package com.fashionmall.item.controller;
 
+import com.fashionmall.common.moduleApi.dto.LikeItemListResponseDto;
+import com.fashionmall.item.dto.response.ItemListResponseDto;
 import com.fashionmall.common.moduleApi.dto.ItemDetailInfoDto;
 import com.fashionmall.common.moduleApi.dto.ItemDetailResponseDto;
 import com.fashionmall.common.moduleApi.dto.ItemPriceNameDto;
 import com.fashionmall.common.moduleApi.dto.OrderItemDto;
 import com.fashionmall.common.response.CommonResponse;
+import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.common.util.ApiResponseUtil;
 import com.fashionmall.item.service.ItemService;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +43,12 @@ public class ItemApiController {
     @GetMapping ("/getItemDetail/{itemDetailId}")
     public CommonResponse<List<ItemDetailInfoDto>> getItemDetailInfoApi (@PathVariable List<Long> itemDetailId) {
         return ApiResponseUtil.success(itemService.getItemDetailInfoApi(itemDetailId));
+    }
+
+    @GetMapping("/itemInfo/{itemId}/{userId}")
+    public CommonResponse<List<LikeItemListResponseDto>> getItemInfoApi (@PathVariable Long itemId,
+                                                                         @PathVariable Long userId) {
+        return ApiResponseUtil.success(itemService.getItemInfoApi(itemId, userId));
     }
 
     @PatchMapping ("/deductItem")

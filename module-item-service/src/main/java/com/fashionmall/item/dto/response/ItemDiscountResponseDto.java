@@ -2,7 +2,7 @@ package com.fashionmall.item.dto.response;
 
 import com.fashionmall.item.entity.Item;
 import com.fashionmall.item.entity.ItemDiscount;
-import com.fashionmall.item.enums.ItemDiscountTypeEnum;
+import com.fashionmall.common.moduleApi.enums.ItemDiscountTypeEnum;
 import com.fashionmall.item.enums.StatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

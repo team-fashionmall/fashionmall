@@ -1,7 +1,13 @@
 package com.fashionmall.item.repository;
 
+import com.fashionmall.common.moduleApi.dto.LikeItemListResponseDto;
 import com.fashionmall.common.moduleApi.dto.ItemPriceNameDto;
 import com.fashionmall.common.response.PageInfoResponseDto;
+import com.fashionmall.item.dto.response.AdminItemDetailResponseDto;
+import com.fashionmall.item.dto.response.AdminItemResponseDto;
+import com.fashionmall.item.dto.response.ItemDetailListResponseDto;
+import com.fashionmall.item.dto.response.ItemListResponseDto;
+import com.fashionmall.common.moduleApi.enums.ItemDiscountTypeEnum;
 import com.fashionmall.item.dto.response.*;
 import com.fashionmall.item.enums.ItemDiscountTypeEnum;
 import com.fashionmall.item.enums.StatusEnum;
@@ -54,6 +60,32 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
                 .fetch();
 
         return categoryList;
+    }
+
+    @Override
+    public List<LikeItemListResponseDto> getItemInfo (Long itemId, Long userId) {
+
+        return queryFactory
+                .select(Projections.constructor(LikeItemListResponseDto.class,
+                        Projections.constructor(LikeItemListResponseDto.ItemInfo.class,
+                                item.id,
+                                item.name,
+                                item.imageId,
+                                item.imageUrl
+                        ),
+                        Projections.constructor(LikeItemListResponseDto.ItemDetailInfo.class,
+                                itemDetail.price,
+                                ExpressionUtils.as(calculateDiscount(itemDetail.price, itemDiscount.status, itemDiscount.type, itemDiscount.value),
+                                        "discountPrice")
+                        )
+                ))
+                .from(item)
+                .innerJoin(item.itemDetails, itemDetail)
+                .innerJoin(item.itemCategoryMappings, itemCategoryMapping)
+                .innerJoin(item.itemDiscounts, itemDiscount)
+                .where(item.id.eq(itemId).and(item.workerId.eq(userId)))
+                .orderBy(item.id.desc())
+                .fetch();
     }
 
     @Override

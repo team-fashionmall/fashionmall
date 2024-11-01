@@ -2,6 +2,9 @@ package com.fashionmall.item.service;
 
 import com.fashionmall.common.exception.CustomException;
 import com.fashionmall.common.exception.ErrorResponseCode;
+import com.fashionmall.common.moduleApi.dto.LikeItemListResponseDto;
+import com.fashionmall.item.dto.response.ItemListResponseDto;
+import com.fashionmall.common.moduleApi.dto.OrderItemDto;
 import com.fashionmall.common.moduleApi.dto.*;
 import com.fashionmall.common.moduleApi.enums.ImageTypeEnum;
 import com.fashionmall.common.moduleApi.enums.ReferenceTypeEnum;
@@ -15,7 +18,7 @@ import com.fashionmall.item.dto.response.ItemResponseDto;
 import com.fashionmall.item.dto.response.*;
 import com.fashionmall.item.dto.response.ItemUpdateResponseDto;
 import com.fashionmall.item.entity.*;
-import com.fashionmall.item.enums.ItemDiscountTypeEnum;
+import com.fashionmall.common.moduleApi.enums.ItemDiscountTypeEnum;
 import com.fashionmall.item.enums.StatusEnum;
 import com.fashionmall.item.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +27,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -51,6 +57,12 @@ public class ItemServiceImpl implements ItemService {
     public PageInfoResponseDto<ItemListResponseDto> getItemList(int pageNo, int size, String itemName, Long category1, Long category2) {
         PageRequest pageRequest = PageRequest.of(pageNo -1, size);
         return itemRepository.itemListPageNation (pageRequest, itemName, category1, category2);
+    }
+
+    @Override
+    @Transactional
+    public List<LikeItemListResponseDto> getItemInfoApi (Long itemId, Long userId) {
+        return itemRepository.getItemInfo(itemId, userId);
     }
 
     @Override

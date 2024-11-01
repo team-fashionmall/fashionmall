@@ -10,6 +10,7 @@ import com.fashionmall.common.moduleApi.dto.ImageUploadDto;
 import com.fashionmall.common.moduleApi.dto.ItemDetailDto;
 import com.fashionmall.common.moduleApi.dto.ItemDetailResponseDto;
 import com.fashionmall.common.response.CommonResponse;
+import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.common.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
@@ -32,8 +33,32 @@ public class ModuleApiUtil {
     private final String itemApi = "http://localhost:8000/api/item";
     private final String imageApi = "http://localhost:8000/api/image";
 
-    // item
-    public List<CouponDto> getUserCouponApi(Long userId) {
+    public List<LikeItemListResponseDto> getItemInfoApi (Long itemId, Long userId) {
+
+        CommonResponse<List<LikeItemListResponseDto>> commonResponse = webClientUtil.get(
+                itemApi + "/itemInfo/" + itemId + "/" + userId,
+                new ParameterizedTypeReference<CommonResponse<List<LikeItemListResponseDto>>>() {},
+                headers(),
+                ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE
+        );
+
+        return commonResponse.getData();
+
+    }
+
+    public Long confirmUserInfoApi (String userName) {
+
+        CommonResponse<Long> commonResponse = webClientUtil.get(
+                userApi + "/confirm/" + userName,
+                new ParameterizedTypeReference<CommonResponse<Long>>() {},
+                headers(),
+                ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE
+        );
+
+        return commonResponse.getData();
+    }
+
+    public List<CouponDto> getUserCouponApi (Long userId){
         Map<String, String> headers = Map.of(
                 HttpHeaders.CONTENT_TYPE, "application/json");
         CommonResponse<List<CouponDto>> listCommonResponse = webClientUtil.get(couponApi + "/getCoupon", new ParameterizedTypeReference<CommonResponse<List<CouponDto>>>() {
