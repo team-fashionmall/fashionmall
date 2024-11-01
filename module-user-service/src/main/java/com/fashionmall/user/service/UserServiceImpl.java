@@ -161,7 +161,6 @@ public class UserServiceImpl implements UserService {
 
         UserRoleEnum role = user.getRole() == UserRoleEnum.ADMIN ? user.getRole() : null;
 
-        // 정보 조회 및 반환
         return UserInfoResponseDto.builder()
                 .email(user.getEmail())
                 .userName(user.getUserName())
