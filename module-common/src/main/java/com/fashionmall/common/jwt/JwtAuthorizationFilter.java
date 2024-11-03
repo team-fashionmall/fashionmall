@@ -33,7 +33,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal (HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         String path = request.getRequestURI();
-        if ("/user/signUp".equals(path) || "/user/login".equals(path) || "/user/auth/refresh".equals(path)) { filterChain.doFilter(request, response); return;}
+        if ("/user/signUp".equals(path) || "/user/login".equals(path) || "/user/auth/refresh".equals(path) || "/item".equals(path) || "item/{itemId}".equals(path)) { filterChain.doFilter(request, response); return;}
 
         if (request.getCookies() != null && request.getCookies().length > 0) {
             log.info("request {} {}", request.getCookies()[0].getName(), request.getCookies()[0].getValue());
