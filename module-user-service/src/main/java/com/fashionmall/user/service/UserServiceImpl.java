@@ -3,7 +3,6 @@ package com.fashionmall.user.service;
 import com.fashionmall.common.exception.CustomException;
 import com.fashionmall.common.exception.ErrorResponseCode;
 import com.fashionmall.common.jwt.JwtUtil;
-import com.fashionmall.common.jwt.LoginRequestDto;
 import com.fashionmall.common.jwt.UserRoleEnum;
 import com.fashionmall.common.moduleApi.dto.DeliveryAddressDto;
 import com.fashionmall.common.moduleApi.dto.LikeItemListResponseDto;
@@ -13,37 +12,33 @@ import com.fashionmall.common.redis.RefreshToken;
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.user.dto.request.DeliveryAddressRequestDto;
 import com.fashionmall.user.dto.request.FavoriteRequestDto;
+import com.fashionmall.user.dto.request.LoginRequestDto;
 import com.fashionmall.user.dto.request.SignUpRequestDto;
 import com.fashionmall.user.dto.request.UpdateUserInfoRequestDto;
 import com.fashionmall.user.dto.response.FavoriteResponseDto;
 import com.fashionmall.user.dto.response.LoginResponseDto;
 import com.fashionmall.user.dto.response.UserInfoResponseDto;
 import com.fashionmall.user.entity.DeliveryAddress;
+import com.fashionmall.user.entity.Favorite;
 import com.fashionmall.user.entity.User;
 import com.fashionmall.user.repository.DeliveryAddressRepository;
 import com.fashionmall.user.repository.FavoriteRepository;
 import com.fashionmall.user.repository.UserRepository;
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.fashionmall.user.entity.Favorite;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 @Slf4j(topic = "favoriteService")
 @Service
@@ -63,24 +58,24 @@ public class UserServiceImpl implements UserService {
     // User
     @Override
     @Transactional
-    public Long signUp (SignUpRequestDto signUpRequestDto) {
+    public Long signUp(SignUpRequestDto signUpRequestDto) {
 
         String email = signUpRequestDto.getEmail();
         String nickName = signUpRequestDto.getNickName();
-        validateUser(email,nickName);
+        validateUser(email, nickName);
 
         String encodePassword = passwordEncoder.encode(signUpRequestDto.getPassword());
 
         UserRoleEnum role = signUpRequestDto.isAdmin() ? UserRoleEnum.ADMIN : UserRoleEnum.USER;
 
         User user = User.builder()
-                .email(email)
-                .password(encodePassword)
-                .userName(signUpRequestDto.getUserName())
-                .nickName(nickName)
-                .contact(signUpRequestDto.getContact())
-                .role(role)
-                .build();
+            .email(email)
+            .password(encodePassword)
+            .userName(signUpRequestDto.getUserName())
+            .nickName(nickName)
+            .contact(signUpRequestDto.getContact())
+            .role(role)
+            .build();
 
         userRepository.save(user);
 
@@ -89,54 +84,53 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public LoginResponseDto login (@RequestBody LoginRequestDto loginRequestDto, HttpServletRequest request, HttpServletResponse response) {
+    public LoginResponseDto login(@RequestBody LoginRequestDto loginRequestDto,
+        HttpServletRequest request, HttpServletResponse response) {
 
         String emails = loginRequestDto.getEmail();
         String password = loginRequestDto.getPassword();
 
         User user = userRepository.findByEmail(emails)
-                .orElseThrow(() -> new RuntimeException("해당 이메일을 찾을 수 없습니다."));
+            .orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ID));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            throw new CustomException(ErrorResponseCode.WRONG_PASSWORD);
         }
-
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(emails, password)
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String email = user.getUserName();
         UserRoleEnum role = user.getRole();
         Long userId = user.getId();
 
-        String accessToken = jwtUtil.createToken(email, role,userId, jwtUtil.ACCESS_TOKEN_EXPIRATION_TIME);
-        String refreshToken = jwtUtil.createToken(email, role, userId, jwtUtil.REFRESH_TOKEN_EXPIRATION_TIME);
-        System.out.println("Generated refresh token: " + refreshToken);
+        String accessToken = jwtUtil.createToken(email, role, userId,
+            jwtUtil.ACCESS_TOKEN_EXPIRATION_TIME);
+        String refreshToken = jwtUtil.createToken(email, role, userId,
+            jwtUtil.REFRESH_TOKEN_EXPIRATION_TIME);
 
-        jwtUtil.createTokenToCookie("access_token", accessToken, jwtUtil.ACCESS_TOKEN_EXPIRATION_TIME);
-        jwtUtil.createTokenToCookie("refresh_token", refreshToken, jwtUtil.REFRESH_TOKEN_EXPIRATION_TIME);
+        jwtUtil.createTokenToCookie("access_token", accessToken,
+            jwtUtil.ACCESS_TOKEN_EXPIRATION_TIME);
+        jwtUtil.createTokenToCookie("refresh_token", refreshToken,
+            jwtUtil.REFRESH_TOKEN_EXPIRATION_TIME);
 
         RefreshToken redisToken = new RefreshToken(userId, refreshToken);
         redisUtil.set("refreshToken:" + userId, String.valueOf(redisToken), 86400);
 
         jwtUtil.addCookiesToResponse(response, accessToken, refreshToken);
-        response.setStatus(HttpServletResponse.SC_OK);
 
         return LoginResponseDto.builder()
-                .userId(user.getId())
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
+            .userId(user.getId())
+            .accessToken(accessToken)
+            .refreshToken(refreshToken)
+            .build();
     }
 
     @Override
     @Transactional
-    public Long updateUserInfo (UpdateUserInfoRequestDto updateUserInfoRequestDto, Long userId) {
+    public Long updateUserInfo(UpdateUserInfoRequestDto updateUserInfoRequestDto, Long userId) {
 
         User user = findByUserId(userId);
 
-        if (updateUserInfoRequestDto.getOldPassword() != null && updateUserInfoRequestDto.getOldPassword().equals(user.getPassword())) {
+        if (updateUserInfoRequestDto.getOldPassword() != null
+            && updateUserInfoRequestDto.getOldPassword().equals(user.getPassword())) {
             user.updatePassword(updateUserInfoRequestDto.getNewPassword());
         }
 
@@ -152,55 +146,51 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserInfoResponseDto userInfo (Long userId) {
+    public UserInfoResponseDto userInfo(Long userId) {
 
         User user = findByUserId(userId);
 
         UserRoleEnum role = user.getRole() == UserRoleEnum.ADMIN ? user.getRole() : null;
 
         return UserInfoResponseDto.builder()
-                .email(user.getEmail())
-                .userName(user.getUserName())
-                .nickName(user.getNickName())
-                .contact(user.getContact())
-                .role(role)
-                .build();
+            .email(user.getEmail())
+            .userName(user.getUserName())
+            .nickName(user.getNickName())
+            .contact(user.getContact())
+            .role(role)
+            .build();
     }
 
     @Override
     @Transactional
-    public String getRefreshToken (String refreshToken) {
-
-        Claims info = jwtUtil.getUserInfoFromToken(refreshToken);
-
-        Long userId = Long.valueOf(info.getId());
+    public String getRefreshToken(String refreshToken) {
+        Long userId = Long.valueOf(jwtUtil.getId(refreshToken));
 
         String redisTokenStr = (String) redisUtil.get("refreshToken:" + userId);
         if (redisTokenStr == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Refresh token not found in Redis");
         }
 
-        User user = userRepository.findById(Long.valueOf(info.getId()))
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         return jwtUtil.createToken(user.getEmail(), user.getRole(), user.getId(), jwtUtil.ACCESS_TOKEN_EXPIRATION_TIME);
     }
 
     @Override
     @Transactional
-    public Void logout (String accessToken) {
+    public Void logout(String accessToken) {
 
         if (!jwtUtil.validateToken(accessToken)) {
             throw new CustomException(ErrorResponseCode.UNAUTHORIZED_MEMBER);
         }
 
-        Claims info = jwtUtil.getUserInfoFromToken(accessToken);
+        Long userId = Long.valueOf(jwtUtil.getId(accessToken));
 
-        if (info.getId() == null) {
+        if (userId == null) {
             throw new CustomException(ErrorResponseCode.UNAUTHORIZED_MEMBER);
         }
 
-        Long userId = Long.valueOf(info.getId());
         findByUserId(userId);
 
         Set<String> keys = redisUtil.getKeys("refreshToken:" + userId);
@@ -208,13 +198,13 @@ public class UserServiceImpl implements UserService {
             redisUtil.delete(key);
         }
 
-        Long expiration = info.getExpiration().getTime() / 1000;
+        Long expiration = jwtUtil.getExpiration(accessToken).getTime() / 1000;
         redisUtil.setBlackList(accessToken, expiration);
 
         return null;
     }
 
-    private void validateUser (String email, String nickName) {
+    private void validateUser(String email, String nickName) {
 
         if (userRepository.existsByEmail(email)) {
             throw new CustomException(ErrorResponseCode.DUPLICATE_EMAIL);
@@ -227,28 +217,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Long confirmUserInfoApi (Long userId) {
+    public Long confirmUserInfoApi(Long userId) {
         User user = findByUserId(userId);
         return user.getId();
     }
 
-    private User findByUserId (Long userId) {
+    private User findByUserId(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_USER_ID));
+            .orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_USER_ID));
     }
 
     // DeliveryAddress
     @Override
     @Transactional
-    public Long createDeliveryAddress (DeliveryAddressRequestDto deliveryAddressRequestDto, Long userId) {
+    public Long createDeliveryAddress(DeliveryAddressRequestDto deliveryAddressRequestDto, Long userId) {
 
         findByUserId(userId);
 
         DeliveryAddress deliveryAddress = DeliveryAddress.builder()
-                .userId(userId)
-                .zipCode(deliveryAddressRequestDto.getZipcode())
-                .roadAddress(deliveryAddressRequestDto.getRoadAddress())
-                .build();
+            .userId(userId)
+            .zipCode(deliveryAddressRequestDto.getZipcode())
+            .roadAddress(deliveryAddressRequestDto.getRoadAddress())
+            .build();
         deliveryAddressRepository.save(deliveryAddress);
 
         return deliveryAddress.getId();
@@ -256,7 +246,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public List<DeliveryAddressDto> getDeliveryAddress (Long userId) {
+    public List<DeliveryAddressDto> getDeliveryAddress(Long userId) {
 
         findByUserId(userId);
 
@@ -266,9 +256,9 @@ public class UserServiceImpl implements UserService {
 
         for (DeliveryAddress deliveryAddress : deliveryAddresses) {
             DeliveryAddressDto deliveryAddressDto = new DeliveryAddressDto(
-                    deliveryAddress.getId(),
-                    deliveryAddress.getZipCode(),
-                    deliveryAddress.getRoadAddress()
+                deliveryAddress.getId(),
+                deliveryAddress.getZipCode(),
+                deliveryAddress.getRoadAddress()
             );
             deliveryAddressDtos.add(deliveryAddressDto);
         }
@@ -279,15 +269,15 @@ public class UserServiceImpl implements UserService {
     // Favorite
     @Override
     @Transactional
-    public FavoriteResponseDto updateFavorite (Long itemId, FavoriteRequestDto favoriteRequestDto, Long userId) {
+    public FavoriteResponseDto updateFavorite(Long itemId, FavoriteRequestDto favoriteRequestDto, Long userId) {
 
         findByUserId(userId);
 
         List<LikeItemListResponseDto> itemInfos = moduleApiUtil.getItemInfoApi(itemId, userId);
         LikeItemListResponseDto itemInfo = itemInfos.stream()
-                .filter(info -> info.getItemInfo().getId() == itemId)
-                .findFirst()
-                .orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
+            .filter(info -> info.getItemInfo().getId() == itemId)
+            .findFirst()
+            .orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
 
         Favorite existingFavorite = favoriteRepository.findByItemId(itemId);
 
@@ -311,7 +301,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public PageInfoResponseDto <LikeItemListResponseDto> favoriteList (int pageNo, int size, Long itemId, Long userId) {
+    public PageInfoResponseDto<LikeItemListResponseDto> favoriteList(int pageNo, int size, Long itemId, Long userId) {
 
         findByUserId(userId);
 
@@ -326,9 +316,9 @@ public class UserServiceImpl implements UserService {
 
     private Favorite buildFavorite(Long itemId, boolean isSelected, Long userId) {
         return Favorite.builder()
-                .itemId(itemId)
-                .isSelected(isSelected)
-                .userId(userId)
-                .build();
+            .itemId(itemId)
+            .isSelected(isSelected)
+            .userId(userId)
+            .build();
     }
 }

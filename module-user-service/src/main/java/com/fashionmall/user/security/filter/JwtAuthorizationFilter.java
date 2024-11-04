@@ -1,12 +1,14 @@
-package com.fashionmall.common.jwt;
+package com.fashionmall.user.security.filter;
 
+import com.fashionmall.common.jwt.JwtUtil;
+import com.fashionmall.common.jwt.UserRoleEnum;
 import com.fashionmall.common.redis.RedisUtil;
-import com.fashionmall.common.security.UserDetailsImpl;
-import io.jsonwebtoken.Claims;
+import com.fashionmall.user.security.UserDetailsImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -18,10 +20,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
-
-import static com.fashionmall.common.jwt.JwtUtil.AUTHORIZATION_ROLE_KEY;
-
 @Slf4j(topic = "JWT 검증 및 인가")
 @RequiredArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
@@ -30,43 +28,44 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final RedisUtil redisUtil;
 
     @Override
-    protected void doFilterInternal (HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
-        String path = request.getRequestURI();
-        if ("/user/signUp".equals(path) || "/user/login".equals(path) || "/user/auth/refresh".equals(path) || "/item".equals(path) || path.startsWith("/item/")) { filterChain.doFilter(request, response); return;}
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         if (request.getCookies() != null && request.getCookies().length > 0) {
             log.info("request {} {}", request.getCookies()[0].getName(), request.getCookies()[0].getValue());
         }
 
+        if (!StringUtils.hasText(request.getHeader(HttpHeaders.AUTHORIZATION))) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String tokenValue = jwtUtil.getTokenFromRequest(request, HttpHeaders.AUTHORIZATION);
+
         System.out.println("tokenValue = " + tokenValue);
 
-        if (StringUtils.hasText(tokenValue)) {
+        tokenValue = jwtUtil.substringToken(tokenValue);
 
-            tokenValue = jwtUtil.substringToken(tokenValue);
+        if (redisUtil.hasKeyBlackList(tokenValue)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
 
-            if (redisUtil.hasKeyBlackList(tokenValue)) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return;
-            }
+        if (!jwtUtil.validateToken(tokenValue)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
 
-            if (!jwtUtil.validateToken(tokenValue)) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return;
-            }
+        String email = jwtUtil.getSubject(tokenValue);
+        String id = jwtUtil.getId(tokenValue);
+        String roleString = jwtUtil.getRole(tokenValue);
 
-            Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
+        try {
+            UserRoleEnum role = UserRoleEnum.valueOf(roleString);
 
-            try {
-                String roleString = info.get(AUTHORIZATION_ROLE_KEY, String.class);
-                UserRoleEnum role = UserRoleEnum.valueOf(roleString);
-
-                setAuthentication(info.getSubject(), info.getId(), role);
-            } catch (Exception e) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return;
-            }
+            setAuthentication(email, id, role);
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
         }
 
         filterChain.doFilter(request, response);
@@ -76,14 +75,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     public void setAuthentication(String email, String userId, UserRoleEnum role) {
 
         SecurityContext context = SecurityContextHolder.createEmptyContext();
-        Authentication authentication = createAuthentication (email, userId, role);
+        Authentication authentication = createAuthentication(email, userId, role);
         context.setAuthentication(authentication);
 
         SecurityContextHolder.setContext(context);
 
     }
 
-    private Authentication createAuthentication (String email, String userId, UserRoleEnum role) {
+    private Authentication createAuthentication(String email, String userId, UserRoleEnum role) {
 
         UserDetails userDetails = new UserDetailsImpl(email, Long.valueOf(userId), role);
 
