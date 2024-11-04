@@ -10,4 +10,6 @@ public interface ReviewRepositoryCustom {
     PageInfoResponseDto<ReviewResponseMyPageDto> findReviewByUserId(Long userId, Pageable pageable);
 
     PageInfoResponseDto<ReviewResponseItemDto> findItemReviewByItemId(Long itemId, Pageable pageable);
+
+    void deleteReviewByUserIdAndId(Long userId, Long id);
 }

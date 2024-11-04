@@ -11,5 +11,5 @@ public interface BillingKeyService {
 
     List<UserBillingKeyResponseDto> getUserBillingKeyList(Long userId);
 
-    Long deleteBillingKey(Long billingKeyId);
+    Long deleteBillingKey(Long userId, Long billingKeyId);
 }

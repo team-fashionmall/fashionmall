@@ -33,11 +33,11 @@ public class BillingKeyRepositoryImpl implements BillingKeyRepositoryCustom {
     }
 
     @Override
-    public String findCustomerUidById(Long id) {
+    public String findCustomerUidById(Long userId, Long id) {
         return queryFactory
                 .select(billingKey.customerUid)
                 .from(billingKey)
-                .where(billingKey.id.eq(id))
+                .where(billingKey.id.eq(id), billingKey.userId.eq(userId))
                 .fetchOne();
     }
 }

@@ -2,11 +2,6 @@ package com.fashionmall.common.moduleApi.util;
 
 import com.fashionmall.common.exception.ErrorResponseCode;
 import com.fashionmall.common.moduleApi.dto.*;
-import com.fashionmall.common.moduleApi.dto.OrderItemDto;
-import com.fashionmall.common.moduleApi.dto.ImageDataDto;
-import com.fashionmall.common.moduleApi.dto.ImageUploadDto;
-import com.fashionmall.common.moduleApi.dto.ItemDetailDto;
-import com.fashionmall.common.moduleApi.dto.ItemDetailResponseDto;
 import com.fashionmall.common.response.CommonResponse;
 import com.fashionmall.common.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;
@@ -44,11 +39,12 @@ public class ModuleApiUtil {
 
     }
 
-    public Long confirmUserInfoApi (Long userId) {
+    public Long confirmUserInfoApi(Long userId) {
 
         CommonResponse<Long> commonResponse = webClientUtil.get(
                 userApi + "/confirm/" + userId,
-                new ParameterizedTypeReference<CommonResponse<Long>>() {},
+                new ParameterizedTypeReference<CommonResponse<Long>>() {
+                },
                 headers(),
                 ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE
         );
@@ -59,7 +55,7 @@ public class ModuleApiUtil {
     public List<CouponDto> getUserCouponApi(Long userId) {
         Map<String, String> headers = Map.of(
                 HttpHeaders.CONTENT_TYPE, "application/json");
-        CommonResponse<List<CouponDto>> listCommonResponse = webClientUtil.get(couponApi + "/getCoupon", new ParameterizedTypeReference<CommonResponse<List<CouponDto>>>() {
+        CommonResponse<List<CouponDto>> listCommonResponse = webClientUtil.get(couponApi + "/getCoupon/" + userId, new ParameterizedTypeReference<CommonResponse<List<CouponDto>>>() {
         }, headers, ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE);
         return listCommonResponse.getData();
     }
