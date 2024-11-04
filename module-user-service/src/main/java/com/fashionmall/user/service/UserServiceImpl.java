@@ -2,32 +2,48 @@ package com.fashionmall.user.service;
 
 import com.fashionmall.common.exception.CustomException;
 import com.fashionmall.common.exception.ErrorResponseCode;
+import com.fashionmall.common.jwt.JwtUtil;
+import com.fashionmall.common.jwt.LoginRequestDto;
+import com.fashionmall.common.jwt.UserRoleEnum;
 import com.fashionmall.common.moduleApi.dto.DeliveryAddressDto;
 import com.fashionmall.common.moduleApi.dto.LikeItemListResponseDto;
 import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
+import com.fashionmall.common.redis.RedisUtil;
+import com.fashionmall.common.redis.RefreshToken;
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.user.dto.request.DeliveryAddressRequestDto;
 import com.fashionmall.user.dto.request.FavoriteRequestDto;
 import com.fashionmall.user.dto.request.SignUpRequestDto;
 import com.fashionmall.user.dto.request.UpdateUserInfoRequestDto;
 import com.fashionmall.user.dto.response.FavoriteResponseDto;
+import com.fashionmall.user.dto.response.LoginResponseDto;
 import com.fashionmall.user.dto.response.UserInfoResponseDto;
 import com.fashionmall.user.entity.DeliveryAddress;
 import com.fashionmall.user.entity.User;
-import com.fashionmall.user.entity.UserRoleEnum;
 import com.fashionmall.user.repository.DeliveryAddressRepository;
 import com.fashionmall.user.repository.FavoriteRepository;
 import com.fashionmall.user.repository.UserRepository;
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.fashionmall.user.entity.Favorite;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j(topic = "favoriteService")
 @Service
@@ -35,8 +51,11 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
+    private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
+    private final RedisUtil redisUtil;
     private final FavoriteRepository favoriteRepository;
     private final DeliveryAddressRepository deliveryAddressRepository;
     private final ModuleApiUtil moduleApiUtil;
@@ -70,10 +89,52 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    public LoginResponseDto login (@RequestBody LoginRequestDto loginRequestDto, HttpServletRequest request, HttpServletResponse response) {
+
+        String emails = loginRequestDto.getEmail();
+        String password = loginRequestDto.getPassword();
+
+        User user = userRepository.findByEmail(emails)
+                .orElseThrow(() -> new RuntimeException("해당 이메일을 찾을 수 없습니다."));
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        }
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(emails, password)
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String email = user.getUserName();
+        UserRoleEnum role = user.getRole();
+        Long userId = user.getId();
+
+        String accessToken = jwtUtil.createToken(email, role,userId, jwtUtil.ACCESS_TOKEN_EXPIRATION_TIME);
+        String refreshToken = jwtUtil.createToken(email, role, userId, jwtUtil.REFRESH_TOKEN_EXPIRATION_TIME);
+        System.out.println("Generated refresh token: " + refreshToken);
+
+        jwtUtil.createTokenToCookie("access_token", accessToken, jwtUtil.ACCESS_TOKEN_EXPIRATION_TIME);
+        jwtUtil.createTokenToCookie("refresh_token", refreshToken, jwtUtil.REFRESH_TOKEN_EXPIRATION_TIME);
+
+        RefreshToken redisToken = new RefreshToken(userId, refreshToken);
+        redisUtil.set("refreshToken:" + userId, String.valueOf(redisToken), 86400);
+
+        jwtUtil.addCookiesToResponse(response, accessToken, refreshToken);
+        response.setStatus(HttpServletResponse.SC_OK);
+
+        return LoginResponseDto.builder()
+                .userId(user.getId())
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
+    @Override
+    @Transactional
     public Long updateUserInfo (UpdateUserInfoRequestDto updateUserInfoRequestDto, Long userId) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_USER_ID));
+        User user = findByUserId(userId);
 
         if (updateUserInfoRequestDto.getOldPassword() != null && updateUserInfoRequestDto.getOldPassword().equals(user.getPassword())) {
             user.updatePassword(updateUserInfoRequestDto.getNewPassword());
@@ -93,12 +154,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserInfoResponseDto userInfo (Long userId) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_USER_ID));
+        User user = findByUserId(userId);
 
         UserRoleEnum role = user.getRole() == UserRoleEnum.ADMIN ? user.getRole() : null;
 
-        // 정보 조회 및 반환
         return UserInfoResponseDto.builder()
                 .email(user.getEmail())
                 .userName(user.getUserName())
@@ -106,6 +165,53 @@ public class UserServiceImpl implements UserService {
                 .contact(user.getContact())
                 .role(role)
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public String getRefreshToken (String refreshToken) {
+
+        Claims info = jwtUtil.getUserInfoFromToken(refreshToken);
+
+        Long userId = Long.valueOf(info.getId());
+
+        String redisTokenStr = (String) redisUtil.get("refreshToken:" + userId);
+        if (redisTokenStr == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Refresh token not found in Redis");
+        }
+
+        User user = userRepository.findById(Long.valueOf(info.getId()))
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        return jwtUtil.createToken(user.getEmail(), user.getRole(), user.getId(), jwtUtil.ACCESS_TOKEN_EXPIRATION_TIME);
+    }
+
+    @Override
+    @Transactional
+    public Void logout (String accessToken) {
+
+        if (!jwtUtil.validateToken(accessToken)) {
+            throw new CustomException(ErrorResponseCode.UNAUTHORIZED_MEMBER);
+        }
+
+        Claims info = jwtUtil.getUserInfoFromToken(accessToken);
+
+        if (info.getId() == null) {
+            throw new CustomException(ErrorResponseCode.UNAUTHORIZED_MEMBER);
+        }
+
+        Long userId = Long.valueOf(info.getId());
+        findByUserId(userId);
+
+        Set<String> keys = redisUtil.getKeys("refreshToken:" + userId);
+        for (String key : keys) {
+            redisUtil.delete(key);
+        }
+
+        Long expiration = info.getExpiration().getTime() / 1000;
+        redisUtil.setBlackList(accessToken, expiration);
+
+        return null;
     }
 
     private void validateUser (String email, String nickName) {
@@ -121,19 +227,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Long confirmUserInfoApi (String userName) {
-
-        User user = userRepository.findByUserName(userName)
-                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_USER_NAME));
-
+    public Long confirmUserInfoApi (Long userId) {
+        User user = findByUserId(userId);
         return user.getId();
+    }
+
+    private User findByUserId (Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_USER_ID));
     }
 
     // DeliveryAddress
     @Override
     @Transactional
     public Long createDeliveryAddress (DeliveryAddressRequestDto deliveryAddressRequestDto, Long userId) {
-        // 회원 인증
+
+        findByUserId(userId);
 
         DeliveryAddress deliveryAddress = DeliveryAddress.builder()
                 .userId(userId)
@@ -148,6 +257,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public List<DeliveryAddressDto> getDeliveryAddress (Long userId) {
+
+        findByUserId(userId);
 
         List<DeliveryAddress> deliveryAddresses = deliveryAddressRepository.findAllByUserId(userId);
 
@@ -170,7 +281,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public FavoriteResponseDto updateFavorite (Long itemId, FavoriteRequestDto favoriteRequestDto, Long userId) {
 
-        // 회원 인증
+        findByUserId(userId);
 
         List<LikeItemListResponseDto> itemInfos = moduleApiUtil.getItemInfoApi(itemId, userId);
         LikeItemListResponseDto itemInfo = itemInfos.stream()
@@ -180,14 +291,14 @@ public class UserServiceImpl implements UserService {
 
         Favorite existingFavorite = favoriteRepository.findByItemId(itemId);
 
-        if (existingFavorite != null) {  // DB에 itemId가 존재하는 경우
+        if (existingFavorite != null) {
             if (favoriteRequestDto.isSelected()) {
                 throw new CustomException(ErrorResponseCode.DUPLICATE_TRUE);
             } else {
                 favoriteRepository.delete(existingFavorite);
                 return FavoriteResponseDto.from(buildFavorite(itemInfo.getItemInfo().getId(), favoriteRequestDto.isSelected(), userId));
             }
-        } else {  // DB에 itemId가 존재하지 않는 경우
+        } else {
             if (favoriteRequestDto.isSelected()) {
                 Favorite newFavorite = buildFavorite(itemInfo.getItemInfo().getId(), favoriteRequestDto.isSelected(), userId);
                 favoriteRepository.save(newFavorite);
@@ -201,6 +312,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public PageInfoResponseDto <LikeItemListResponseDto> favoriteList (int pageNo, int size, Long itemId, Long userId) {
+
+        findByUserId(userId);
 
         PageRequest pageRequest = PageRequest.of(pageNo - 1, size);
         int totalCount = favoriteRepository.countByUserId(userId);
