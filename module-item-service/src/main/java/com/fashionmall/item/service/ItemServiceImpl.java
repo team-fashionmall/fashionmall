@@ -48,8 +48,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public PageInfoResponseDto<ItemListResponseDto> getItemList(int pageNo, int size, String itemName, Long category1, Long category2, Long workerId) {
-        moduleApiUtil.confirmUserInfoApi(workerId);
+    public PageInfoResponseDto<ItemListResponseDto> getItemList(int pageNo, int size, String itemName, Long category1, Long category2) {
         PageRequest pageRequest = PageRequest.of(pageNo -1, size);
         return itemRepository.itemListPageNation (pageRequest, itemName, category1, category2);
     }
@@ -61,8 +60,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDetailListResponseDto> getItemDetailList(Long itemId, Long workerId) {
-        moduleApiUtil.confirmUserInfoApi(workerId);
+    public List<ItemDetailListResponseDto> getItemDetailList(Long itemId) {
         return itemRepository.itemDetailListPageNation (itemId);
     }
 

@@ -42,9 +42,9 @@ public interface ItemService {
     List<LikeItemListResponseDto> getItemInfoApi (Long itemId, Long userId);
 
     // 조회
-    PageInfoResponseDto<ItemListResponseDto> getItemList(int pageNo, int size, String itemName, Long category1, Long category2, Long workerId);
+    PageInfoResponseDto<ItemListResponseDto> getItemList(int pageNo, int size, String itemName, Long category1, Long category2);
 
-    List<ItemDetailListResponseDto> getItemDetailList(Long itemId, Long workerId);
+    List<ItemDetailListResponseDto> getItemDetailList(Long itemId);
 
     PageInfoResponseDto<AdminItemResponseDto> getAdminItemList(int pageNo, int size, String itemName, Long category1, Long category2, Long workerId);
 

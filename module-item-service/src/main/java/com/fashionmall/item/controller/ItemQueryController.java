@@ -28,15 +28,13 @@ public class ItemQueryController {
                                                                                  @RequestParam(defaultValue = "10") int size,
                                                                                  @RequestParam(required = false) String itemName,
                                                                                  @RequestParam(required = false) Long category1,
-                                                                                 @RequestParam(required = false) Long category2,
-                                                                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return ApiResponseUtil.success(itemService.getItemList(pageNo, size, itemName, category1, category2, userDetails.getUserid()));
+                                                                                 @RequestParam(required = false) Long category2) {
+        return ApiResponseUtil.success(itemService.getItemList(pageNo, size, itemName, category1, category2));
     }
 
     @GetMapping("/item/{itemId}")
-    public CommonResponse<List<ItemDetailListResponseDto>> getItemDetailList (@PathVariable Long itemId,
-                                                                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return ApiResponseUtil.success(itemService.getItemDetailList(itemId, userDetails.getUserid()));
+    public CommonResponse<List<ItemDetailListResponseDto>> getItemDetailList (@PathVariable Long itemId) {
+        return ApiResponseUtil.success(itemService.getItemDetailList(itemId));
     }
 
     @GetMapping ("/admin/item")
