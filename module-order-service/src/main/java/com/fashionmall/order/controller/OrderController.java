@@ -2,6 +2,7 @@ package com.fashionmall.order.controller;
 
 import com.fashionmall.common.response.CommonResponse;
 import com.fashionmall.common.response.PageInfoResponseDto;
+import com.fashionmall.common.security.UserDetailsImpl;
 import com.fashionmall.common.util.ApiResponseUtil;
 import com.fashionmall.order.dto.request.OrderPaymentRequestDto;
 import com.fashionmall.order.dto.request.PaymentCancelRequestDto;
@@ -10,6 +11,7 @@ import com.fashionmall.order.dto.response.OrdersResponseDto;
 import com.fashionmall.order.service.OrdersService;
 import com.fashionmall.order.service.PaymentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,28 +22,30 @@ public class OrderController {
     private final PaymentService paymentService;
 
     @PostMapping("/order")
-    public CommonResponse<Long> createOrderAndPayment(@RequestBody OrderPaymentRequestDto orderPaymentRequestDto) {
-
+    public CommonResponse<Long> createOrderAndPayment(@RequestBody OrderPaymentRequestDto orderPaymentRequestDto,
+                                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        orderPaymentRequestDto.setUserId(userDetails.getUserid());
         return ApiResponseUtil.success(ordersService.createAndPaymentOrder(orderPaymentRequestDto));
     }
 
     @GetMapping("/order")
     public CommonResponse<PageInfoResponseDto<OrdersResponseDto>> getUserOrderList(@RequestParam(defaultValue = "1") int pageNo,
-                                                                                   @RequestParam(defaultValue = "10") int size) {
-        Long userId = 1L;
-        return ApiResponseUtil.success(ordersService.getOrders(userId, pageNo, size));
+                                                                                   @RequestParam(defaultValue = "10") int size,
+                                                                                   @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ApiResponseUtil.success(ordersService.getOrders(userDetails.getUserid(), pageNo, size));
     }
 
     @GetMapping("/order/{ordersId}")
-    public CommonResponse<OrdersDetailResponseDto> getOrderDetail(@PathVariable Long ordersId) {
-        Long userId = 1L;
-        return ApiResponseUtil.success(ordersService.getOrderDetail(userId, ordersId));
+    public CommonResponse<OrdersDetailResponseDto> getOrderDetail(@PathVariable Long ordersId,
+                                                                  @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ApiResponseUtil.success(ordersService.getOrderDetail(userDetails.getUserid(), ordersId));
     }
 
     @PatchMapping("/order/{orderId}/cancel")
     public CommonResponse<Long> cancelOrder(@PathVariable Long orderId,
-                                            @RequestBody PaymentCancelRequestDto paymentCancelRequestDto) {
-        Long userId = 1L;
+                                            @RequestBody PaymentCancelRequestDto paymentCancelRequestDto,
+                                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Long userId = userDetails.getUserid();
 
         paymentCancelRequestDto.setUserId(userId);
         paymentCancelRequestDto.setOrderId(orderId);

@@ -13,5 +13,5 @@ public interface ReviewService {
 
     PageInfoResponseDto<ReviewResponseItemDto> getItemReviews(Long itemId, int pageNo, int size);
 
-    void deleteReview(Long reviewId);
+    void deleteReview(Long userId, Long reviewId);
 }

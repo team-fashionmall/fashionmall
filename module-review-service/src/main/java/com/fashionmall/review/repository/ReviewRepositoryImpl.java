@@ -78,4 +78,11 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
 
         return PageInfoResponseDto.of(pageable, content, totalCount);
     }
+
+    @Override
+    public void deleteReviewByUserIdAndId(Long userId, Long id) {
+        queryFactory
+                .delete(review)
+                .where(review.userId.eq(userId).and(review.id.eq(id)));
+    }
 }
