@@ -19,7 +19,7 @@ public class UserApiController {
 
     private final UserService userService;
 
-    @GetMapping ("/confirm/{userName}")
+    @GetMapping ("/confirm/{userId}")
     public CommonResponse<Long> confirmUserInfoApi (@PathVariable Long userId) {
         return ApiResponseUtil.success(userService.confirmUserInfoApi(userId));
     }

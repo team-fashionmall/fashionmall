@@ -46,6 +46,8 @@ public class WebSecurityConfig {
                 .requestMatchers("/user/signUp").permitAll()
                 .requestMatchers("/user/login").permitAll()
                 .requestMatchers("/user/auth/refresh").permitAll()
+                .requestMatchers("/category").permitAll()
+                .requestMatchers("/item/**").permitAll()
                 .anyRequest().authenticated()
         );
 

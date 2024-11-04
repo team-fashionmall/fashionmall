@@ -49,8 +49,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public PageInfoResponseDto<ItemListResponseDto> getItemList(int pageNo, int size, String itemName, Long category1, Long category2) {
-        PageRequest pageRequest = PageRequest.of(pageNo - 1, size);
-        return itemRepository.itemListPageNation(pageRequest, itemName, category1, category2);
+        PageRequest pageRequest = PageRequest.of(pageNo -1, size);
+        return itemRepository.itemListPageNation (pageRequest, itemName, category1, category2);
     }
 
     @Override
@@ -61,14 +61,14 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDetailListResponseDto> getItemDetailList(Long itemId) {
-        return itemRepository.itemDetailListPageNation(itemId);
+        return itemRepository.itemDetailListPageNation (itemId);
     }
 
     @Override
     @Transactional
     public ItemResponseDto createItem(ItemRequestDto itemRequestDto, Long workerId) {
 
-        // 유저 검증 코드 (관리자) -> 추후 연결
+        moduleApiUtil.confirmUserInfoApi(workerId);
 
         // 상품 등록
         Item item = Item.builder()
@@ -82,14 +82,12 @@ public class ItemServiceImpl implements ItemService {
 
         Map<Long, String> mainImage = uploadImageApi(itemRequestDto.getImageFileName(), item.getId(), ReferenceTypeEnum.ITEM, ImageTypeEnum.MAIN);
 
-        Long imageId = mainImage.keySet().iterator().next(); // 첫 번째 키 가져오기
-        String imageUrl = mainImage.get(imageId); // 키에 해당하는 값 가져오기
+        Long imageId = mainImage.keySet().iterator().next();
+        String imageUrl = mainImage.get(imageId);
 
         item.updateImageId(imageId);
         item.updateImageUrl(imageUrl);
         itemRepository.save(item);
-
-        log.info("상품 등록: {}", item);
 
         // 카테고리 등록
         ItemRequestDto.CategoryRequestDto categoryRequestDto = itemRequestDto.getCategoryRequestDtoList();
@@ -103,7 +101,6 @@ public class ItemServiceImpl implements ItemService {
                 .category2Id(category2.getId())
                 .build();
         itemCategoryMappingRepository.save(itemCategoryMapping);
-        log.info("카테고리 저장 완료: {}", itemCategoryMapping);
 
         // 상품 상세 등록
         for (ItemRequestDto.ItemDetailRequestDto itemDetailRequestDto : itemRequestDto.getItemDetailRequestDtoList()) {
@@ -111,7 +108,6 @@ public class ItemServiceImpl implements ItemService {
             ItemSize itemSize = findSizeId(itemDetailRequestDto.getSizeId());
             ItemColor itemColor = findColorId(itemDetailRequestDto.getColorId());
 
-            // 상품 상세 등록 저장
             ItemDetail itemDetail = ItemDetail.builder()
                     .item(item)
                     .itemColor(itemColor)
@@ -125,11 +121,10 @@ public class ItemServiceImpl implements ItemService {
                     .build();
             itemDetailRepository.save(itemDetail);
 
-
             Map<Long, String> subImage = uploadImageApi(itemDetailRequestDto.getImageFileName(), itemDetail.getId(), ReferenceTypeEnum.ITEM, ImageTypeEnum.DESCRIPTION);
 
-            Long subImageId = subImage.keySet().iterator().next(); // 첫 번째 키 가져오기
-            String subImageUrl = subImage.get(subImageId); // 키에 해당하는 값 가져오기
+            Long subImageId = subImage.keySet().iterator().next();
+            String subImageUrl = subImage.get(subImageId);
 
             itemDetail.updateImageId(subImageId);
             itemDetail.updateImageUrl(subImageUrl);
@@ -137,40 +132,35 @@ public class ItemServiceImpl implements ItemService {
             itemDetailRepository.save(itemDetail);
 
             item.getItemDetails().add(itemDetail);
-            log.info("상품 상세 등록: {}", itemDetail);
-
         }
 
         return ItemResponseDto.from(item, imageUrl);
     }
 
     @Override
-    public PageInfoResponseDto<AdminItemResponseDto> getAdminItemList(int pageNo, int size, String itemName, Long category1, Long category2) {
-        // 유저 검증코드 추가
-        PageRequest pageRequest = PageRequest.of(pageNo - 1, size);
-        return itemRepository.adminItemListPageNation(pageRequest, itemName, category1, category2);
+    public PageInfoResponseDto<AdminItemResponseDto> getAdminItemList(int pageNo, int size, String itemName, Long category1, Long category2, Long workerId) {
+        moduleApiUtil.confirmUserInfoApi(workerId);
+        PageRequest pageRequest = PageRequest.of(pageNo -1, size);
+        return itemRepository.adminItemListPageNation (pageRequest, itemName, category1, category2);
     }
 
     @Override
-    public PageInfoResponseDto<AdminItemDetailResponseDto> getAdminItemDetailList(Long itemId, int pageNo, int size) {
-        // 유저 검증코드 추가
-        PageRequest pageRequest = PageRequest.of(pageNo - 1, size);
-        return itemRepository.adminItemDetailListPageNation(itemId, pageRequest);
+    public PageInfoResponseDto<AdminItemDetailResponseDto> getAdminItemDetailList(Long itemId, int pageNo, int size, Long workerId) {
+        moduleApiUtil.confirmUserInfoApi(workerId);
+        PageRequest pageRequest = PageRequest.of(pageNo -1, size);
+        return itemRepository.adminItemDetailListPageNation (itemId, pageRequest);
     }
 
-    // 색 찾기
     private ItemColor findColorId(Long colorId) {
-        return itemColorRepository.findById(colorId).orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
+        return itemColorRepository.findById(colorId).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
     }
 
-    // 사이즈 찾기
     private ItemSize findSizeId(Long sizeId) {
-        return itemSizeRepository.findById(sizeId).orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
+        return itemSizeRepository.findById(sizeId).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
     }
 
-    // 카테고리 찾기
     private Category1 findCategory1(Long category1) {
-        return category1Repository.findById(category1).orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_CATEGORY_ID));
+        return category1Repository.findById (category1).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_CATEGORY_ID));
     }
 
     private Category2 findCategory2(Long category2, Long category1) {
@@ -197,8 +187,8 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public ItemDiscountResponseDto createItemDiscount(ItemDiscountRequestDto itemDiscountRequestDto, Long workerId) {
 
-        // 본인 인증
-        // 해당 아이템이 있는지 확인하기
+        moduleApiUtil.confirmUserInfoApi(workerId);
+
         Item item = findByIdAndWorkerId(itemDiscountRequestDto.getId(), workerId);
 
         List<ItemDiscount> itemDiscounts = new ArrayList<>();
@@ -222,16 +212,14 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public ItemUpdateResponseDto updateItem(Long itemId, ItemUpdateRequestDto itemUpdateRequestDto, Long workerId) {
 
-        // 관리자 확인
-        // 어떤 사람의 데이터를 수정해야하는걸까? & 해당 관리자인지 검증 -> 추후
+        moduleApiUtil.confirmUserInfoApi(workerId);
+
         Item item = findByIdAndWorkerId(itemId, workerId);
 
-        // 검증 및 데이터 수정
         List<ItemCategoryMapping> updatedCategoryMappings = new ArrayList<>();
         List<ItemDetail> updatedItemDetails = new ArrayList<>();
         List<ItemDiscount> updatedItemDiscounts = new ArrayList<>();
 
-        // 검증 null "" // 데이터 수정하기
         if (!itemUpdateRequestDto.getName().isEmpty()) {
             item.updateItemName(itemUpdateRequestDto.getName());
         }
@@ -244,8 +232,8 @@ public class ItemServiceImpl implements ItemService {
 
             Map<Long, String> updateImage = uploadImageApi(itemUpdateRequestDto.getImageFileName(), item.getId(), ReferenceTypeEnum.ITEM, ImageTypeEnum.MAIN);
 
-            Long imageId = updateImage.keySet().iterator().next(); // 첫 번째 키 가져오기
-            String imageUrl = updateImage.get(imageId); // 키에 해당하는 값 가져오기
+            Long imageId = updateImage.keySet().iterator().next();
+            String imageUrl = updateImage.get(imageId);
 
             item.updateImageId(imageId);
             item.updateImageUrl(imageUrl);
@@ -261,10 +249,10 @@ public class ItemServiceImpl implements ItemService {
                 if (categoryDto.getCategory1Id() != null) {
                     Category1 category1 = findCategory1(categoryDto.getCategory1Id());
 
-                    if (categoryDto.getCategory2Id() != null) { // 둘 다 수정해야하는 경우
+                    if (categoryDto.getCategory2Id() != null) {
                         Category2 category2 = findCategory2(categoryDto.getCategory2Id(), categoryDto.getCategory1Id());
                         itemCategoryMapping.updateCategories(category1, category2.getId());
-                    } else { // category 1만 수정하는 경우
+                    } else {
                         itemCategoryMapping.updateCategory1(category1);
                     }
                 }
@@ -295,8 +283,8 @@ public class ItemServiceImpl implements ItemService {
 
                     Map<Long, String> updateImage = uploadImageApi(itemDetailDto.getImageFileName(), itemDetail.getImageId(), ReferenceTypeEnum.ITEM, ImageTypeEnum.DESCRIPTION);
 
-                    Long imageId = updateImage.keySet().iterator().next(); // 첫 번째 키 가져오기
-                    String imageUrl = updateImage.get(imageId); // 키에 해당하는 값 가져오기
+                    Long imageId = updateImage.keySet().iterator().next();
+                    String imageUrl = updateImage.get(imageId);
 
                     itemDetail.updateImageId(imageId);
                     itemDetail.updateImageUrl(imageUrl);
@@ -353,20 +341,18 @@ public class ItemServiceImpl implements ItemService {
                         throw new CustomException(ErrorResponseCode.DUPLICATE_DISCOUNT_STATUS);
                     }
                 }
-
                 updatedItemDiscounts.add(itemDiscount);
             }
         }
-
         return ItemUpdateResponseDto.from(item, updatedCategoryMappings, updatedItemDetails, updatedItemDiscounts);
     }
 
     @Override
     @Transactional
-    public String deleteItem(Long itemId, Long workerId) {
+    public Long deleteItem(Long itemId, Long workerId) {
 
-        // 관리자 확인
-        // 상품 아이디가 맞는지 확인 & 해당 관리자인지 확인 (추후)
+        moduleApiUtil.confirmUserInfoApi(workerId);
+
         Item item = findByIdAndWorkerId(itemId, workerId);
 
         moduleApiUtil.deleteImageApi(item.getImageId());
@@ -375,10 +361,9 @@ public class ItemServiceImpl implements ItemService {
             moduleApiUtil.deleteImageApi(itemDetail.getImageId());
         }
 
-        // 상품 삭제
         itemRepository.deleteById(itemId);
 
-        return "상품 삭제가 완료되었습니다.";
+        return workerId;
     }
 
     private Item findByIdAndWorkerId(Long itemId, Long workerId) {
@@ -389,11 +374,11 @@ public class ItemServiceImpl implements ItemService {
 
         if (type == ItemDiscountTypeEnum.RATE) {
             if (value < 0 || value > 100) {
-                throw new CustomException(ErrorResponseCode.WRONG_RATE); // "정률(%)에 맞는 값을 입력해주세요."
+                throw new CustomException(ErrorResponseCode.WRONG_RATE);
             }
         } else if (type == ItemDiscountTypeEnum.AMOUNT) {
             if (value < 0) {
-                throw new CustomException(ErrorResponseCode.WRONG_AMOUNT); // "정액(원)에 맞는 값을 입력해주세요."
+                throw new CustomException(ErrorResponseCode.WRONG_AMOUNT);
             }
         }
     }
@@ -423,7 +408,6 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public List<ItemDetailInfoDto> getItemDetailInfoApi(List<Long> itemDetailId) {
-        // 회원인증
 
         List<ItemDetailInfoDto> itemDetailInfoDtoList = new ArrayList<>();
 
@@ -461,7 +445,6 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public void deductItemStockApi(List<OrderItemDto> orderItemDto, Long workerId) {
-        // 본인 확인
 
         for (OrderItemDto orderItemDtoList : orderItemDto) {
             ItemDetail itemDetail = findByItemDetailIdAndWorkerId(orderItemDtoList.getItemDetailId(), workerId);
@@ -476,8 +459,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public void restoreItemStockApi(List<OrderItemDto> orderItemDto, Long workerId) {
-        //본인확인
+    public void restoreItemStockApi(List<OrderItemDto> orderItemDto, Long workerId){
 
         for (OrderItemDto orderItemDtoList : orderItemDto) {
 
@@ -495,7 +477,6 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public ItemDetailResponseDto getItemDetailApi(Long itemDetailId, Long workerId) {
-        // 본인인증
 
         ItemDetail itemDetail = findByItemDetailIdAndWorkerId(itemDetailId, workerId);
         Item item = itemRepository.findByItemDetails_id(itemDetail.getId()).orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ITEM_DETAIL_ID));
@@ -515,7 +496,6 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public List<ItemPriceNameDto> getItemPriceAndNameApi(List<Long> itemDetailId, Long workerId) {
-        // 본인인증
 
         List<ItemPriceNameDto> itemPriceNameDtos = new ArrayList<>();
 

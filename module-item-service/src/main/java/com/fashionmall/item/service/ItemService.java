@@ -22,7 +22,7 @@ public interface ItemService {
     ItemResponseDto createItem (ItemRequestDto itemRequestDto, Long workerId);
     ItemDiscountResponseDto createItemDiscount (ItemDiscountRequestDto itemDiscountRequestDto, Long workerId);
     ItemUpdateResponseDto updateItem (Long itemId, ItemUpdateRequestDto itemUpdateRequestDto, Long workerId);
-    String deleteItem (Long itemId, Long workerId);
+    Long deleteItem (Long itemId, Long workerId);
 
     // gateway
     Map<Long, Integer> getItemStockApi (Long itemDetailId, Long workerId);
@@ -46,9 +46,9 @@ public interface ItemService {
 
     List<ItemDetailListResponseDto> getItemDetailList(Long itemId);
 
-    PageInfoResponseDto<AdminItemResponseDto> getAdminItemList(int pageNo, int size, String itemName, Long category1, Long category2);
+    PageInfoResponseDto<AdminItemResponseDto> getAdminItemList(int pageNo, int size, String itemName, Long category1, Long category2, Long workerId);
 
-    PageInfoResponseDto<AdminItemDetailResponseDto> getAdminItemDetailList(Long itemId, int pageNo, int size);
+    PageInfoResponseDto<AdminItemDetailResponseDto> getAdminItemDetailList(Long itemId, int pageNo, int size, Long workerId);
 
     List<CategoryResponseDto> getCategoryList();
 

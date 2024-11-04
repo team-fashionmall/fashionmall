@@ -33,9 +33,8 @@ public class CartServiceImpl implements CartService{
     @Transactional
     public List<Long> createCart (CartRequestDto cartRequestDto, Long userId) {
 
-        // 회원 여부 인증
+        moduleApiUtil.confirmUserInfoApi(userId);
 
-        //카트에 들어있는지 확인
         List<Long> cartIds = new ArrayList<>();
 
         for (CartRequestDto.CartRequestDtoList cartRequestDtoList : cartRequestDto.getCartRequestDtoList()) {
@@ -61,7 +60,8 @@ public class CartServiceImpl implements CartService{
     @Transactional
     public CartUpdateResponseDto updateCart (Long cartId, CartUpdateRequestDto cartUpdateRequestDto, Long userId) {
 
-        // 회원 여부
+        moduleApiUtil.confirmUserInfoApi(userId);
+
         Cart cart = findByIdAndUserId(cartId, userId);
 
         if (cartUpdateRequestDto.getQuantity() > 0) {
@@ -79,7 +79,8 @@ public class CartServiceImpl implements CartService{
     @Transactional
     public Long deleteCart(Long cartId, Long userId) {
 
-        // 회원 인증
+        moduleApiUtil.confirmUserInfoApi(userId);
+
         Cart cart = findByIdAndUserId(cartId, userId);
         cartRepository.deleteById(cart.getId());
 
@@ -94,7 +95,6 @@ public class CartServiceImpl implements CartService{
     @Override
     @Transactional
     public List <ItemDetailDto> getItemDetailFromCartApi (Long userId) {
-        // 유저 검증
         return cartRepository.getItemDetailFromCartApi(userId);
     }
 
@@ -102,7 +102,7 @@ public class CartServiceImpl implements CartService{
     @Transactional
     public List<CartResponseDto> getCartList(Long userId) {
 
-        // 회원 여부 인증
+        moduleApiUtil.confirmUserInfoApi(userId);
 
         List<CartResponseDto> cartResponseDtoList = new ArrayList<>();
 
@@ -151,7 +151,7 @@ public class CartServiceImpl implements CartService{
     @Transactional
     public List<CartCalculateResponseDto> calculateCart(CartCalculateRequestDto cartCalculateRequestDto, Long userId) {
 
-        // 회원여부 인증
+        moduleApiUtil.confirmUserInfoApi(userId);
 
         List<CartCalculateResponseDto> responseDtoList = new ArrayList<>();
 

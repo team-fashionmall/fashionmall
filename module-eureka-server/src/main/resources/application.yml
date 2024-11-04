@@ -4,6 +4,10 @@ server:
 spring:
   application:
     name: module-eureka-server
+  security:
+    user:
+      name: user
+      password: user
 
 eureka:
   client:

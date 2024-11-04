@@ -43,7 +43,6 @@ public class ImageServiceImpl implements ImageService {
     @Override
     @Transactional
     public Map<Long,String> uploadImageApi (List<ImageUploadDto> imageUploadDto, Long workerId) {
-        // 사용자 검증
 
         Map<Long,String> response = new HashMap<>();
 

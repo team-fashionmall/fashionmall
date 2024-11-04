@@ -7,10 +7,12 @@ import com.fashionmall.cart.dto.response.CartUpdateResponseDto;
 import com.fashionmall.cart.dto.response.CartCalculateResponseDto;
 import com.fashionmall.cart.service.CartService;
 import com.fashionmall.common.response.CommonResponse;
+import com.fashionmall.common.security.UserDetailsImpl;
 import com.fashionmall.common.util.ApiResponseUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,27 +25,27 @@ public class CartController {
     private final CartService cartService;
 
     @PostMapping("/cart")
-    public CommonResponse<List<Long>> createCart (@Valid @RequestBody CartRequestDto cartRequestDto) {
-        Long userId = 1L;
-        return ApiResponseUtil.success(cartService.createCart(cartRequestDto, userId));
+    public CommonResponse<List<Long>> createCart (@Valid @RequestBody CartRequestDto cartRequestDto,
+                                                  @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ApiResponseUtil.success(cartService.createCart(cartRequestDto, userDetails.getUserid()));
     }
 
     @PatchMapping ("/cart/{cartId}")
-    public CommonResponse <CartUpdateResponseDto> updateCart (@PathVariable  Long cartId,
-                                                              @Valid @RequestBody CartUpdateRequestDto cartUpdateRequestDto) {
-        Long userId = 1L;
-        return ApiResponseUtil.success(cartService.updateCart(cartId, cartUpdateRequestDto, userId));
+    public CommonResponse <CartUpdateResponseDto> updateCart (@PathVariable Long cartId,
+                                                              @Valid @RequestBody CartUpdateRequestDto cartUpdateRequestDto,
+                                                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ApiResponseUtil.success(cartService.updateCart(cartId, cartUpdateRequestDto, userDetails.getUserid()));
     }
 
     @DeleteMapping ("/cart/{cartId}")
-    public CommonResponse <Long> deleteCart (@PathVariable Long cartId) {
-        Long userId=1L;
-        return ApiResponseUtil.success(cartService.deleteCart(cartId, userId));
+    public CommonResponse <Long> deleteCart (@PathVariable Long cartId,
+                                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ApiResponseUtil.success(cartService.deleteCart(cartId, userDetails.getUserid()));
     }
 
     @GetMapping ("/cart/calculate")
-    public CommonResponse <List<CartCalculateResponseDto>> calculateCart (@Valid @RequestBody CartCalculateRequestDto cartCalculateRequestDto) {
-        Long userId = 1L;
-        return ApiResponseUtil.success(cartService.calculateCart(cartCalculateRequestDto, userId));
+    public CommonResponse <List<CartCalculateResponseDto>> calculateCart (@Valid @RequestBody CartCalculateRequestDto cartCalculateRequestDto,
+                                                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ApiResponseUtil.success(cartService.calculateCart(cartCalculateRequestDto, userDetails.getUserid()));
     }
 }
