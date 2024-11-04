@@ -1,9 +1,13 @@
 package com.fashionmall.common.moduleApi.util;
 
-
 import com.fashionmall.common.exception.ErrorResponseCode;
 import com.fashionmall.common.jwt.JwtUtil;
 import com.fashionmall.common.moduleApi.dto.*;
+import com.fashionmall.common.moduleApi.dto.OrderItemDto;
+import com.fashionmall.common.moduleApi.dto.ImageDataDto;
+import com.fashionmall.common.moduleApi.dto.ImageUploadDto;
+import com.fashionmall.common.moduleApi.dto.ItemDetailDto;
+import com.fashionmall.common.moduleApi.dto.ItemDetailResponseDto;
 import com.fashionmall.common.response.CommonResponse;
 import com.fashionmall.common.util.WebClientUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,6 +16,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -55,6 +60,7 @@ public class ModuleApiUtil {
         );
 
         return commonResponse.getData();
+
     }
 
     public List<CouponDto> getUserCouponApi (Long userId){
