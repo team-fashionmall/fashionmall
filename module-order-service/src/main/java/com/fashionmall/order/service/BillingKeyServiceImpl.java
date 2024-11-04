@@ -63,9 +63,9 @@ public class BillingKeyServiceImpl implements BillingKeyService {
 
     @Transactional
     @Override
-    public Long deleteBillingKey(Long billingKeyId) {
+    public Long deleteBillingKey(Long userId, Long billingKeyId) {
 
-        String customerUid = billingKeyRepository.findCustomerUidById(billingKeyId);
+        String customerUid = billingKeyRepository.findCustomerUidById(userId, billingKeyId);
 
         iamPortClient.deleteBillingKey(customerUid);
 

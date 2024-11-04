@@ -8,5 +8,5 @@ public interface BillingKeyRepositoryCustom {
 
     List<UserBillingKeyResponseDto> findBillingKeyByUserId(Long userId);
 
-    String findCustomerUidById(Long id);
+    String findCustomerUidById(Long userId, Long id);
 }
