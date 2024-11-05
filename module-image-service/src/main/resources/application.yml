@@ -18,3 +18,13 @@ eureka:
 
     service-url:
       defaultZone: http://localhost:8761/eureka/
+
+cloud:
+  aws:
+    credentials:
+      accessKey: ${AWS_IAM_ACCESSKEY}
+      secretKey: ${AWS_IAM_SECRET_ACCESSKEY}
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: s3-bucket-shopdb
