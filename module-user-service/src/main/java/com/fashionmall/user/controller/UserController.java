@@ -1,14 +1,14 @@
 package com.fashionmall.user.controller;
 
 import com.fashionmall.common.jwt.JwtUtil;
-import com.fashionmall.common.jwt.LoginRequestDto;
 import com.fashionmall.common.redis.RefreshToken;
 import com.fashionmall.common.response.CommonResponse;
-import com.fashionmall.common.security.UserDetailsImpl;
 import com.fashionmall.common.util.ApiResponseUtil;
+import com.fashionmall.user.dto.request.LoginRequestDto;
 import com.fashionmall.user.dto.request.SignUpRequestDto;
 import com.fashionmall.user.dto.request.UpdateUserInfoRequestDto;
 import com.fashionmall.user.dto.response.LoginResponseDto;
+import com.fashionmall.user.security.UserDetailsImpl;
 import com.fashionmall.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

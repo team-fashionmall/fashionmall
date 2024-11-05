@@ -138,4 +138,24 @@ public class JwtUtil {
         return false;
     }
 
+    public String getSubject(String token) {
+
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public String getId(String token) {
+
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getId();
+    }
+
+    public String getRole(String token) {
+
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().get(AUTHORIZATION_ROLE_KEY, String.class);
+    }
+
+    public Date getExpiration(String token) {
+
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getExpiration();
+    }
+
 }

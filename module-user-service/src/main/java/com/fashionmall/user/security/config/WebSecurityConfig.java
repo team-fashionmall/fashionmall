@@ -1,8 +1,8 @@
-package com.fashionmall.common.config;
+package com.fashionmall.user.security.config;
 
-import com.fashionmall.common.jwt.JwtAuthorizationFilter;
 import com.fashionmall.common.jwt.JwtUtil;
 import com.fashionmall.common.redis.RedisUtil;
+import com.fashionmall.user.security.filter.JwtAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -26,32 +27,28 @@ public class WebSecurityConfig {
     private final RedisUtil redisUtil;
 
     @Bean
-    public AuthenticationManager authenticationManager (AuthenticationConfiguration configuration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
 
     @Bean
-    public JwtAuthorizationFilter jwtAuthorizationFilter() {
-        return new JwtAuthorizationFilter(jwtUtil, redisUtil);
-    }
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
-
-        http.csrf((csrf) -> csrf.disable());
+        http.csrf(AbstractHttpConfigurer::disable);
+        http.formLogin(AbstractHttpConfigurer::disable);
+        http.logout(AbstractHttpConfigurer::disable);
 
         http.sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
-                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                .requestMatchers("/user/signUp").permitAll()
-                .requestMatchers("/user/login").permitAll()
-                .requestMatchers("/user/auth/refresh").permitAll()
-                .requestMatchers("/category").permitAll()
-                .requestMatchers("/item/**").permitAll()
-                .anyRequest().authenticated()
+            .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+            .requestMatchers("/user/signUp").permitAll()
+            .requestMatchers("/user/login").permitAll()
+            .requestMatchers("/user/auth/refresh").permitAll()
+            .requestMatchers("/api/user/**").permitAll()
+            .anyRequest().authenticated()
         );
 
-        http.addFilterBefore(jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthorizationFilter(jwtUtil, redisUtil), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

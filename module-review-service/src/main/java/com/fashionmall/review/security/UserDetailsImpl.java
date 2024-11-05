@@ -1,17 +1,16 @@
-package com.fashionmall.common.security;
+package com.fashionmall.review.security;
 
 
 import com.fashionmall.common.jwt.UserRoleEnum;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
 
 @Slf4j(topic = "UserDetailsImpl")
 @RequiredArgsConstructor
@@ -23,19 +22,21 @@ public class UserDetailsImpl implements UserDetails {
     private final UserRoleEnum role;
 
     @Override
-    public String getPassword() { return ""; }
+    public String getPassword() {
+        return "";
+    }
 
     @Override
-    public String getUsername(){
+    public String getUsername() {
         return email;
     }
 
-    public Long getUserid(){
+    public Long getUserid() {
         return userId;
     }
 
     @Override
-    public Collection <? extends GrantedAuthority> getAuthorities() {
+    public Collection<? extends GrantedAuthority> getAuthorities() {
 
         String authority = role.getAuthority();
 
@@ -68,8 +69,12 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof UserDetailsImpl)) return false;
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof UserDetailsImpl)) {
+            return false;
+        }
         UserDetailsImpl other = (UserDetailsImpl) obj;
         return Objects.equals(email, other.email) && Objects.equals(userId, other.userId) && Objects.equals(role, other.role);
     }

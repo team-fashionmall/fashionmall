@@ -1,9 +1,9 @@
 package com.fashionmall.user.controller;
 
 import com.fashionmall.common.response.CommonResponse;
-import com.fashionmall.common.security.UserDetailsImpl;
 import com.fashionmall.common.util.ApiResponseUtil;
 import com.fashionmall.user.dto.request.DeliveryAddressRequestDto;
+import com.fashionmall.user.security.UserDetailsImpl;
 import com.fashionmall.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

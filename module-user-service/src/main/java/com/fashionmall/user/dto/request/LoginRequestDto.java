@@ -1,4 +1,4 @@
-package com.fashionmall.common.jwt;
+package com.fashionmall.user.dto.request;
 
 
 import lombok.Getter;
