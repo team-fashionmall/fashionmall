@@ -1,0 +1,5 @@
+FROM openjdk:17-jdk
+WORKDIR /app
+ARG JAR_FILE=../module-common/build/libs/module-common-0.0.1-SNAPSHOT-plain.jar
+COPY ${JAR_FILE} app.jar
+ENTRYPOINT ["sh", "-c", "java -jar -Dspring.profiles.active=${ACTIVE_YML} app.jar"]

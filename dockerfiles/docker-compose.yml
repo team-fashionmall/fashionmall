@@ -1,0 +1,276 @@
+services:
+  eureka-server:
+    container_name: eureka
+    build:
+      context: ../
+      dockerfile: dockerfiles/Dockerfile-eureka
+    ports:
+      - "8761:8761"
+    networks:
+      - fashionmall-network
+
+  gateway-service:
+    container_name: gateway
+    build:
+      context: ../
+      dockerfile: dockerfiles/Dockerfile-gateway
+    ports:
+      - "8000:8000"
+    networks:
+      - fashionmall-network
+    depends_on:
+      - eureka-server
+
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    ports:
+      - "80:80"   # 외부로 노출되는 Nginx 포트
+    networks:
+      - fashionmall-network
+#    volumes:
+#      - /etc/nginx/:/etc/nginx/
+
+  common-service:
+    container_name: common
+    build:
+      context: ../
+      dockerfile: dockerfiles/Dockerfile-common
+    ports:
+      - "6479:6379"
+#    environment:
+#      ACTIVE_YML: blue
+    networks:
+      - fashionmall-network
+    depends_on:
+      - eureka-server
+      - gateway-service
+      - nginx
+
+  cart-service-blue:
+    container_name: cart-blue
+    build:
+      context: ../
+      dockerfile: dockerfiles/Dockerfile-cart
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: blue
+    networks:
+      - fashionmall-network
+    depends_on:
+      - eureka-server
+      - gateway-service
+      - nginx
+
+  cart-service-green:
+    container_name: cart-green
+    build:
+      context: ../
+      dockerfile: dockerfiles/Dockerfile-cart
+    ports:
+      - "8087:8080"
+    environment:
+      ACTIVE_YML: green
+    networks:
+      - fashionmall-network
+    depends_on:
+      - eureka-server
+      - gateway-service
+      - nginx
+
+  coupon-service-blue:
+    container_name: coupon-blue
+    build:
+      context: ../
+      dockerfile: dockerfiles/Dockerfile-coupon
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_PROFILES_ACTIVE: blue
+    networks:
+      - fashionmall-network
+    depends_on:
+      - eureka-server
+      - gateway-service
+      - nginx
+
+  coupon-service-green:
+    container_name: coupon-green
+    build:
+      context: ../
+      dockerfile: dockerfiles/Dockerfile-coupon
+    ports:
+      - "8088:8081"
+    environment:
+      ACTIVE_YML: green
+    networks:
+      - fashionmall-network
+    depends_on:
+      - eureka-server
+      - gateway-service
+      - nginx
+
+  item-service-blue:
+    container_name: item-blue
+    build:
+      context: ../
+      dockerfile: dockerfiles/Dockerfile-item
+    ports:
+      - "8082:8082"
+    environment:
+      ACTIVE_YML: blue
+    networks:
+      - fashionmall-network
+    depends_on:
+      - eureka-server
+      - gateway-service
+      - nginx
+
+  item-service-green:
+    container_name: item-green
+    build:
+      context: ../
+      dockerfile: dockerfiles/Dockerfile-item
+    ports:
+      - "8089:8082"
+    environment:
+      ACTIVE_YML: green
+    networks:
+      - fashionmall-network
+    depends_on:
+      - eureka-server
+      - gateway-service
+      - nginx
+
+  order-service-blue:
+    container_name: order-blue
+    build:
+      context: ../
+      dockerfile: dockerfiles/Dockerfile-order
+    ports:
+      - "8083:8083"
+    environment:
+      ACTIVE_YML: blue
+    networks:
+      - fashionmall-network
+    depends_on:
+      - eureka-server
+      - gateway-service
+      - nginx
+
+  order-service-green:
+    container_name: order-green
+    build:
+      context: ../
+      dockerfile: dockerfiles/Dockerfile-order
+    ports:
+      - "8090:8083"
+    environment:
+      ACTIVE_YML: green
+    networks:
+      - fashionmall-network
+    depends_on:
+      - eureka-server
+      - gateway-service
+      - nginx
+
+  review-service-blue:
+    container_name: review-blue
+    build:
+      context: ../
+      dockerfile: dockerfiles/Dockerfile-review
+    ports:
+      - "8084:8084"
+    environment:
+      ACTIVE_YML: blue
+    networks:
+      - fashionmall-network
+    depends_on:
+      - eureka-server
+      - gateway-service
+      - nginx
+
+  review-service-green:
+    container_name: review-green
+    build:
+      context: ../
+      dockerfile: dockerfiles/Dockerfile-review
+    ports:
+      - "8091:8084"
+    environment:
+      ACTIVE_YML: green
+    networks:
+      - fashionmall-network
+    depends_on:
+      - eureka-server
+      - gateway-service
+      - nginx
+
+  user-service-blue:
+    container_name: user-blue
+    build:
+      context: ../  # 컨텍스트는 프로젝트 루트로 설정
+      dockerfile: dockerfiles/Dockerfile-user  # Dockerfile의 경로
+    ports:
+      - "8085:8085"  # 호스트와 컨테이너의 포트 매핑
+    environment:
+      ACTIVE_YML: blue  # 예시: 환경 변수 설정
+    networks:
+      - fashionmall-network
+    depends_on:
+      - eureka-server
+      - gateway-service
+      - nginx
+
+  user-service-green:
+    container_name: user-green
+    build:
+      context: ../  # 컨텍스트는 프로젝트 루트로 설정
+      dockerfile: dockerfiles/Dockerfile-user  # Dockerfile의 경로
+    ports:
+      - "8092:8085"  # 호스트와 컨테이너의 포트 매핑
+    environment:
+      ACTIVE_YML: green  # 예시: 환경 변수 설정
+    networks:
+      - fashionmall-network
+    depends_on:
+      - eureka-server
+      - gateway-service
+      - nginx
+
+  image-service-blue:
+    container_name: image-blue
+    build:
+      context: ../
+      dockerfile: dockerfiles/Dockerfile-image
+    ports:
+      - "8086:8086"
+    environment:
+      ACTIVE_YML: blue
+    networks:
+      - fashionmall-network
+    depends_on:
+      - eureka-server
+      - gateway-service
+      - nginx
+
+  image-service-green:
+    container_name: image-green
+    build:
+      context: ../
+      dockerfile: dockerfiles/Dockerfile-image
+    ports:
+      - "8093:8086"
+    environment:
+      ACTIVE_YML: green
+    networks:
+      - fashionmall-network
+    depends_on:
+      - eureka-server
+      - gateway-service
+      - nginx
+
+networks:
+  fashionmall-network:
+    driver: bridge  # 네트워크 드라이버 설정
