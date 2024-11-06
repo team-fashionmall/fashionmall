@@ -163,19 +163,26 @@ public class CartServiceImpl implements CartService{
             List<ItemPriceNameDto> discountPrices = moduleApiUtil.getItemPriceAndNameApi(Collections.singletonList(cart.getItemDetailId()));
 
             int quantity = cart.getQuantity();
+            int finalPrice = 0;
 
-
-            for (ItemPriceNameDto discountPriceDto : discountPrices) {
-                if (discountPriceDto.getItemDetailId() == cart.getItemDetailId()) {
-                    int discountPrice = discountPriceDto.getPrice(); // 할인 가격으로 설정
-                    int calculatePrice = discountPrice * quantity;
-
-                    CartCalculateResponseDto responseDto = CartCalculateResponseDto.of(cart.getId(), calculatePrice);
-                    responseDtoList.add(responseDto);
-
+            if (!discountPrices.isEmpty()) {
+                for (ItemPriceNameDto discountPriceDto : discountPrices) {
+                    if (discountPriceDto.getItemDetailId() == cart.getItemDetailId()) {
+                        int discountPrice = discountPriceDto.getPrice();
+                        finalPrice = discountPrice * quantity;
+                        break;
+                    }
                 }
             }
+
+            if (finalPrice == 0) {
+                finalPrice = cart.getPrice() * quantity;
+            }
+
+            CartCalculateResponseDto responseDto = CartCalculateResponseDto.of(cart.getId(), finalPrice);
+            responseDtoList.add(responseDto);
         }
+
         return responseDtoList;
     }
 

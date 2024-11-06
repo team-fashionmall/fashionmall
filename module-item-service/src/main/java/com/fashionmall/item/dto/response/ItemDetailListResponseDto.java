@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -24,8 +26,8 @@ public class ItemDetailListResponseDto {
         private String name;
         private String imageUrl;
 
-        private ItemDetailInfo itemDetailInfo;
-        private ItemDiscountInfo itemDiscountInfo;
+        private List<ItemDetailInfo> itemDetailInfo;
+        private List<ItemDiscountInfo> itemDiscountInfo;
 
     }
 
@@ -38,10 +40,10 @@ public class ItemDetailListResponseDto {
         private long id;
         private String color;
         private String size;
-        private String name; // 상품 상세명
+        private String name;
         private int price;
         private int discountPrice;
-        private int quantity; // 재고 현황
+        private int quantity;
         private long imageId;
         private String imageUrl;
 

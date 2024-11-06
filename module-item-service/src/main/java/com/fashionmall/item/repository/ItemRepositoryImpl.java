@@ -104,9 +104,9 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
                         )
                 ))
                 .from(item)
-                .innerJoin(item.itemDetails, itemDetail)
-                .innerJoin(item.itemCategoryMappings, itemCategoryMapping)
-                .innerJoin(item.itemDiscounts, itemDiscount)
+                .leftJoin(item.itemDetails, itemDetail)
+                .leftJoin(item.itemCategoryMappings, itemCategoryMapping)
+                .leftJoin(item.itemDiscounts, itemDiscount)
                 .where(getFilter(itemName, category1, category2))
                 .orderBy(item.id.desc())
                 .offset(pageable.getOffset())
@@ -122,42 +122,6 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
 
         return PageInfoResponseDto.of(pageable, itemList, totalCount);
 
-    }
-
-    @Override
-    public List<ItemDetailListResponseDto> itemDetailListPageNation (Long itemId) {
-
-        List<ItemDetailListResponseDto> itemDetailList = queryFactory
-                .select(Projections.constructor(ItemDetailListResponseDto.class,
-                        Projections.constructor(ItemDetailListResponseDto.ItemInfo.class,
-                                item.id,
-                                item.name,
-                                item.imageUrl,
-                                Projections.constructor(ItemDetailListResponseDto.ItemDetailInfo.class,
-                                        itemDetail.id,
-                                        itemDetail.itemColor.color,
-                                        itemDetail.itemSize.size,
-                                        itemDetail.name,
-                                        itemDetail.price,
-                                        ExpressionUtils.as(calculateDiscount(itemDetail.price, itemDiscount.status, itemDiscount.type, itemDiscount.value),
-                                                "discountPrice"),
-                                        itemDetail.quantity,
-                                        itemDetail.imageId,
-                                        itemDetail.imageUrl
-                                ),
-                                Projections.constructor(ItemDetailListResponseDto.ItemDiscountInfo.class,
-                                        itemDiscount.type,
-                                        itemDiscount.value
-                                )
-                        )
-                ))
-                .from(item)
-                .leftJoin(item.itemDetails, itemDetail)
-                .leftJoin(item.itemDiscounts, itemDiscount)
-                .where(item.id.eq(itemId))
-                .fetch();
-
-        return itemDetailList;
     }
 
     @Override
