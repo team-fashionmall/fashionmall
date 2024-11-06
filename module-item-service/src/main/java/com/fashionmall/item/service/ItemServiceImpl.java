@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -61,7 +62,72 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDetailListResponseDto> getItemDetailList(Long itemId) {
-        return itemRepository.itemDetailListPageNation (itemId);
+
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
+
+        List<ItemDetailListResponseDto.ItemDetailInfo> itemDetailInfos = item.getItemDetails().stream()
+                .map(itemDetail -> ItemDetailListResponseDto.ItemDetailInfo.builder()
+                        .id(itemDetail.getId())
+                        .color(itemDetail.getItemColor().getColor())
+                        .size(itemDetail.getItemSize().getSize())
+                        .name(itemDetail.getName())
+                        .price(itemDetail.getPrice())
+                        .discountPrice(calculateDiscountPrice(item, itemDetail))
+                        .quantity(itemDetail.getQuantity())
+                        .imageId(itemDetail.getImageId())
+                        .imageUrl(itemDetail.getImageUrl())
+                        .build())
+                .collect(Collectors.toList());
+
+        List<ItemDetailListResponseDto.ItemDiscountInfo> itemDiscountInfos = item.getItemDiscounts().isEmpty() ?
+                List.of(ItemDetailListResponseDto.ItemDiscountInfo.builder()
+                        .type(null)
+                        .value(0)
+                        .build()) :
+                item.getItemDiscounts().stream()
+                        .map(itemDiscount -> ItemDetailListResponseDto.ItemDiscountInfo.builder()
+                                .type(itemDiscount.getType())
+                                .value(itemDiscount.getValue())
+                                .build())
+                        .collect(Collectors.toList());
+
+        ItemDetailListResponseDto.ItemInfo itemInfo = ItemDetailListResponseDto.ItemInfo.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .imageUrl(item.getImageUrl())
+                .itemDetailInfo(itemDetailInfos)
+                .itemDiscountInfo(itemDiscountInfos)
+                .build();
+
+        ItemDetailListResponseDto itemDetailListResponseDto = ItemDetailListResponseDto.builder()
+                .itemInfo(itemInfo)
+                .build();
+
+        return List.of(itemDetailListResponseDto);
+    }
+
+    private int calculateDiscountPrice(Item item, ItemDetail itemDetail) {
+        int originalPrice = itemDetail.getPrice();
+        int discountPrice = originalPrice; // 원래 가격으로 초기화
+
+        // Item의 할인 정보가 있을 경우 할인 적용
+        for (ItemDiscount itemDiscount : item.getItemDiscounts()) {
+            discountPrice = discountPrice(originalPrice, itemDiscount.getStatus(), itemDiscount.getType(), itemDiscount.getValue());
+        }
+
+        return discountPrice; // 계산된 할인 가격 반환
+    }
+
+    public int discountPrice (int price, StatusEnum status, ItemDiscountTypeEnum type, int value) {
+        int discountPrice = 0;
+        if (status == StatusEnum.ACTIVATED && type == ItemDiscountTypeEnum.RATE) {
+            discountPrice = price - (price/value);
+        } else if (status == StatusEnum.ACTIVATED && type == ItemDiscountTypeEnum.AMOUNT) {
+            discountPrice = price - value;
+        } else {
+            discountPrice = price;
+        }
+        return discountPrice;
     }
 
     @Override
