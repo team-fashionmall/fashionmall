@@ -8,6 +8,8 @@ spring:
     user:
       name: user
       password: user
+  profiles:
+    active: local
 
 eureka:
   client:

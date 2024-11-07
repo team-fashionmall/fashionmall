@@ -1,0 +1,50 @@
+spring:
+  profiles:
+    group:
+      green: "green"
+---
+server:
+  port: 8761
+
+spring:
+  config:
+    activate:
+      on-profile: "green"
+  application:
+    name: module-eureka-server
+  security:
+    user:
+      name: user
+      password: user
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+
+---
+
+spring:
+  profiles:
+    group:
+      blue: "blue"
+---
+server:
+  port: 8761
+
+spring:
+  config:
+    activate:
+      on-profile: "blue"
+  application:
+    name: module-eureka-server
+  security:
+    user:
+      name: user
+      password: user
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+

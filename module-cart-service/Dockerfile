@@ -4,4 +4,4 @@ WORKDIR /root
 
 COPY ./build/libs/module-cart-service-0.0.1-SNAPSHOT.jar .
 
-CMD java -jar -Dspring.profiles.active=${active} module-cart-service-0.0.1-SNAPSHOT.jar
+CMD java -jar -Dspring.profiles.active=${SPRING_PROFILES_ACTIVE} module-cart-service-0.0.1-SNAPSHOT.jar

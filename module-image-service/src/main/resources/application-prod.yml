@@ -1,0 +1,81 @@
+spring:
+  profiles:
+    group:
+      green: "green"
+---
+server:
+  port: 8086
+
+spring:
+  config:
+    activate:
+      on-profile: "green"
+
+  application:
+    name: module-image-service
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://3.38.103.4:3306/fashion_mall?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
+    username: test
+    password: 1q2w3e4r!@
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+
+    service-url:
+      defaultZone: http://3.38.103.4:8761/eureka/
+
+cloud:
+  aws:
+    credentials:
+      accessKey: ${AWS_IAM_ACCESSKEY}
+      secretKey: ${AWS_IAM_SECRET_ACCESSKEY}
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: s3-bucket-shopdb
+
+---
+
+spring:
+  profiles:
+    group:
+      blue: "blue"
+---
+server:
+  port: 8093
+
+spring:
+  config:
+    activate:
+      on-profile: "blue"
+
+  application:
+    name: module-image-service
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://3.38.103.4:3306/fashion_mall?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
+    username: test
+    password: 1q2w3e4r!@
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+
+    service-url:
+      defaultZone: http://3.38.103.4:8761/eureka/
+
+cloud:
+  aws:
+    credentials:
+      accessKey: ${AWS_IAM_ACCESSKEY}
+      secretKey: ${AWS_IAM_SECRET_ACCESSKEY}
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: s3-bucket-shopdb
