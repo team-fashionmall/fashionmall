@@ -6,7 +6,7 @@ spring:
     name: module-user-service
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
 
   profiles:
     active: local
