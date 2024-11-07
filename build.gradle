@@ -7,10 +7,15 @@ plugins {
 allprojects {
     group = 'com.fashionmall'
     version = '0.0.1-SNAPSHOT'
-    sourceCompatibility = 17
+    sourceCompatibility = '17'
+    targetCompatibility = '17'
 
     repositories {
         mavenCentral()
+    }
+
+    bootJar {
+        enabled = false
     }
 }
 
@@ -36,8 +41,8 @@ subprojects {
     }
 
     dependencies {
-        compileOnly 'org.projectlombok:lombok'
-        annotationProcessor 'org.projectlombok:lombok'
+        compileOnly 'org.projectlombok:lombok:1.18.30' //shit problem
+        annotationProcessor 'org.projectlombok:lombok:1.18.30' //shit
         testImplementation 'org.junit.jupiter:junit-jupiter-api'
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
         implementation 'org.springframework.boot:spring-boot-starter-web'
