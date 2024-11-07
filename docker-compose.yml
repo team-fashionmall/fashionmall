@@ -1,190 +1,190 @@
 services:
-  web:
-    image: nginx
-    ports:
-      - 80:80
-    volumes:
-      - /etc/nginx/:/etc/nginx/
+  #  web:
+  #    image: nginx
+  #    ports:
+  #      - 80:80
+  #    volumes:
+  #      - /etc/nginx/:/etc/nginx/
 
   #cart
   cart_green:
-    build: module-cart-service
-    image: spring
+    build:
+      context: ./module-cart-service
     container_name: cart_green
     ports:
       - 8080:8080
-    volumes:
-      - ./:/root/
+    #    volumes:
+    #      - ./:/root/
     environment:
       active: green
 
   cart_blue:
-    build: module-cart-service
-    image: spring
+    build:
+      context: ./module-cart-service
     container_name: cart_blue
     ports:
       - 8087:8087
-    volumes:
-      - ./:/root/
+    #    volumes:
+    #      - ./:/root/
     environment:
       active: blue
 
   #coupon
   coupon_green:
-    build: module-coupon-service
-    image: spring
+    build:
+      context: ./module-coupon-service
     container_name: coupon_green
     ports:
       - 8081:8081
-    volumes:
-      - ./:/root/
+    #    volumes:
+    #      - ./:/root/
     environment:
       active: green
 
   coupon_blue:
-    build: module-coupon-service
-    image: spring
+    build:
+      context: ./module-coupon-service
     container_name: coupon_blue
     ports:
       - 8088:8088
-    volumes:
-      - ./:/root/
+    #    volumes:
+    #      - ./:/root/
     environment:
       active: blue
 
   #item
   item_green:
-    build: module-item-service
-    image: spring
+    build:
+      context: ./module-item-service
     container_name: item_green
     ports:
       - 8082:8082
-    volumes:
-      - ./:/root/
+    #    volumes:
+    #      - ./:/root/
     environment:
       active: green
 
   item_blue:
-    build: module-item-service
-    image: spring
+    build:
+      context: ./module-item-service
     container_name: item_blue
     ports:
       - 8089:8089
-    volumes:
-      - ./:/root/
+    #    volumes:
+    #      - ./:/root/
     environment:
       active: blue
 
   #order
   order_green:
-    build: module-order-service
-    image: spring
+    build:
+      context: ./module-order-service
     container_name: order_green
     ports:
       - 8083:8083
-    volumes:
-      - ./:/root/
+    #    volumes:
+    #      - ./:/root/
     environment:
       active: green
 
   order_blue:
-    build: module-order-service
-    image: spring
+    build:
+      context: ./module-order-service
     container_name: order_blue
     ports:
       - 8090:8090
-    volumes:
-      - ./:/root/
+    #    volumes:
+    #      - ./:/root/
     environment:
       active: blue
 
   #review
   review_green:
-    build: module-review-service
-    image: spring
+    build:
+      context: ./module-review-service
     container_name: review_green
     ports:
       - 8084:8084
-    volumes:
-      - ./:/root/
+    #    volumes:
+    #      - ./:/root/
     environment:
       active: green
 
   review_blue:
-    build: module-review-service
-    image: spring
+    build:
+      context: ./module-review-service
     container_name: review_blue
     ports:
       - 8091:8091
-    volumes:
-      - ./:/root/
+    #    volumes:
+    #      - ./:/root/
     environment:
       active: blue
 
   #user
   user_green:
-    build: module-user-service
-    image: spring
+    build:
+      context: ./module-user-service
     container_name: user_green
     ports:
       - 8085:8085
-    volumes:
-      - ./:/root/
+    #    volumes:
+    #      - ./:/root/
     environment:
       active: green
 
   user_blue:
-    build: module-user-service
-    image: spring
+    build:
+      context: ./module-user-service
     container_name: user_blue
     ports:
       - 8092:8092
-    volumes:
-      - ./:/root/
+    #    volumes:
+    #      - ./:/root/
     environment:
       active: blue
 
   #image
   image_green:
-    build: module-image-service
-    image: spring
+    build:
+      context: ./module-image-service
     container_name: image_green
     ports:
       - 8086:8086
-    volumes:
-      - ./:/root/
+    #    volumes:
+    #      - ./:/root/
     environment:
       active: green
 
   image_blue:
-    build: module-image-service
-    image: spring
+    build:
+      context: ./module-image-service
     container_name: image_blue
     ports:
       - 8093:8093
-    volumes:
-      - ./:/root/
+    #    volumes:
+    #      - ./:/root/
     environment:
       active: blue
 
-  eureka_server:
-    build: module-eureka-server
-    image: spring
-    container_name: eureka
+  eureka_green:
+    build:
+      context: ./module-eureka-server
+    container_name: eureka_green
     ports:
       - 8761:8761
-    volumes:
-      - ./:/root/
+    #    volumes:
+    #      - ./:/root/
     environment:
       active: green
 
-  gateway_service:
-    build: module-gateway-service
-    image: spring
-    container_name: gateway
+  gateway_green:
+    build:
+      context: ./module-gateway-service
+    container_name: gateway_green
     ports:
       - 8000:8000
-    volumes:
-      - ./:/root/
+    #    volumes:
+    #      - ./:/root/
     environment:
       active: green
