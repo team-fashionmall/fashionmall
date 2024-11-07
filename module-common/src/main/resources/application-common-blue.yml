@@ -1,0 +1,18 @@
+spring:
+  profiles:
+    group:
+      "blue": "blue_port"
+---
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  config:
+    activate:
+      on-profile: "blue_port"
+
+jwt:
+  secret:
+    key: ${JWT_SECRET_KEY}

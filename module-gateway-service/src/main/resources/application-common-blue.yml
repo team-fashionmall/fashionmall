@@ -1,7 +1,7 @@
 spring:
   profiles:
     group:
-      "green": "green_port"
+      "blue": "blue_port"
 ---
 server:
   port: 8000
@@ -9,7 +9,7 @@ server:
 spring:
   config:
     activate:
-      on-profile: "green_port"
+      on-profile: "blue_port"
   application:
     name: module-gateway-service
   main:
