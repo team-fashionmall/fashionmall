@@ -57,6 +57,9 @@ subprojects {
 
         //netty-resolver-dns-native-macos 의존성 주입
         implementation 'io.netty:netty-resolver-dns-native-macos:4.1.113.Final:osx-aarch_64'
+
+        //mysql
+        implementation 'mysql:mysql-connector-java:8.0.33'
     }
 
     tasks.named('bootJar') {

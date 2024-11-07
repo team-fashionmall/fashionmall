@@ -18,8 +18,9 @@ import java.time.LocalDateTime;
 @Table(name = "coupon")
 public class Coupon extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "coupon_id")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "name", nullable = false)
@@ -30,7 +31,7 @@ public class Coupon extends BaseEntity {
     private CouponType couponType; //쿠폰 발행 타입, DOWNLOAD
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "disouct_type", nullable = false)
+    @Column(name = "discount_type", nullable = false)
     private DiscountType discountType; //쿠폰 할인 타입(RATE: 정률, AMOUNT: 정액)
 
     @Column(name = "discount_value", nullable = false)
@@ -39,7 +40,7 @@ public class Coupon extends BaseEntity {
     @Column(name = "min_purchase_price", nullable = false)
     private int minPurchasePrice; //최소 주문 금액
 
-    @Column(name = "max_discount_pirce")
+    @Column(name = "max_discount_price")
     private Integer maxDiscountPrice; //최대 할인 금액(정률 할인),
 
     @Column(name = "start_date", nullable = false)

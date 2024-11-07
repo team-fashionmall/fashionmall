@@ -1,0 +1,29 @@
+spring:
+  profiles:
+    group:
+      "green": "green_port"
+---
+server:
+  port: 8081
+
+spring:
+  config:
+    activate:
+      on-profile: "green_port"
+
+  application:
+    name: module-coupon-service
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://3.38.103.4:3306/fashion_mall?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
+    username: test
+    password: 1q2w3e4r!@
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+
+    service-url:
+      defaultZone: http://3.38.103.4:8761/eureka/
