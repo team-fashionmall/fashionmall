@@ -5,7 +5,7 @@ on:
     branches:
       - main  # main 브랜치로의 PR에만 적용
     paths:
-      - 'feature/gateway/**'  # feature/gateway 브랜치에서만 실행
+      - 'feature/gateway'  # feature/gateway 브랜치에서만 실행
 
 jobs:
   build:
