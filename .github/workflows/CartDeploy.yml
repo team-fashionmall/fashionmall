@@ -49,7 +49,7 @@
 #        run: |
 #          mkdir -p before-deploy
 #          cp script/cart/*.sh before-deploy/
-#          cp appspec/CartAppSpec.yml before-deploy/
+#          cp module-cart-service/appspec.yml before-deploy/
 #          cp module-cart-service/Dockerfile before-deploy/
 #          cp module-cart-service/build/libs/*.jar before-deploy/
 #          cd before-deploy && zip -r before-deploy.zip *
