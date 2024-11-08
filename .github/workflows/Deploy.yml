@@ -12,10 +12,13 @@ on:
 jobs:
   deploy_eureka:
     runs-on: ubuntu-latest
-#    if: github.event.push.head.ref == 'refs/heads/feature/CI-CDs'
     if: github.event.pull_request.merged == true && github.event.pull_request.head.ref == 'feature/CI-CDs'
 
     steps:
+      - name: Display branch name as 'main'
+        run: |
+          echo "This PR has been merged into main branch. Deploying to production."
+
       - name: Checkout code # 현재 레포지토리 코드 가져오기
         uses: actions/checkout@v4
 
