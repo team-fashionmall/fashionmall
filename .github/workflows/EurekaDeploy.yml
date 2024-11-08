@@ -80,7 +80,7 @@ jobs:
       - name: Trigger CodeDeploy deployment # CodeDeploy 트리거 해 모듈 어플리케이션 배포 그룹에 배포
         run: |
           aws deploy create-deployment \
-            --application-name fashion_mall \
+            --application-name fashion-mall \
             --deployment-group-name fashion-mall-deployment-group \
             --revision "revisionType=S3,s3Location={bucket=my-fashionmall-github-actions-s3-bucket,bundleType=zip,key=EurekaServer_CI-CD.zip}" \
             --region ap-northeast-2
