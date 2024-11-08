@@ -47,4 +47,4 @@ jobs:
       - name: Run tests # 테스트
         run: ./gradlew test
 
-      # 왜 빌드가 두개지...?
+      # 배포가 자꾸 스킵됨 ㅠㅠ 조건이 왜 안돼...
