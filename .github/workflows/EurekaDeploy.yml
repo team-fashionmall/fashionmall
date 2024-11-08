@@ -12,7 +12,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.head.ref == 'feature/eureka'
+    if: github.event.pull_request.head.ref == 'feature/eureka' || github.ref == 'refs/heads/main'
 
     steps:
       - name: Checkout code # 현재 레포지토리에 코드 가져오기
