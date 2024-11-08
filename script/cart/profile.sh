@@ -8,7 +8,7 @@ function find_idle_profile()
     then
         CURRENT_PROFILE=cart-blue
     else
-        CURRENT_PROFILE=$(sudo curl -s http://3.38.103.4/) # 여기서 cart-green, cart-blue의 값을 뽑아주는 api 필요
+        CURRENT_PROFILE=$(sudo curl -s http://3.38.103.4/cart/profile) # 여기서 cart-green, cart-blue의 값을 뽑아주는 api 필요
     fi
 
     if [ ${CURRENT_PROFILE} == cart-green ]
