@@ -1,5 +1,5 @@
 name: Deploy CI/CD Pipeline
-
+# 브랜치별로 해야한다고... 왜 안되는건데 ㅠㅠ
 on:
   push:
     branches:
