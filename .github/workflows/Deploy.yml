@@ -9,7 +9,7 @@ on:
 jobs:
   deploy_eureka:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true && github.event.pull_request.head.ref == 'feature/CI-CDs'
+    if: github.event.pull_request.merged == true && github.event.pull_request.head.ref == 'feature/eureka'
 
     steps:
       - name: Checkout code # 현재 레포지토리 코드 가져오기
