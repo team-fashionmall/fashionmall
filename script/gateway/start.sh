@@ -5,7 +5,7 @@ ABSDIR=$(dirname $ABSPATH)
 source ${ABSDIR}/profile.sh
 
 IDLE_PORT=$(find_idle_port)
-REPOSITORY=/home/ec2-user/app/demo/cart # 서비스 모듈 경로(각 모듈 마다 다름)
+REPOSITORY=/home/ec2-user/app/demo/gateway # 서비스 모듈 경로(각 모듈 마다 다름)
 
 echo "> Build 파일 복사"
 echo "> cp $REPOSITORY/*.jar $REPOSITORY/"
@@ -29,5 +29,5 @@ echo "> $JAR_NAME 를 profile=$IDLE_PROFILE 로 실행합니다."
 
 cd $REPOSITORY
 
-docker build -t cart ./ # 이미지 생성(모듈별)
-docker run -it --name "$IDLE_PROFILE" -d -e SPRING_PROFILES_ACTIVE=$IDLE_PROFILE -p $IDLE_PORT:$IDLE_PORT cart #컨테이너 실행(모듈별)
+docker build -t gateway ./ # 이미지 생성(모듈별)
+docker run -it --name "$IDLE_PROFILE" -d -e SPRING_PROFILES_ACTIVE=$IDLE_PROFILE -p $IDLE_PORT:$IDLE_PORT gateway #컨테이너 실행(모듈별)

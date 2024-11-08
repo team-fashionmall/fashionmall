@@ -6,16 +6,12 @@ function find_idle_profile()
 
     if [ ${RESPONSE_CODE} -ge 400 ] # 400 보다 크면 (즉, 40x/50x 에러 모두 포함)
     then
-        CURRENT_PROFILE=cart-blue
-    else
-        CURRENT_PROFILE=$(sudo curl -s http://3.38.103.4/cart/profile) # 여기서 cart-green, cart-blue의 값을 뽑아주는 api 필요
+        CURRENT_PROFILE=gateway-green
     fi
 
-    if [ ${CURRENT_PROFILE} == cart-green ]
+    if [ ${CURRENT_PROFILE} == gateway-green ]
     then
-      IDLE_PROFILE=cart-blue
-    else
-      IDLE_PROFILE=cart-green
+      IDLE_PROFILE=gateway-green
     fi
 
     echo "${IDLE_PROFILE}"
@@ -25,10 +21,8 @@ function find_idle_port()
 {
     IDLE_PROFILE=$(find_idle_profile)
 
-    if [ ${IDLE_PROFILE} == cart-green ]
+    if [ ${IDLE_PROFILE} == gateway-green ]
     then
-      echo "8080"
-    else
-      echo "8087"
+      echo "8000"
     fi
 }
