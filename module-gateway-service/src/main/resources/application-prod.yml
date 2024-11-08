@@ -1,22 +1,19 @@
 spring:
   profiles:
     group:
-      "green": "green_port"
+      green: "green"
 ---
 server:
-  port: 8080
+  port: 8000
 
 spring:
   config:
     activate:
-      on-profile: "green_port"
-
+      on-profile: "green"
   application:
-    name: module-cart-service
-
-  jpa:
-    hibernate:
-      ddl-auto: validate
+    name: module-gateway-service
+  main:
+    web-application-type: reactive
 
 eureka:
   client:
@@ -31,22 +28,19 @@ eureka:
 spring:
   profiles:
     group:
-      "blue": "blue_port"
+      blue: "blue"
 ---
 server:
-  port: 8087
+  port: 8000
 
 spring:
   config:
     activate:
-      on-profile: "blue_port"
-
+      on-profile: "blue"
   application:
-    name: module-cart-service
-
-  jpa:
-    hibernate:
-      ddl-auto: validate
+    name: module-gateway-service
+  main:
+    web-application-type: reactive
 
 eureka:
   client:

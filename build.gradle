@@ -7,10 +7,15 @@ plugins {
 allprojects {
     group = 'com.fashionmall'
     version = '0.0.1-SNAPSHOT'
-    sourceCompatibility = 17
+    sourceCompatibility = '17'
+    targetCompatibility = '17'
 
     repositories {
         mavenCentral()
+    }
+
+    bootJar {
+        enabled = false
     }
 }
 
@@ -36,8 +41,8 @@ subprojects {
     }
 
     dependencies {
-        compileOnly 'org.projectlombok:lombok'
-        annotationProcessor 'org.projectlombok:lombok'
+        compileOnly 'org.projectlombok:lombok:1.18.30' //shit problem
+        annotationProcessor 'org.projectlombok:lombok:1.18.30' //shit
         testImplementation 'org.junit.jupiter:junit-jupiter-api'
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
         implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -57,6 +62,9 @@ subprojects {
 
         //netty-resolver-dns-native-macos 의존성 주입
         implementation 'io.netty:netty-resolver-dns-native-macos:4.1.113.Final:osx-aarch_64'
+
+        //mysql
+        implementation 'mysql:mysql-connector-java:8.0.33'
     }
 
     tasks.named('bootJar') {

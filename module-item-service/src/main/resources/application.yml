@@ -6,7 +6,7 @@ spring:
     name: module-item-service
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
 
   profiles:
     active: local
@@ -17,4 +17,4 @@ eureka:
     fetch-registry: true
 
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://eureka-green:8761/eureka/

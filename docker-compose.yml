@@ -1,0 +1,235 @@
+services:
+  #  web:
+  #    image: nginx
+  #    ports:
+  #      - 80:80
+  #    volumes:
+  #      - /etc/nginx/:/etc/nginx/
+
+  #cart
+  cart_green:
+    build:
+      context: ./module-cart-service
+    container_name: cart_green
+    ports:
+      - 8080:8080
+    #    volumes:
+    #      - ./:/root/
+    depends_on:
+      - eureka-green
+    environment:
+      - SPRING_PROFILES_ACTIVE=green
+      - EUREKA_SERVER=http://eureka-green:8761/eureka/
+
+  cart_blue:
+    build:
+      context: ./module-cart-service
+    container_name: cart_blue
+    ports:
+      - 8087:8087
+    #    volumes:
+    #      - ./:/root/
+    depends_on:
+      - eureka-green
+    environment:
+      - SPRING_PROFILES_ACTIVE=blue
+      - EUREKA_SERVER=http://eureka-green:8761/eureka/
+
+  #coupon
+  coupon_green:
+    build:
+      context: ./module-coupon-service
+    container_name: coupon_green
+    ports:
+      - 8081:8081
+    #    volumes:
+    #      - ./:/root/
+    depends_on:
+      - eureka-green
+    environment:
+      - SPRING_PROFILES_ACTIVE=green
+      - EUREKA_SERVER=http://eureka-green:8761/eureka/
+
+  coupon_blue:
+    build:
+      context: ./module-coupon-service
+    container_name: coupon_blue
+    ports:
+      - 8088:8088
+    #    volumes:
+    #      - ./:/root/
+    depends_on:
+      - eureka-green
+    environment:
+      - SPRING_PROFILES_ACTIVE=blue
+      - EUREKA_SERVER=http://eureka-green:8761/eureka/
+
+  #item
+  item_green:
+    build:
+      context: ./module-item-service
+    container_name: item_green
+    ports:
+      - 8082:8082
+    #    volumes:
+    #      - ./:/root/
+    depends_on:
+      - eureka-green
+    environment:
+      - SPRING_PROFILES_ACTIVE=green
+      - EUREKA_SERVER=http://eureka-green:8761/eureka/
+
+  item_blue:
+    build:
+      context: ./module-item-service
+    container_name: item_blue
+    ports:
+      - 8089:8089
+    #    volumes:
+    #      - ./:/root/
+    depends_on:
+      - eureka-green
+    environment:
+      - SPRING_PROFILES_ACTIVE=blue
+      - EUREKA_SERVER=http://eureka-green:8761/eureka/
+
+  #order
+  order_green:
+    build:
+      context: ./module-order-service
+    container_name: order_green
+    ports:
+      - 8083:8083
+    #    volumes:
+    #      - ./:/root/
+    depends_on:
+      - eureka-green
+    environment:
+      - SPRING_PROFILES_ACTIVE=green
+      - EUREKA_SERVER=http://eureka-green:8761/eureka/
+
+  order_blue:
+    build:
+      context: ./module-order-service
+    container_name: order_blue
+    ports:
+      - 8090:8090
+    #    volumes:
+    #      - ./:/root/
+    depends_on:
+      - eureka-green
+    environment:
+      - SPRING_PROFILES_ACTIVE=blue
+      - EUREKA_SERVER=http://eureka-green:8761/eureka/
+
+  #review
+  review_green:
+    build:
+      context: ./module-review-service
+    container_name: review_green
+    ports:
+      - 8084:8084
+    #    volumes:
+    #      - ./:/root/
+    depends_on:
+      - eureka-green
+    environment:
+      - SPRING_PROFILES_ACTIVE=green
+      - EUREKA_SERVER=http://eureka-green:8761/eureka/
+
+  review_blue:
+    build:
+      context: ./module-review-service
+    container_name: review_blue
+    ports:
+      - 8091:8091
+    #    volumes:
+    #      - ./:/root/
+    depends_on:
+      - eureka-green
+    environment:
+      - SPRING_PROFILES_ACTIVE=blue
+      - EUREKA_SERVER=http://eureka-green:8761/eureka/
+
+  #user
+  user_green:
+    build:
+      context: ./module-user-service
+    container_name: user_green
+    ports:
+      - 8085:8085
+    #    volumes:
+    #      - ./:/root/
+    depends_on:
+      - eureka-green
+    environment:
+      - SPRING_PROFILES_ACTIVE=green
+      - EUREKA_SERVER=http://eureka-green:8761/eureka/
+
+  user_blue:
+    build:
+      context: ./module-user-service
+    container_name: user_blue
+    ports:
+      - 8092:8092
+    #    volumes:
+    #      - ./:/root/
+    depends_on:
+      - eureka-green
+    environment:
+      - SPRING_PROFILES_ACTIVE=blue
+      - EUREKA_SERVER=http://eureka-green:8761/eureka/
+
+  #image
+  image_green:
+    build:
+      context: ./module-image-service
+    container_name: image_green
+    ports:
+      - 8086:8086
+    #    volumes:
+    #      - ./:/root/
+    depends_on:
+      - eureka-green
+    environment:
+      - SPRING_PROFILES_ACTIVE=green
+      - EUREKA_SERVER=http://eureka-green:8761/eureka/
+
+  image_blue:
+    build:
+      context: ./module-image-service
+    container_name: image_blue
+    ports:
+      - 8093:8093
+    #    volumes:
+    #      - ./:/root/
+    depends_on:
+      - eureka-green
+    environment:
+      - SPRING_PROFILES_ACTIVE=blue
+      - EUREKA_SERVER=http://eureka-green:8761/eureka/
+
+  eureka-green:
+    build:
+      context: ./module-eureka-server
+    container_name: eureka-green
+    ports:
+      - 8761:8761
+    #    volumes:
+    #      - ./:/root/
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=local
+
+  gateway-green:
+    build:
+      context: ./module-gateway-service
+    container_name: gateway-green
+    ports:
+      - 8000:8000
+    #    volumes:
+    #      - ./:/root/
+    depends_on:
+      - eureka-green
+    environment:
+#      - SPRING_PROFILES_ACTIVE=local
+      - EUREKA_SERVER=http://eureka-green:8761/eureka/
