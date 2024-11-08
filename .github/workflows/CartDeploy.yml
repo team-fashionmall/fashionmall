@@ -4,8 +4,6 @@ on:
   pull_request:
     branches:
       - main  # main 브랜치로의 PR에만 적용
-    paths:
-      - 'feature/cart'  # feature/cart 브랜치에서만 실행
 
 jobs:
   build:
