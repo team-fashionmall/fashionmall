@@ -46,4 +46,4 @@ jobs:
       - name: Run tests # 테스트
         run: ./gradlew test
 
-      # 테스트 두근두근
+      # 왜 빌드가 두개지...?
