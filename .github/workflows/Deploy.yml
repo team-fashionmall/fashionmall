@@ -1,9 +1,6 @@
 name: Deploy CI/CD Pipeline
 
 on:
-#  push:
-#    branches:
-#      - main  # main 브랜치에 push 이벤트 발생 시에만 deploy 실행
   pull_request:
     branches:
       - main  # main 브랜치에 머지될 때만 실행
@@ -15,10 +12,6 @@ jobs:
     if: github.event.pull_request.merged == true && github.event.pull_request.head.ref == 'feature/CI-CDs'
 
     steps:
-      - name: Display branch name as 'main'
-        run: |
-          echo "This PR has been merged into main branch. Deploying to production."
-
       - name: Checkout code # 현재 레포지토리 코드 가져오기
         uses: actions/checkout@v4
 
