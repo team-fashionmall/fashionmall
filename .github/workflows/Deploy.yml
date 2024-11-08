@@ -1,15 +1,20 @@
 name: Deploy CI/CD Pipeline
 
 on:
-  push:
+#  push:
+#    branches:
+#      - main  # main 브랜치에 push 이벤트 발생 시에만 deploy 실행
+  pull_request:
     branches:
-      - main  # main 브랜치에 push 이벤트 발생 시에만 deploy 실행
+      - main  # main 브랜치에 머지될 때만 실행
+    types: [ closed ]
 
 jobs:
   deploy_eureka:
     runs-on: ubuntu-latest
-    if: contains(env.COMMIT_MESSAGE, 'Merge branch \'feature/eureka\'')
-# 이건 되겠지.
+#    if: github.event.push.head.ref == 'refs/heads/feature/CI-CDs'
+    if: github.event.pull_request.merged == true && github.event.pull_request.head.ref == 'feature/CI-CDs'
+
     steps:
       - name: Checkout code # 현재 레포지토리 코드 가져오기
         uses: actions/checkout@v4
