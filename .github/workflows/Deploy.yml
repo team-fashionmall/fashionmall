@@ -8,7 +8,7 @@ on:
 jobs:
   deploy_eureka:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.event.head_ref == 'feature/CI-CDs'
+    if: github.event_name == 'push' && github.event.head_ref == 'feature/CI-CDs'
 
     steps:
       - name: Checkout code # 현재 레포지토리 코드 가져오기
