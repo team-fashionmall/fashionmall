@@ -58,7 +58,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build
+    needs: auto-merge
     steps:
       - name: Checkout code # 현재 레포지토리 코드 가져오기
         uses: actions/checkout@v4
