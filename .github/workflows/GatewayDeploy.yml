@@ -33,7 +33,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && github.event.pull_request.head.ref == 'feature/gateway'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.event.head_ref == 'feature/gateway' # feature/eureka 브랜치에서 main으로 병합된 푸시만 실행
     steps:
       - name: Checkout code # 현재 레포지토리 코드 가져오기
         uses: actions/checkout@v4
