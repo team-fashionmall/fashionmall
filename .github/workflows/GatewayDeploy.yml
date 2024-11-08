@@ -5,10 +5,14 @@ on:
     branches:
       - main  # main 브랜치로의 PR에만 적용
 
+  push:
+    branches:
+      - main  # main 브랜치에 push 이벤트 발생 시에만 deploy 실행
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.head.ref == 'feature/gateway'
+    if: github.event.pull_request.head.ref == 'feature/gateway' || github.ref == 'refs/heads/main'
 
     steps:
       - name: Checkout code # 현재 레포지토리에 코드 가져오기
@@ -29,7 +33,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/main' && github.event.pull_request.head.ref == 'feature/cart' # main 브랜치로 병합되면 deploy 실행
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
       - name: Checkout code # 현재 레포지토리 코드 가져오기
         uses: actions/checkout@v4
@@ -44,7 +48,7 @@ jobs:
       - name: Prepare deployment package # 배포에 필요한 파일을 (임시)폴더에 복사 후 .zip 배포 패키지 준비
         run: |
           mkdir -p before-deploy
-          cp scripts/gateway/*.sh before-deploy/
+          cp script/gateway/*.sh before-deploy/
           cp appspec/GatewayAppSpec.yml before-deploy/
           cp module-gateway-service/Dockerfile before-deploy/
           cp module-gateway-service/build/libs/*.jar before-deploy/
