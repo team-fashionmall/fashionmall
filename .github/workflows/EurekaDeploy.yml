@@ -61,7 +61,6 @@ jobs:
             echo "JAR file not found!"
             exit 1
           fi
-
       - name: Prepare deployment package # 배포에 필요한 파일을 (임시)폴더에 복사 후 .zip 배포 패키지 준비
         run: |
           mkdir -p before-deploy
@@ -72,11 +71,9 @@ jobs:
           
           cd before-deploy
           zip -r EurekaServer_CI-CD.zip *
-
       - name: Upload to S3 # S3에 업로드
         run: |
           aws s3 cp before-deploy/EurekaServer_CI-CD.zip s3://my-fashionmall-github-actions-s3-bucket/EurekaServer_CI-CD.zip
-
       - name: Trigger CodeDeploy deployment # CodeDeploy 트리거 해 모듈 어플리케이션 배포 그룹에 배포
         run: |
           aws deploy create-deployment \
