@@ -4,12 +4,11 @@ on:
   pull_request:
     branches:
       - main  # main 브랜치로의 PR에만 적용
-    paths:
-      - 'feature/gateway'  # feature/gateway 브랜치에서만 실행
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.head.ref == 'feature/gateway'
 
     steps:
       - name: Checkout code # 현재 레포지토리에 코드 가져오기
@@ -30,7 +29,7 @@ jobs:
   auto-merge:
     runs-on: ubuntu-latest
     needs: build
-    if: github.event.pull_request.merged == false # PR이 아직 병합되지 않은 상태여야 함
+    if: github.event.pull_request.head.ref == 'feature/gateway' && github.event.pull_request.base.ref == 'main'
 
     steps:
       - name: Auto-merge PR if approved # PR이 승인되면 main으로 자동 병합
@@ -59,6 +58,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: auto-merge
+    if: github.ref == 'refs/heads/main' # main 브랜치일 경우에만 deploy 실행
     steps:
       - name: Checkout code # 현재 레포지토리 코드 가져오기
         uses: actions/checkout@v4
