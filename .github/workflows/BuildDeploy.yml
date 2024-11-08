@@ -2,6 +2,7 @@ name: Build CI/CD Pipeline
 
 on:
   pull_request:
+    types: [opened, synchronize]  # 'opened'는 PR 생성 시, 'synchronize'는 PR 업데이트 시
     branches:
       - main  # main 브랜치로의 PR에만 적용
 
