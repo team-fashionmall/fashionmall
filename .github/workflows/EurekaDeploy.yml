@@ -69,8 +69,10 @@ jobs:
           cp appspec/EurekaAppSpec.yml before-deploy/
           cp module-eureka-server/Dockerfile before-deploy/
           cp module-eureka-server/build/libs/*.jar before-deploy/
-          cd before-deploy && zip -r before-deploy.zip *
-          mv before-deploy/before-deploy.zip deploy/EurekaServer_CI-CD.zip
+          
+          cd before-deploy
+          zip -r before-deploy.zip *
+          mv before-deploy.zip ../deploy/EurekaServer_CI-CD.zip
 
       - name: Upload to S3 # S3에 업로드
         run: |
