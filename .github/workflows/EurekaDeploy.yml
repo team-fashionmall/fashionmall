@@ -46,6 +46,16 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_IAM_SECRET_ACCESSKEY }}
           aws-region: ap-northeast-2
 
+      - name: Build project with Gradle # 모듈 빌드
+        run: ./gradlew clean build
+
+      - name: Check if JAR file exists
+        run: |
+          if [ ! -f module-eureka-server/build/libs/*.jar ]; then
+            echo "JAR file not found!"
+            exit 1
+          fi
+
       - name: Prepare deployment package # 배포에 필요한 파일을 (임시)폴더에 복사 후 .zip 배포 패키지 준비
         run: |
           mkdir -p before-deploy
