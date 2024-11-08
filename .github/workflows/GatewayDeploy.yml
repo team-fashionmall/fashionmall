@@ -49,7 +49,7 @@
 #        run: |
 #          mkdir -p before-deploy
 #          cp script/gateway/*.sh before-deploy/
-#          cp appspec/GatewayAppSpec.yml before-deploy/
+#          cp module-gateway-service/.yml before-deploy/
 #          cp module-gateway-service/Dockerfile before-deploy/
 #          cp module-gateway-service/build/libs/*.jar before-deploy/
 #          cd before-deploy && zip -r before-deploy.zip *

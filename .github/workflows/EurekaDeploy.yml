@@ -66,7 +66,7 @@ jobs:
         run: |
           mkdir -p before-deploy
           cp script/eureka/*.sh before-deploy/
-          cp appspec/EurekaAppSpec.yml before-deploy/
+          cp module-eureka-server/appspec.yml before-deploy/
           cp module-eureka-server/Dockerfile before-deploy/
           cp module-eureka-server/build/libs/*.jar before-deploy/
           
