@@ -82,5 +82,5 @@ jobs:
           aws deploy create-deployment \
             --application-name fashion_mall \
             --deployment-group-name fashion-mall-deployment-group \
-            --revision "revisionType=S3,s3Location={bucketName=my-fashionmall-github-actions-s3-bucket,bundleType=zip,key=EurekaServer_CI-CD.zip}" \
+            --revision "revisionType=S3,s3Location={bucket=my-fashionmall-github-actions-s3-bucket,bundleType=zip,key=EurekaServer_CI-CD.zip}" \
             --region ap-northeast-2
