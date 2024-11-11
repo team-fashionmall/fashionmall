@@ -13,16 +13,16 @@ permissions:
 
 hooks:
   AfterInstall:
-    - location: stop.sh
+    - location: /home/ec2-user/app/demo/cart/zip/stop.sh
       timeout: 60
       runas: root
 
   ApplicationStart:
-    - location: start.sh
+    - location: /home/ec2-user/app/demo/cart/zip/start.sh
       timeout: 60
       runas: root
 
   ValidateService:
-    - location: health.sh
+    - location: /home/ec2-user/app/demo/cart/zip/health.sh
       timeout: 60
       runas: root

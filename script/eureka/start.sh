@@ -5,7 +5,7 @@ ABSDIR=$(dirname $ABSPATH)
 source ${ABSDIR}/profile.sh
 
 IDLE_PORT=$(find_idle_port)
-REPOSITORY=/home/ec2-user/app/demo/eureka # 서비스 모듈 경로(각 모듈 마다 다름)
+REPOSITORY=/home/ec2-user/app/demo/module-eureka-server # 서비스 모듈 경로(각 모듈 마다 다름)
 
 echo "> Build 파일 복사"
 echo "> cp $REPOSITORY/*.jar $REPOSITORY/"

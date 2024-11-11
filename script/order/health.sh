@@ -9,16 +9,16 @@ IDLE_PORT=$(find_idle_port)
 
 echo "> Health Check Start!"
 echo "> IDLE_PORT: $IDLE_PORT"
-echo "> curl -s http://3.38.103.4:$IDLE_PORT/"
+echo "> curl -s http://43.203.244.137:$IDLE_PORT/"
 sleep 10
 
 for RETRY_COUNT in {1..10}
 do
-  RESPONSE=$(curl -s http://3.38.103.4:${IDLE_PORT})
-  UP_COUNT=$(echo ${RESPONSE} | grep 'order_green' | wc -l)
+  RESPONSE=$(curl -s http://43.203.244.137:${IDLE_PORT})
+  UP_COUNT=$(echo ${RESPONSE} | grep 'order' | wc -l)
 
   if [ ${UP_COUNT} -ge 1 ]
-  then # $up_count >= 1 ("order_green" 문자열이 있는지 검증)
+  then # $up_count >= 1 ("order" 문자열이 있는지 검증)
       echo "> Health check 성공"
       switch_proxy
       break

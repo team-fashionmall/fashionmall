@@ -5,7 +5,7 @@ ABSDIR=$(dirname $ABSPATH)
 source ${ABSDIR}/profile.sh
 
 IDLE_PORT=$(find_idle_port)
-REPOSITORY=/home/ec2-user/app/demo
+REPOSITORY=/home/ec2-user/app/demo/module-order-service
 
 echo "> Build 파일 복사"
 echo "> cp $REPOSITORY/*.jar $REPOSITORY/"
@@ -29,5 +29,5 @@ echo "> $JAR_NAME 를 profile=$IDLE_PROFILE 로 실행합니다."
 
 cd $REPOSITORY
 
-docker build -t spring ./
-docker run -it --name "$IDLE_PROFILE" -d -e active=$IDLE_PROFILE -p $IDLE_PORT:$IDLE_PORT spring
+docker build -t order ./
+docker run -it --name "$IDLE_PROFILE" -d -e active=$IDLE_PROFILE -p $IDLE_PORT:$IDLE_PORT order

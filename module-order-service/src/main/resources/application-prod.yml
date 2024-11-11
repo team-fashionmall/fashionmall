@@ -24,7 +24,7 @@ eureka:
     fetch-registry: true
 
     service-url:
-      defaultZone: http://3.38.103.4:8761/eureka/
+      defaultZone: http://43.203.244.137:8761/eureka/
 
 portOne:
   api:
@@ -59,7 +59,7 @@ eureka:
     fetch-registry: true
 
     service-url:
-      defaultZone: http://3.38.103.4:8761/eureka/
+      defaultZone: http://43.203.244.137:8761/eureka/
 
 portOne:
   api:

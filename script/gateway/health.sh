@@ -9,18 +9,17 @@ IDLE_PORT=$(find_idle_port)
 
 echo "> Health Check Start!"
 echo "> IDLE_PORT: $IDLE_PORT"
-echo "> curl -s http://3.38.103.4:$IDLE_PORT/"
+echo "> curl -s http://43.203.244.137:$IDLE_PORT/"
 sleep 10
 
 for RETRY_COUNT in {1..10}
 do
-  RESPONSE=$(curl -s http://3.38.103.4:${IDLE_PORT})
+  RESPONSE=$(curl -s http://43.203.244.137:${IDLE_PORT})
   UP_COUNT=$(echo ${RESPONSE} | grep 'gateway' | wc -l)
 
   if [ ${UP_COUNT} -ge 1 ]
   then # $up_count >= 1 ("gateway" 문자열이 있는지 검증)
       echo "> Health check 성공"
-      switch_proxy
       break
   else
       echo "> Health check의 응답을 알 수 없거나 혹은 실행 상태가 아닙니다."
