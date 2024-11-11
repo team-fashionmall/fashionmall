@@ -30,9 +30,4 @@ public class CartApiController {
         Long userId = 1L;
         return ApiResponseUtil.success(cartService.getIsSelectedItemApi(userId));
     }
-
-    @GetMapping("/test")
-    public CommonResponse<String> test() {
-        return ApiResponseUtil.success("test");
-    }
 }
