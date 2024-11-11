@@ -25,7 +25,7 @@ jobs:
       - name: Check for cart service changes
         id: cart
         run: |
-          if git diff --quiet HEAD^ HEAD -- module-cart-service/; then echo "changed=false" >> $GITHUB_ENV; else echo "changed=true" >> $GITHUB_ENV; fi
+          if git diff --quiet HEAD^ HEAD -- module-cart-service/; then echo "::set-output name=changed::false"; else echo "::set-output name=changed::false"; fi
         continue-on-error: true
 
       - name: Check for coupon service changes
