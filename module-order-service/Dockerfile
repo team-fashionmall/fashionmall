@@ -1,7 +1,7 @@
 FROM openjdk:17-jdk-slim
 
-WORKDIR /root
+WORKDIR /root/order
 
-COPY ./build/libs/module-order-service-0.0.1-SNAPSHOT.jar .
+COPY module-order-service-0.0.1-SNAPSHOT.jar .
 
 CMD java -jar -Dspring.profiles.active=${SPRING_PROFILES_ACTIVE} module-order-service-0.0.1-SNAPSHOT.jar
