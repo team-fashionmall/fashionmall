@@ -1,20 +1,18 @@
-package com.fashionmall.item.controller;
+package com.fashionmall.image.controller;
 
 import com.fashionmall.common.util.ProfileUtil;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Slf4j(topic = "item controller")
 @RestController
 @RequiredArgsConstructor
-public class ItemController {
+public class ImageController {
 
     private final ProfileUtil profileUtil;
 
-    @GetMapping("/item/profile")
+    @GetMapping("/image/profile")
     public String getCartProfile() {
-        return profileUtil.getCurrentProfile("item");
+        return profileUtil.getCurrentProfile("image");
     }
 }

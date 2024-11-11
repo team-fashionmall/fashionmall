@@ -1,7 +1,7 @@
 FROM openjdk:17-jdk-slim
 
-WORKDIR /root/cart
+WORKDIR /fashion-mall/module-cart-service
 
-COPY module-cart-service-0.0.1-SNAPSHOT.jar .
+COPY *SNAPSHOT.jar .
 
-CMD java -jar -Dspring.profiles.active=${SPRING_PROFILES_ACTIVE} module-cart-service-0.0.1-SNAPSHOT.jar
+CMD java -jar -Dspring.profiles.active=${SPRING_PROFILES_ACTIVE} *SNAPSHOT.jar
