@@ -1,35 +1,210 @@
 name: Deploy CI/CD Pipeline
 
 on:
-  pull_request:
+  push:
     branches:
       - main  # main 브랜치에 머지될 때만 실행
-    types: [ closed ]
 
 jobs:
-  deploy_eureka:
+  detect-changes:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true && github.event.pull_request.head.ref == 'feature/eureka'
-
+    outputs:
+      cart_changed: ${{ steps.cart.outputs.changed }}
+      coupon_changed: ${{ steps.coupon.outputs.changed }}
+      eureka_changed: ${{ steps.eureka.outputs.changed }}
+      gateway_changed: ${{ steps.gateway.outputs.changed }}
+      image_changed: ${{ steps.image.outputs.changed }}
+      item_changed: ${{ steps.item.outputs.changed }}
+      order_changed: ${{ steps.order.outputs.changed }}
+      review_changed: ${{ steps.review.outputs.changed }}
+      user_changed: ${{ steps.user.outputs.changed }}
     steps:
-      - name: Checkout code # 현재 레포지토리 코드 가져오기
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up AWS CLI # AWS CLI 자격 증명
+      - name: Check for cart service changes
+        id: cart
+        run: |
+          if git diff --quiet HEAD^ HEAD -- module-cart-service/; then echo "changed=false" >> $GITHUB_ENV; else echo "changed=true" >> $GITHUB_ENV; fi
+        continue-on-error: true
+
+      - name: Check for coupon service changes
+        id: coupon
+        run: |
+          if git diff --quiet HEAD^ HEAD -- module-coupon-service/; then echo "changed=false" >> $GITHUB_ENV; else echo "changed=true" >> $GITHUB_ENV; fi
+        continue-on-error: true
+
+      - name: Check for eureka server changes
+        id: eureka
+        run: |
+          if git diff --quiet HEAD^ HEAD -- module-eureka-server/; then echo "changed=false" >> $GITHUB_ENV; else echo "changed=true" >> $GITHUB_ENV; fi
+        continue-on-error: true
+
+      - name: Check for gateway service changes
+        id: gateway
+        run: |
+          if git diff --quiet HEAD^ HEAD -- module-gateway-service/; then echo "changed=false" >> $GITHUB_ENV; else echo "changed=true" >> $GITHUB_ENV; fi
+        continue-on-error: true
+
+      - name: Check for image service changes
+        id: image
+        run: |
+          if git diff --quiet HEAD^ HEAD -- module-image-service/; then echo "changed=false" >> $GITHUB_ENV; else echo "changed=true" >> $GITHUB_ENV; fi
+        continue-on-error: true
+
+      - name: Check for item service changes
+        id: item
+        run: |
+          if git diff --quiet HEAD^ HEAD -- module-item-service/; then echo "changed=false" >> $GITHUB_ENV; else echo "changed=true" >> $GITHUB_ENV; fi
+        continue-on-error: true
+
+      - name: Check for order service changes
+        id: order
+        run: |
+          if git diff --quiet HEAD^ HEAD -- module-order-service/; then echo "changed=false" >> $GITHUB_ENV; else echo "changed=true" >> $GITHUB_ENV; fi
+        continue-on-error: true
+
+      - name: Check for review service changes
+        id: review
+        run: |
+          if git diff --quiet HEAD^ HEAD -- module-review-service/; then echo "changed=false" >> $GITHUB_ENV; else echo "changed=true" >> $GITHUB_ENV; fi
+        continue-on-error: true
+
+      - name: Check for user service changes
+        id: user
+        run: |
+          if git diff --quiet HEAD^ HEAD -- module-user-service/; then echo "changed=false" >> $GITHUB_ENV; else echo "changed=true" >> $GITHUB_ENV; fi
+        continue-on-error: true
+
+  deploy-cart:
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.cart_changed == 'true'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_IAM_ACCESSKEY }}
           aws-secret-access-key: ${{ secrets.AWS_IAM_SECRET_ACCESSKEY }}
           aws-region: ap-northeast-2
 
-      - name: Set up JDK 17 # JDK17 버전으로 환경 구성
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build project with Gradle # 모듈 빌드
-        run: ./gradlew clean build
+      - name: Build project with Gradle
+        run: ./gradlew :module-cart-service:clean :module-cart-service:build
+
+      - name: Check if JAR file exists
+        run: |
+          if [ ! -f module-cart-service/build/libs/*.jar ]; then
+            echo "JAR file not found!"
+            exit 1
+          fi
+
+      - name: Prepare deployment package
+        run: |
+          mkdir -p before-deploy
+          cp script/cart/*.sh before-deploy/
+          cp module-cart-service/appspec.yml before-deploy/
+          cp module-cart-service/Dockerfile before-deploy/
+          cp module-cart-service/build/libs/*.jar before-deploy/
+          cd before-deploy
+          zip -r CartService_CI-CD.zip *
+
+      - name: Upload to S3
+        run: |
+          aws s3 cp before-deploy/CartService_CI-CD.zip s3://my-fashionmall-github-actions-s3-bucket/CartService_CI-CD.zip
+
+      - name: Trigger CodeDeploy deployment
+        run: |
+          aws deploy create-deployment \
+            --application-name fashion-mall \
+            --deployment-group-name cart-service-deployment-group \
+            --revision "revisionType=S3,s3Location={bucket=my-fashionmall-github-actions-s3-bucket,bundleType=zip,key=CartService_CI-CD.zip}" \
+            --region ap-northeast-2
+
+  deploy-coupon:
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.coupon_changed == 'true'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_IAM_ACCESSKEY }}
+          aws-secret-access-key: ${{ secrets.AWS_IAM_SECRET_ACCESSKEY }}
+          aws-region: ap-northeast-2
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build project with Gradle
+        run: ./gradlew :module-coupon-service:clean :module-coupon-service:build
+
+      - name: Check if JAR file exists
+        run: |
+          if [ ! -f module-coupon-service/build/libs/*.jar ]; then
+            echo "JAR file not found!"
+            exit 1
+          fi
+
+      - name: Prepare deployment package
+        run: |
+          mkdir -p before-deploy
+          cp script/coupon/*.sh before-deploy/
+          cp module-coupon-service/appspec.yml before-deploy/
+          cp module-coupon-service/Dockerfile before-deploy/
+          cp module-coupon-service/build/libs/*.jar before-deploy/
+          cd before-deploy
+          zip -r CouponService_CI-CD.zip *
+
+      - name: Upload to S3
+        run: |
+          aws s3 cp before-deploy/CouponService_CI-CD.zip s3://my-fashionmall-github-actions-s3-bucket/CouponService_CI-CD.zip
+
+      - name: Trigger CodeDeploy deployment
+        run: |
+          aws deploy create-deployment \
+            --application-name fashion-mall \
+            --deployment-group-name fashion-mall-deployment-group \
+            --revision "revisionType=S3,s3Location={bucket=my-fashionmall-github-actions-s3-bucket,bundleType=zip,key=CouponService_CI-CD.zip}" \
+            --region ap-northeast-2
+
+  deploy-eureka:
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.eureka_changed == 'true'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_IAM_ACCESSKEY }}
+          aws-secret-access-key: ${{ secrets.AWS_IAM_SECRET_ACCESSKEY }}
+          aws-region: ap-northeast-2
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build project with Gradle
+        run: ./gradlew :module-eureka-server:clean :module-eureka-server:build
 
       - name: Check if JAR file exists
         run: |
@@ -38,20 +213,21 @@ jobs:
             exit 1
           fi
 
-      - name: Prepare deployment package # 배포에 필요한 파일을 (임시)폴더에 복사 후 .zip 배포 패키지 준비
+      - name: Prepare deployment package
         run: |
           mkdir -p before-deploy
           cp script/eureka/*.sh before-deploy/
           cp module-eureka-server/appspec.yml before-deploy/
           cp module-eureka-server/Dockerfile before-deploy/
           cp module-eureka-server/build/libs/*.jar before-deploy/
-          
           cd before-deploy
           zip -r EurekaServer_CI-CD.zip *
-      - name: Upload to S3 # S3에 업로드
+
+      - name: Upload to S3
         run: |
           aws s3 cp before-deploy/EurekaServer_CI-CD.zip s3://my-fashionmall-github-actions-s3-bucket/EurekaServer_CI-CD.zip
-      - name: Trigger CodeDeploy deployment # CodeDeploy 트리거 해 모듈 어플리케이션 배포 그룹에 배포
+
+      - name: Trigger CodeDeploy deployment
         run: |
           aws deploy create-deployment \
             --application-name fashion-mall \
@@ -59,53 +235,52 @@ jobs:
             --revision "revisionType=S3,s3Location={bucket=my-fashionmall-github-actions-s3-bucket,bundleType=zip,key=EurekaServer_CI-CD.zip}" \
             --region ap-northeast-2
 
-  deploy_gateway:
+  deploy-gateway:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true && github.event.pull_request.head.ref == 'feature/gateway'
-
+    needs: detect-changes
+    if: needs.detect-changes.outputs.gateway_changed == 'true'
     steps:
-      - name: Checkout code # 현재 레포지토리 코드 가져오기
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up AWS CLI # AWS CLI 자격 증명
+      - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_IAM_ACCESSKEY }}
           aws-secret-access-key: ${{ secrets.AWS_IAM_SECRET_ACCESSKEY }}
           aws-region: ap-northeast-2
 
-      - name: Set up JDK 17 # JDK17 버전으로 환경 구성
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build project with Gradle # 모듈 빌드
-        run: ./gradlew clean build
+      - name: Build project with Gradle
+        run: ./gradlew :module-gateway-service:clean :module-gateway-service:build
 
       - name: Check if JAR file exists
         run: |
-          if [ ! -f module-gateway-server/build/libs/*.jar ]; then
+          if [ ! -f module-gateway-service/build/libs/*.jar ]; then
             echo "JAR file not found!"
             exit 1
           fi
 
-      - name: Prepare deployment package # 배포에 필요한 파일을 (임시)폴더에 복사 후 .zip 배포 패키지 준비
+      - name: Prepare deployment package
         run: |
           mkdir -p before-deploy
           cp script/gateway/*.sh before-deploy/
           cp module-gateway-service/appspec.yml before-deploy/
           cp module-gateway-service/Dockerfile before-deploy/
           cp module-gateway-service/build/libs/*.jar before-deploy/
-
           cd before-deploy
           zip -r GatewayService_CI-CD.zip *
 
-      - name: Upload to S3 # S3에 업로드
+      - name: Upload to S3
         run: |
           aws s3 cp before-deploy/GatewayService_CI-CD.zip s3://my-fashionmall-github-actions-s3-bucket/GatewayService_CI-CD.zip
 
-      - name: Trigger CodeDeploy deployment # CodeDeploy 트리거 해 모듈 어플리케이션 배포 그룹에 배포
+      - name: Trigger CodeDeploy deployment
         run: |
           aws deploy create-deployment \
             --application-name fashion-mall \
@@ -113,161 +288,52 @@ jobs:
             --revision "revisionType=S3,s3Location={bucket=my-fashionmall-github-actions-s3-bucket,bundleType=zip,key=GatewayService_CI-CD.zip}" \
             --region ap-northeast-2
 
-  deploy_cart:
+  deploy-image:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true && github.event.pull_request.head.ref == 'feature/cart'
-
+    needs: detect-changes
+    if: needs.detect-changes.outputs.image_changed == 'true'
     steps:
-      - name: Checkout code # 현재 레포지토리 코드 가져오기
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up AWS CLI # AWS CLI 자격 증명
+      - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_IAM_ACCESSKEY }}
           aws-secret-access-key: ${{ secrets.AWS_IAM_SECRET_ACCESSKEY }}
           aws-region: ap-northeast-2
 
-      - name: Set up JDK 17 # JDK17 버전으로 환경 구성
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build project with Gradle # 모듈 빌드
-        run: ./gradlew clean build
+      - name: Build project with Gradle
+        run: ./gradlew :module-image-service:clean :module-image-service:build
 
       - name: Check if JAR file exists
         run: |
-          if [ ! -f module-cart-server/build/libs/*.jar ]; then
+          if [ ! -f module-image-service/build/libs/*.jar ]; then
             echo "JAR file not found!"
             exit 1
           fi
 
-      - name: Prepare deployment package # 배포에 필요한 파일을 (임시)폴더에 복사 후 .zip 배포 패키지 준비
-        run: |
-          mkdir -p before-deploy
-          cp script/cart/*.sh before-deploy/
-          cp module-cart-service/appspec.yml before-deploy/
-          cp module-cart-service/Dockerfile before-deploy/
-          cp module-cart-service/build/libs/*.jar before-deploy/
-
-          cd before-deploy
-          zip -r CartService_CI-CD.zip *
-
-      - name: Upload to S3 # S3에 업로드
-        run: |
-          aws s3 cp before-deploy/CartService_CI-CD.zip s3://my-fashionmall-github-actions-s3-bucket/CartService_CI-CD.zip
-
-      - name: Trigger CodeDeploy deployment # CodeDeploy 트리거 해 모듈 어플리케이션 배포 그룹에 배포
-        run: |
-          aws deploy create-deployment \
-            --application-name fashion-mall \
-            --deployment-group-name fashion-mall-deployment-group \
-            --revision "revisionType=S3,s3Location={bucket=my-fashionmall-github-actions-s3-bucket,bundleType=zip,key=CartService_CI-CD.zip}" \
-            --region ap-northeast-2
-
-  deploy_coupon:
-    runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true && github.event.pull_request.head.ref == 'feature/coupon'
-
-    steps:
-      - name: Checkout code # 현재 레포지토리 코드 가져오기
-        uses: actions/checkout@v4
-
-      - name: Set up AWS CLI # AWS CLI 자격 증명
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_IAM_ACCESSKEY }}
-          aws-secret-access-key: ${{ secrets.AWS_IAM_SECRET_ACCESSKEY }}
-          aws-region: ap-northeast-2
-
-      - name: Set up JDK 17 # JDK17 버전으로 환경 구성
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Build project with Gradle # 모듈 빌드
-        run: ./gradlew clean build
-
-      - name: Check if JAR file exists
-        run: |
-          if [ ! -f module-coupon-server/build/libs/*.jar ]; then
-            echo "JAR file not found!"
-            exit 1
-          fi
-
-      - name: Prepare deployment package # 배포에 필요한 파일을 (임시)폴더에 복사 후 .zip 배포 패키지 준비
-        run: |
-          mkdir -p before-deploy
-          cp script/coupon/*.sh before-deploy/
-          cp module-coupon-service/appspec.yml before-deploy/
-          cp module-coupon-service/Dockerfile before-deploy/
-          cp module-coupon-service/build/libs/*.jar before-deploy/
-
-          cd before-deploy
-          zip -r CouponService_CI-CD.zip *
-
-      - name: Upload to S3 # S3에 업로드
-        run: |
-          aws s3 cp before-deploy/CouponService_CI-CD.zip s3://my-fashionmall-github-actions-s3-bucket/CouponService_CI-CD.zip
-
-      - name: Trigger CodeDeploy deployment # CodeDeploy 트리거 해 모듈 어플리케이션 배포 그룹에 배포
-        run: |
-          aws deploy create-deployment \
-            --application-name fashion-mall \
-            --deployment-group-name fashion-mall-deployment-group \
-            --revision "revisionType=S3,s3Location={bucket=my-fashionmall-github-actions-s3-bucket,bundleType=zip,key=couponService_CI-CD.zip}" \
-            --region ap-northeast-2
-
-  deploy_image:
-    runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true && github.event.pull_request.head.ref == 'feature/image'
-
-    steps:
-      - name: Checkout code # 현재 레포지토리 코드 가져오기
-        uses: actions/checkout@v4
-
-      - name: Set up AWS CLI # AWS CLI 자격 증명
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_IAM_ACCESSKEY }}
-          aws-secret-access-key: ${{ secrets.AWS_IAM_SECRET_ACCESSKEY }}
-          aws-region: ap-northeast-2
-
-      - name: Set up JDK 17 # JDK17 버전으로 환경 구성
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Build project with Gradle # 모듈 빌드
-        run: ./gradlew clean build
-
-      - name: Check if JAR file exists
-        run: |
-          if [ ! -f module-image-server/build/libs/*.jar ]; then
-            echo "JAR file not found!"
-            exit 1
-          fi
-
-      - name: Prepare deployment package # 배포에 필요한 파일을 (임시)폴더에 복사 후 .zip 배포 패키지 준비
+      - name: Prepare deployment package
         run: |
           mkdir -p before-deploy
           cp script/image/*.sh before-deploy/
           cp module-image-service/appspec.yml before-deploy/
           cp module-image-service/Dockerfile before-deploy/
           cp module-image-service/build/libs/*.jar before-deploy/
-
           cd before-deploy
           zip -r ImageService_CI-CD.zip *
 
-      - name: Upload to S3 # S3에 업로드
+      - name: Upload to S3
         run: |
           aws s3 cp before-deploy/ImageService_CI-CD.zip s3://my-fashionmall-github-actions-s3-bucket/ImageService_CI-CD.zip
 
-      - name: Trigger CodeDeploy deployment # CodeDeploy 트리거 해 모듈 어플리케이션 배포 그룹에 배포
+      - name: Trigger CodeDeploy deployment
         run: |
           aws deploy create-deployment \
             --application-name fashion-mall \
@@ -275,53 +341,52 @@ jobs:
             --revision "revisionType=S3,s3Location={bucket=my-fashionmall-github-actions-s3-bucket,bundleType=zip,key=ImageService_CI-CD.zip}" \
             --region ap-northeast-2
 
-  deploy_item:
+  deploy-item:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true && github.event.pull_request.head.ref == 'feature/item'
-
+    needs: detect-changes
+    if: needs.detect-changes.outputs.item_changed == 'true'
     steps:
-      - name: Checkout code # 현재 레포지토리 코드 가져오기
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up AWS CLI # AWS CLI 자격 증명
+      - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_IAM_ACCESSKEY }}
           aws-secret-access-key: ${{ secrets.AWS_IAM_SECRET_ACCESSKEY }}
           aws-region: ap-northeast-2
 
-      - name: Set up JDK 17 # JDK17 버전으로 환경 구성
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build project with Gradle # 모듈 빌드
-        run: ./gradlew clean build
+      - name: Build project with Gradle
+        run: ./gradlew :module-item-service:clean :module-item-service:build
 
       - name: Check if JAR file exists
         run: |
-          if [ ! -f module-item-server/build/libs/*.jar ]; then
+          if [ ! -f module-item-service/build/libs/*.jar ]; then
             echo "JAR file not found!"
             exit 1
           fi
 
-      - name: Prepare deployment package # 배포에 필요한 파일을 (임시)폴더에 복사 후 .zip 배포 패키지 준비
+      - name: Prepare deployment package
         run: |
           mkdir -p before-deploy
           cp script/item/*.sh before-deploy/
           cp module-item-service/appspec.yml before-deploy/
           cp module-item-service/Dockerfile before-deploy/
           cp module-item-service/build/libs/*.jar before-deploy/
-
           cd before-deploy
           zip -r ItemService_CI-CD.zip *
 
-      - name: Upload to S3 # S3에 업로드
+      - name: Upload to S3
         run: |
           aws s3 cp before-deploy/ItemService_CI-CD.zip s3://my-fashionmall-github-actions-s3-bucket/ItemService_CI-CD.zip
 
-      - name: Trigger CodeDeploy deployment # CodeDeploy 트리거 해 모듈 어플리케이션 배포 그룹에 배포
+      - name: Trigger CodeDeploy deployment
         run: |
           aws deploy create-deployment \
             --application-name fashion-mall \
@@ -329,53 +394,52 @@ jobs:
             --revision "revisionType=S3,s3Location={bucket=my-fashionmall-github-actions-s3-bucket,bundleType=zip,key=ItemService_CI-CD.zip}" \
             --region ap-northeast-2
 
-  deploy_order:
+  deploy-order:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true && github.event.pull_request.head.ref == 'feature/order'
-
+    needs: detect-changes
+    if: needs.detect-changes.outputs.order_changed == 'true'
     steps:
-      - name: Checkout code # 현재 레포지토리 코드 가져오기
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up AWS CLI # AWS CLI 자격 증명
+      - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_IAM_ACCESSKEY }}
           aws-secret-access-key: ${{ secrets.AWS_IAM_SECRET_ACCESSKEY }}
           aws-region: ap-northeast-2
 
-      - name: Set up JDK 17 # JDK17 버전으로 환경 구성
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build project with Gradle # 모듈 빌드
-        run: ./gradlew clean build
+      - name: Build project with Gradle
+        run: ./gradlew :module-order-service:clean :module-order-service:build
 
       - name: Check if JAR file exists
         run: |
-          if [ ! -f module-order-server/build/libs/*.jar ]; then
+          if [ ! -f module-order-service/build/libs/*.jar ]; then
             echo "JAR file not found!"
             exit 1
           fi
 
-      - name: Prepare deployment package # 배포에 필요한 파일을 (임시)폴더에 복사 후 .zip 배포 패키지 준비
+      - name: Prepare deployment package
         run: |
           mkdir -p before-deploy
           cp script/order/*.sh before-deploy/
           cp module-order-service/appspec.yml before-deploy/
           cp module-order-service/Dockerfile before-deploy/
           cp module-order-service/build/libs/*.jar before-deploy/
-
           cd before-deploy
           zip -r OrderService_CI-CD.zip *
 
-      - name: Upload to S3 # S3에 업로드
+      - name: Upload to S3
         run: |
           aws s3 cp before-deploy/OrderService_CI-CD.zip s3://my-fashionmall-github-actions-s3-bucket/OrderService_CI-CD.zip
 
-      - name: Trigger CodeDeploy deployment # CodeDeploy 트리거 해 모듈 어플리케이션 배포 그룹에 배포
+      - name: Trigger CodeDeploy deployment
         run: |
           aws deploy create-deployment \
             --application-name fashion-mall \
@@ -383,53 +447,52 @@ jobs:
             --revision "revisionType=S3,s3Location={bucket=my-fashionmall-github-actions-s3-bucket,bundleType=zip,key=OrderService_CI-CD.zip}" \
             --region ap-northeast-2
 
-  deploy_review:
+  deploy-review:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true && github.event.pull_request.head.ref == 'feature/review'
-
+    needs: detect-changes
+    if: needs.detect-changes.outputs.review_changed == 'true'
     steps:
-      - name: Checkout code # 현재 레포지토리 코드 가져오기
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up AWS CLI # AWS CLI 자격 증명
+      - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_IAM_ACCESSKEY }}
           aws-secret-access-key: ${{ secrets.AWS_IAM_SECRET_ACCESSKEY }}
           aws-region: ap-northeast-2
 
-      - name: Set up JDK 17 # JDK17 버전으로 환경 구성
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build project with Gradle # 모듈 빌드
-        run: ./gradlew clean build
+      - name: Build project with Gradle
+        run: ./gradlew :module-review-service:clean :module-review-service:build
 
       - name: Check if JAR file exists
         run: |
-          if [ ! -f module-review-server/build/libs/*.jar ]; then
+          if [ ! -f module-review-service/build/libs/*.jar ]; then
             echo "JAR file not found!"
             exit 1
           fi
 
-      - name: Prepare deployment package # 배포에 필요한 파일을 (임시)폴더에 복사 후 .zip 배포 패키지 준비
+      - name: Prepare deployment package
         run: |
           mkdir -p before-deploy
           cp script/review/*.sh before-deploy/
           cp module-review-service/appspec.yml before-deploy/
           cp module-review-service/Dockerfile before-deploy/
           cp module-review-service/build/libs/*.jar before-deploy/
-
           cd before-deploy
           zip -r ReviewService_CI-CD.zip *
 
-      - name: Upload to S3 # S3에 업로드
+      - name: Upload to S3
         run: |
           aws s3 cp before-deploy/ReviewService_CI-CD.zip s3://my-fashionmall-github-actions-s3-bucket/ReviewService_CI-CD.zip
 
-      - name: Trigger CodeDeploy deployment # CodeDeploy 트리거 해 모듈 어플리케이션 배포 그룹에 배포
+      - name: Trigger CodeDeploy deployment
         run: |
           aws deploy create-deployment \
             --application-name fashion-mall \
@@ -437,53 +500,52 @@ jobs:
             --revision "revisionType=S3,s3Location={bucket=my-fashionmall-github-actions-s3-bucket,bundleType=zip,key=ReviewService_CI-CD.zip}" \
             --region ap-northeast-2
 
-  deploy_user:
+  deploy-user:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true && github.event.pull_request.head.ref == 'feature/user'
-
+    needs: detect-changes
+    if: needs.detect-changes.outputs.user_changed == 'true'
     steps:
-      - name: Checkout code # 현재 레포지토리 코드 가져오기
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up AWS CLI # AWS CLI 자격 증명
+      - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_IAM_ACCESSKEY }}
           aws-secret-access-key: ${{ secrets.AWS_IAM_SECRET_ACCESSKEY }}
           aws-region: ap-northeast-2
 
-      - name: Set up JDK 17 # JDK17 버전으로 환경 구성
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build project with Gradle # 모듈 빌드
-        run: ./gradlew clean build
+      - name: Build project with Gradle
+        run: ./gradlew :module-user-service:clean :module-user-service:build
 
       - name: Check if JAR file exists
         run: |
-          if [ ! -f module-user-server/build/libs/*.jar ]; then
+          if [ ! -f module-user-service/build/libs/*.jar ]; then
             echo "JAR file not found!"
             exit 1
           fi
 
-      - name: Prepare deployment package # 배포에 필요한 파일을 (임시)폴더에 복사 후 .zip 배포 패키지 준비
+      - name: Prepare deployment package
         run: |
           mkdir -p before-deploy
           cp script/user/*.sh before-deploy/
           cp module-user-service/appspec.yml before-deploy/
           cp module-user-service/Dockerfile before-deploy/
           cp module-user-service/build/libs/*.jar before-deploy/
-
           cd before-deploy
           zip -r UserService_CI-CD.zip *
 
-      - name: Upload to S3 # S3에 업로드
+      - name: Upload to S3
         run: |
           aws s3 cp before-deploy/UserService_CI-CD.zip s3://my-fashionmall-github-actions-s3-bucket/UserService_CI-CD.zip
 
-      - name: Trigger CodeDeploy deployment # CodeDeploy 트리거 해 모듈 어플리케이션 배포 그룹에 배포
+      - name: Trigger CodeDeploy deployment
         run: |
           aws deploy create-deployment \
             --application-name fashion-mall \
