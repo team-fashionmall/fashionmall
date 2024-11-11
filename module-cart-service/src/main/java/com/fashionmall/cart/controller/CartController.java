@@ -53,4 +53,9 @@ public class CartController {
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ApiResponseUtil.success(cartService.calculateCart(cartCalculateRequestDto, userDetails.getUserid()));
     }
+
+    @GetMapping ("/test")
+    public CommonResponse<String> test (){
+        return ApiResponseUtil.success("test");
+    }
 }
