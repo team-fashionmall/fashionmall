@@ -2,27 +2,27 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /home/ec2-user/app/demo/zip/   # EC2 내부에서 어떤 디렉토리로 전달할 것인지?
+    destination: /home/ec2-user/app/demo/module-user-service/zip/   # EC2 내부에서 어떤 디렉토리로 전달할 것인지?
     overwrite: yes  # 덮어쓰기 할 것인지?
 
 permissions:
-  - object: /home/ec2-user/app/demo/zip/
+  - object: /home/ec2-user/app/demo/module-user-service/zip/
     pattern: "**"
     owner: ec2-user
     group: ec2-user
 
 hooks:
   AfterInstall:
-    - location: /home/ec2-user/app/demo/zip/stop.sh
+    - location: /home/ec2-user/app/demo/module-user-service/zip/stop.sh
       timeout: 60
       runas: root
 
   ApplicationStart:
-    - location: /home/ec2-user/app/demo/zip/start.sh
+    - location: /home/ec2-user/app/demo/module-user-service/zip/start.sh
       timeout: 60
       runas: root
 
   ValidateService:
-    - location: /home/ec2-user/app/demo/zip/health.sh
+    - location: /home/ec2-user/app/demo/module-user-service/zip/health.sh
       timeout: 60
       runas: root
