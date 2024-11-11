@@ -19,6 +19,18 @@ jobs:
       review_changed: ${{ steps.review.outputs.changed }}
       user_changed: ${{ steps.user.outputs.changed }}
     steps:
+      - name: Find change modules
+        uses: Stockopedia/action-get-changed-files@v1
+        id: get_changed
+        with:
+          github-token: ${{ secrets.GIT_TOKEN }}
+          ignore: "**/+(.github)"
+          foldersOnly: true
+          format: csv
+
+      - name: Echo changed files
+        run: echo ${{ steps.get_changed.outputs.changed }}
+
       - name: Checkout code
         uses: actions/checkout@v4
 

@@ -20,14 +20,19 @@ public class CartApiController {
 
     private final CartService cartService;
 
-    @GetMapping ("/itemDetail/{userId}")
-    public CommonResponse <List<ItemDetailDto>> getItemDetailFromCartApi (@PathVariable Long userId) {
+    @GetMapping("/itemDetail/{userId}")
+    public CommonResponse<List<ItemDetailDto>> getItemDetailFromCartApi(@PathVariable Long userId) {
         return ApiResponseUtil.success(cartService.getItemDetailFromCartApi(userId));
     }
 
-    @GetMapping ("/getIsSelectedItem")
-    public CommonResponse <List<CartItemDto>> getIsSelectedItemApi () {
+    @GetMapping("/getIsSelectedItem")
+    public CommonResponse<List<CartItemDto>> getIsSelectedItemApi() {
         Long userId = 1L;
         return ApiResponseUtil.success(cartService.getIsSelectedItemApi(userId));
+    }
+
+    @GetMapping("/test")
+    public CommonResponse<String> test() {
+        return ApiResponseUtil.success("test");
     }
 }

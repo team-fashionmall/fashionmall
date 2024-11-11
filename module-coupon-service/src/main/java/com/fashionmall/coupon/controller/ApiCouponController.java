@@ -23,9 +23,4 @@ public class ApiCouponController {
     public CommonResponse<List<CouponDto>> getCoupon(@PathVariable Long userId) {
         return ApiResponseUtil.success(couponService.getUserCouponsToApi(userId));
     }
-
-    @GetMapping("/test")
-    public CommonResponse<String> test() {
-        return ApiResponseUtil.success("Hello");
-    }
 }
