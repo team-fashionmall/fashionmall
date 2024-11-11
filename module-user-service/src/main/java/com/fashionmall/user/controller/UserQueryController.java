@@ -48,6 +48,6 @@ public class UserQueryController {
 
     @GetMapping("/user/profile")
     public String getCartProfile() {
-        return profileUtil.getCurrentProfile("user");
+        return profileUtil.getCurrentProfile();
     }
 }

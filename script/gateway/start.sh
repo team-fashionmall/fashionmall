@@ -25,9 +25,9 @@ echo "> $JAR_NAME 실행"
 
 IDLE_PROFILE=$(find_idle_profile)
 
-echo "> $JAR_NAME 를 profile=$IDLE_PROFILE 로 실행합니다."
+echo "> $JAR_NAME 를 profile=gateway-$IDLE_PROFILE 로 실행합니다."
 
 cd $REPOSITORY
 
 docker build -t gateway ./ # 이미지 생성(모듈별)
-docker run -it --name "$IDLE_PROFILE" -d -e SPRING_PROFILES_ACTIVE=$IDLE_PROFILE -p $IDLE_PORT:$IDLE_PORT gateway #컨테이너 실행(모듈별)
+docker run -it --name "gateway-$IDLE_PROFILE" -d -e SPRING_PROFILES_ACTIVE=gateway-$IDLE_PROFILE -p $IDLE_PORT:$IDLE_PORT gateway #컨테이너 실행(모듈별)

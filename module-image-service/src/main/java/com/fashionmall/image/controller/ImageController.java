@@ -13,6 +13,6 @@ public class ImageController {
 
     @GetMapping("/image/profile")
     public String getCartProfile() {
-        return profileUtil.getCurrentProfile("image");
+        return profileUtil.getCurrentProfile();
     }
 }

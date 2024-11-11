@@ -44,7 +44,7 @@ public class CouponQueryController {
 
     @GetMapping("/coupon/profile")
     public String getCartProfile() {
-        return profileUtil.getCurrentProfile("coupon");
+        return profileUtil.getCurrentProfile();
     }
 
 }

@@ -15,6 +15,6 @@ public class ItemController {
 
     @GetMapping("/item/profile")
     public String getCartProfile() {
-        return profileUtil.getCurrentProfile("item");
+        return profileUtil.getCurrentProfile();
     }
 }

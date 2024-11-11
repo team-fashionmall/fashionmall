@@ -13,9 +13,9 @@ public class ProfileUtil {
 
     private final Environment env;
 
-    public String getCurrentProfile(String serviceName) {
+    public String getCurrentProfile() {
         List<String> profile = Arrays.asList(env.getActiveProfiles());
-        List<String> realProfiles = Arrays.asList(serviceName + "-green", serviceName + "-blue");
+        List<String> realProfiles = Arrays.asList("green", "blue");
         String defaultProfile = profile.isEmpty() ? "default" : profile.get(0);
 
         return profile.stream()

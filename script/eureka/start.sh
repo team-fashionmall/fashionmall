@@ -25,9 +25,9 @@ echo "> $JAR_NAME 실행"
 
 IDLE_PROFILE=$(find_idle_profile)
 
-echo "> $JAR_NAME 를 profile=$IDLE_PROFILE 로 실행합니다."
+echo "> $JAR_NAME 를 profile=eureka-$IDLE_PROFILE 로 실행합니다."
 
 cd $REPOSITORY
 
-sudo docker build -t eureka ./ || exit 1 # 이미지 생성(모듈별)
-sudo docker run -it --name "$IDLE_PROFILE" -d -e SPRING_PROFILES_ACTIVE=$IDLE_PROFILE -p $IDLE_PORT:$IDLE_PORT eureka || exit 1 #컨테이너 실행(모듈별)
+docker build -t eureka ./ || exit 1 # 이미지 생성(모듈별)
+docker run -it --name "eureka-$IDLE_PROFILE" -d -e SPRING_PROFILES_ACTIVE=eureka-$IDLE_PROFILE -p $IDLE_PORT:$IDLE_PORT eureka || exit 1 #컨테이너 실행(모듈별)

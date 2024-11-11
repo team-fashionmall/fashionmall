@@ -6,16 +6,16 @@ function find_idle_profile()
 
     if [ ${RESPONSE_CODE} -ge 400 ] # 400 보다 크면 (즉, 40x/50x 에러 모두 포함)
     then
-        CURRENT_PROFILE=review_blue
+        CURRENT_PROFILE=blue
     else
         CURRENT_PROFILE=$(sudo curl -s http://43.203.244.137/review/profile)
     fi
 
-    if [ ${CURRENT_PROFILE} == review_green ]
+    if [ ${CURRENT_PROFILE} == green ]
     then
-      IDLE_PROFILE=review_blue
+      IDLE_PROFILE=blue
     else
-      IDLE_PROFILE=review_green
+      IDLE_PROFILE=green
     fi
 
     echo "${IDLE_PROFILE}"
@@ -25,7 +25,7 @@ function find_idle_port()
 {
     IDLE_PROFILE=$(find_idle_profile)
 
-    if [ ${IDLE_PROFILE} == review_green ]
+    if [ ${IDLE_PROFILE} == green ]
     then
       echo "8084"
     else

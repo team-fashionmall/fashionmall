@@ -27,6 +27,6 @@ public class CartQueryController {
 
     @GetMapping("/cart/profile")
     public String getCartProfile() {
-        return profileUtil.getCurrentProfile("cart");
+        return profileUtil.getCurrentProfile();
     }
 }

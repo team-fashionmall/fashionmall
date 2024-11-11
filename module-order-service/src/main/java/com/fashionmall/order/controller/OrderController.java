@@ -57,6 +57,6 @@ public class OrderController {
 
     @GetMapping("/order/profile")
     public String getCartProfile() {
-        return profileUtil.getCurrentProfile("order");
+        return profileUtil.getCurrentProfile();
     }
 }

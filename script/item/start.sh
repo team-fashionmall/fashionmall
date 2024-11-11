@@ -25,9 +25,9 @@ echo "> $JAR_NAME 실행"
 
 IDLE_PROFILE=$(find_idle_profile)
 
-echo "> $JAR_NAME 를 profile=$IDLE_PROFILE 로 실행합니다."
+echo "> $JAR_NAME 를 profile=item-$IDLE_PROFILE 로 실행합니다."
 
 cd $REPOSITORY
 
 docker build -t item ./
-docker run -it --name "$IDLE_PROFILE" -d -e active=$IDLE_PROFILE -p $IDLE_PORT:$IDLE_PORT item
+docker run -it --name "item-$IDLE_PROFILE" -d -e SPRING_PROFILES_ACTIVE=item-$IDLE_PROFILE -p $IDLE_PORT:$IDLE_PORT item

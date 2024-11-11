@@ -52,6 +52,6 @@ public class ReviewController {
 
     @GetMapping("/review/profile")
     public String getCartProfile() {
-        return profileUtil.getCurrentProfile("review");
+        return profileUtil.getCurrentProfile();
     }
 }

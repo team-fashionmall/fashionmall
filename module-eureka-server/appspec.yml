@@ -16,6 +16,7 @@ hooks:
     - location: stop.sh
       timeout: 60
       runas: root
+      prehook: chmod +x /home/ec2-user/app/demo/module-eureka-server/stop.sh
 
   ApplicationStart:
     - location: start.sh

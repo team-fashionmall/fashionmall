@@ -25,9 +25,9 @@ echo "> $JAR_NAME 실행"
 
 IDLE_PROFILE=$(find_idle_profile)
 
-echo "> $JAR_NAME 를 profile=$IDLE_PROFILE 로 실행합니다."
+echo "> $JAR_NAME 를 profile=cart-$IDLE_PROFILE 로 실행합니다."
 
 cd $REPOSITORY
 
 docker build -t cart ./ # 이미지 생성(모듈별)
-docker run -it --name "$IDLE_PROFILE" -d -e SPRING_PROFILES_ACTIVE=$IDLE_PROFILE -p $IDLE_PORT:$IDLE_PORT cart #컨테이너 실행(모듈별)
+docker run -it --name "cart-$IDLE_PROFILE" -d -e SPRING_PROFILES_ACTIVE=cart-$IDLE_PROFILE -p $IDLE_PORT:$IDLE_PORT cart #컨테이너 실행(모듈별)
