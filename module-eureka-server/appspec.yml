@@ -2,8 +2,8 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /home/ec2-user/app/demo/eureka/zip/   # EC2 내부에서 어떤 디렉토리로 전달할 것인지?
-    overwrite: yes  # 덮어쓰기 할 것인지?
+    destination: /home/ec2-user/app/demo/eureka/zip/
+    overwrite: yes
 
 permissions:
   - object: /home/ec2-user/app/demo/eureka/zip/
