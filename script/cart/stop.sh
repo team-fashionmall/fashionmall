@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
-
+echo "1"
 ABSPATH=$(readlink -f $0)
 ABSDIR=$(dirname $ABSPATH)
 source ${ABSDIR}/profile.sh
-
+echo "2"
 IDLE_PROFILE=$(find_idle_profile)
 
 CONTAINER_ID=$(docker container ls -f "name=cart-${IDLE_PROFILE}" -q)
-
+echo "3"
 echo "> 컨테이너 ID는 무엇?? ${CONTAINER_ID}"
 echo "> 현재 프로필은 무엇?? cart-${IDLE_PROFILE}"
-
+echo "4"
 if [ -z ${CONTAINER_ID} ]
 then
   echo "> 현재 구동중인 애플리케이션이 없으므로 종료하지 않습니다."
