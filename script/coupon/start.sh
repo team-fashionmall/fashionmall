@@ -19,7 +19,7 @@ echo "> JAR Name: $JAR_NAME"
 
 echo "> $JAR_NAME 에 실행권한 추가"
 
-chmod +x $JAR_NAME
+sudo chmod +x $JAR_NAME
 
 echo "> $JAR_NAME 실행"
 
@@ -29,5 +29,5 @@ echo "> $JAR_NAME 를 profile=coupon-$IDLE_PROFILE 로 실행합니다."
 
 cd $REPOSITORY
 
-docker build -t coupon ./
-docker run -it --name "coupon-$IDLE_PROFILE" -d -e SPRING_PROFILES_ACTIVE=coupon-$IDLE_PROFILE -p $IDLE_PORT:$IDLE_PORT coupon
+sudo docker build -t coupon -f $REPOSITORY/zip/Dockerfile . || exit 1
+sudo docker run -it --name "coupon-$IDLE_PROFILE" -d -e SPRING_PROFILES_ACTIVE=coupon-$IDLE_PROFILE -p $IDLE_PORT:$IDLE_PORT coupon || exit 1

@@ -19,7 +19,7 @@ echo "> JAR Name: $JAR_NAME"
 
 echo "> $JAR_NAME 에 실행권한 추가"
 
-chmod +x $JAR_NAME
+sudo chmod +x $JAR_NAME
 
 echo "> $JAR_NAME 실행"
 
@@ -29,5 +29,5 @@ echo "> $JAR_NAME 를 profile=image-$IDLE_PROFILE 로 실행합니다."
 
 cd $REPOSITORY
 
-docker build -t image ./
-docker run -it --name "image-$IDLE_PROFILE" -d -e SPRING_PROFILES_ACTIVE=image-$IDLE_PROFILE -p $IDLE_PORT:$IDLE_PORT image
+sudo docker build -t image -f $REPOSITORY/zip/Dockerfile . || exit 1
+sudo docker run -it --name "image-$IDLE_PROFILE" -d -e SPRING_PROFILES_ACTIVE=image-$IDLE_PROFILE -p $IDLE_PORT:$IDLE_PORT image || exit 1

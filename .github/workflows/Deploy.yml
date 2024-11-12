@@ -72,7 +72,7 @@ jobs:
         run: |
           aws deploy create-deployment \
             --application-name fashion-mall \
-            --deployment-group-name cart-service-deployment-group \
+            --deployment-group-name fashion-mall-module-cart-service \
             --revision "revisionType=S3,s3Location={bucket=my-fashionmall-github-actions-s3-bucket,bundleType=zip,key=CartService_CI-CD.zip}" \
             --region ap-northeast-2
 
@@ -125,7 +125,7 @@ jobs:
         run: |
           aws deploy create-deployment \
             --application-name fashion-mall \
-            --deployment-group-name fashion-mall-deployment-group \
+            --deployment-group-name fashion-mall-module-coupon-service \
             --revision "revisionType=S3,s3Location={bucket=my-fashionmall-github-actions-s3-bucket,bundleType=zip,key=CouponService_CI-CD.zip}" \
             --region ap-northeast-2
 
@@ -178,7 +178,7 @@ jobs:
         run: |
           aws deploy create-deployment \
             --application-name fashion-mall \
-            --deployment-group-name fashion-mall-deployment-group \
+            --deployment-group-name fashion-mall-module-eureka-server \
             --revision "revisionType=S3,s3Location={bucket=my-fashionmall-github-actions-s3-bucket,bundleType=zip,key=EurekaServer_CI-CD.zip}" \
             --region ap-northeast-2
 
@@ -231,7 +231,7 @@ jobs:
         run: |
           aws deploy create-deployment \
             --application-name fashion-mall \
-            --deployment-group-name fashion-mall-deployment-group \
+            --deployment-group-name fashion-mall-module-gateway-service \
             --revision "revisionType=S3,s3Location={bucket=my-fashionmall-github-actions-s3-bucket,bundleType=zip,key=GatewayService_CI-CD.zip}" \
             --region ap-northeast-2
 
@@ -284,7 +284,7 @@ jobs:
         run: |
           aws deploy create-deployment \
             --application-name fashion-mall \
-            --deployment-group-name fashion-mall-deployment-group \
+            --deployment-group-name fashion-mall-module-image-service \
             --revision "revisionType=S3,s3Location={bucket=my-fashionmall-github-actions-s3-bucket,bundleType=zip,key=ImageService_CI-CD.zip}" \
             --region ap-northeast-2
 
@@ -337,7 +337,7 @@ jobs:
         run: |
           aws deploy create-deployment \
             --application-name fashion-mall \
-            --deployment-group-name fashion-mall-deployment-group \
+            --deployment-group-name fashion-mall-module-item-service \
             --revision "revisionType=S3,s3Location={bucket=my-fashionmall-github-actions-s3-bucket,bundleType=zip,key=ItemService_CI-CD.zip}" \
             --region ap-northeast-2
 
@@ -390,7 +390,7 @@ jobs:
         run: |
           aws deploy create-deployment \
             --application-name fashion-mall \
-            --deployment-group-name fashion-mall-deployment-group \
+            --deployment-group-name fashion-mall-module-order-service \
             --revision "revisionType=S3,s3Location={bucket=my-fashionmall-github-actions-s3-bucket,bundleType=zip,key=OrderService_CI-CD.zip}" \
             --region ap-northeast-2
 
@@ -443,7 +443,7 @@ jobs:
         run: |
           aws deploy create-deployment \
             --application-name fashion-mall \
-            --deployment-group-name fashion-mall-deployment-group \
+            --deployment-group-name fashion-mall-module-review-service \
             --revision "revisionType=S3,s3Location={bucket=my-fashionmall-github-actions-s3-bucket,bundleType=zip,key=ReviewService_CI-CD.zip}" \
             --region ap-northeast-2
 
@@ -496,6 +496,6 @@ jobs:
         run: |
           aws deploy create-deployment \
             --application-name fashion-mall \
-            --deployment-group-name fashion-mall-deployment-group \
+            --deployment-group-name fashion-mall-module-user-service \
             --revision "revisionType=S3,s3Location={bucket=my-fashionmall-github-actions-s3-bucket,bundleType=zip,key=UserService_CI-CD.zip}" \
             --region ap-northeast-2

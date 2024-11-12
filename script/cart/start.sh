@@ -19,7 +19,7 @@ echo "> JAR Name: $JAR_NAME"
 
 echo "> $JAR_NAME 에 실행권한 추가"
 
-chmod +x $JAR_NAME
+sudo chmod +x $JAR_NAME
 
 echo "> $JAR_NAME 실행"
 
@@ -29,5 +29,5 @@ echo "> $JAR_NAME 를 profile=cart-$IDLE_PROFILE 로 실행합니다."
 
 cd $REPOSITORY
 
-docker build -t cart ./ # 이미지 생성(모듈별)
-docker run -it --name "cart-$IDLE_PROFILE" -d -e SPRING_PROFILES_ACTIVE=cart-$IDLE_PROFILE -p $IDLE_PORT:$IDLE_PORT cart #컨테이너 실행(모듈별)
+sudo docker build -t cart -f $REPOSITORY/zip/Dockerfile . || exit 1 # 이미지 생성(모듈별)
+sudo docker run -it --name "cart-$IDLE_PROFILE" -d -e SPRING_PROFILES_ACTIVE=cart-$IDLE_PROFILE -p $IDLE_PORT:$IDLE_PORT cart || exit 1 #컨테이너 실행(모듈별)
