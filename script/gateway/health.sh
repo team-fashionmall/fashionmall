@@ -16,7 +16,7 @@ for RETRY_COUNT in {1..10}
 do
   RESPONSE=$(curl -s -w "%{http_code}" -o /dev/null http://43.203.244.137:${IDLE_PORT})
 
-  if [ ${RESPONSE} -eq 200 ]
+  if [ ${RESPONSE} -eq 404 ]
   then # $up_count >= 1 ("gateway" 문자열이 있는지 검증)
       echo "> Health check 성공"
       switch_proxy
