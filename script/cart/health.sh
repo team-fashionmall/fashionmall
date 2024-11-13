@@ -6,7 +6,7 @@ source ${ABSDIR}/profile.sh
 source ${ABSDIR}/switch.sh
 
 IDLE_PORT=8080
-echo $JWT_SECRET_KEY
+
 echo "> Health Check Start!"
 echo "> IDLE_PORT: $IDLE_PORT"
 echo "> curl -s http://43.203.244.137:$IDLE_PORT/"

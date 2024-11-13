@@ -45,8 +45,6 @@ jobs:
           distribution: 'temurin'
 
       - name: Build project with Gradle
-        env:
-          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
         run: ./gradlew :module-cart-service:clean :module-cart-service:build
 
       - name: Check if JAR file exists
@@ -56,6 +54,13 @@ jobs:
             exit 1
           fi
 
+      - name: Docker image Build and Save
+        env:
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+        run: |
+          docker build --build-arg JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} -t cart -f module-cart-service/Dockerfile .
+          docker save cart -o cart.tar
+
       - name: Prepare deployment package
         run: |
           mkdir -p before-deploy
@@ -63,6 +68,7 @@ jobs:
           cp module-cart-service/appspec.yml before-deploy/
           cp module-cart-service/Dockerfile before-deploy/
           cp module-cart-service/build/libs/*.jar before-deploy/
+          cp cart.tar before-deploy/
           cd before-deploy
           zip -r CartService_CI-CD.zip *
 
@@ -71,11 +77,7 @@ jobs:
           aws s3 cp before-deploy/CartService_CI-CD.zip s3://my-fashionmall-github-actions-s3-bucket/CartService_CI-CD.zip
 
       - name: Trigger CodeDeploy deployment
-        env:
-          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
         run: |
-          export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
-          echo "JWT_SECRET_KEY : $JWT_SECRET_KEY"
           aws deploy create-deployment \
             --application-name fashion-mall \
             --deployment-group-name fashion-mall-module-cart-service \
