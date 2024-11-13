@@ -45,6 +45,8 @@ jobs:
           distribution: 'temurin'
 
       - name: Build project with Gradle
+        env:
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
         run: ./gradlew :module-cart-service:clean :module-cart-service:build
 
       - name: Check if JAR file exists
@@ -69,6 +71,8 @@ jobs:
           aws s3 cp before-deploy/CartService_CI-CD.zip s3://my-fashionmall-github-actions-s3-bucket/CartService_CI-CD.zip
 
       - name: Trigger CodeDeploy deployment
+        env:
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
         run: |
           aws deploy create-deployment \
             --application-name fashion-mall \
