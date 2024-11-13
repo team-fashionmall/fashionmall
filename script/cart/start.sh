@@ -3,7 +3,6 @@
 ABSPATH=$(readlink -f $0)
 ABSDIR=$(dirname $ABSPATH)
 source ${ABSDIR}/profile.sh
-export JWT_SECRET_KEY="${JWT_SECRET_KEY}"
 
 IDLE_PORT=8080 #임시 변경해야함
 REPOSITORY=/home/ec2-user/app/demo/module-cart-service # 서비스 모듈 경로(각 모듈 마다 다름)
@@ -31,4 +30,4 @@ echo "> $JAR_NAME 를 profile=cart-$IDLE_PROFILE 로 실행합니다."
 cd $REPOSITORY
 
 sudo docker build -t cart -f $REPOSITORY/zip/Dockerfile . || exit 1 # 이미지 생성(모듈별)
-sudo docker run -it --name "cart-$IDLE_PROFILE" -d -e SPRING_PROFILES_ACTIVE=$IDLE_PROFILE -e JWT_SECRET_KEY=$JWT_SECRET_KEY -p $IDLE_PORT:$IDLE_PORT cart || exit 1 #컨테이너 실행(모듈별)
+sudo docker run -it --name "cart-$IDLE_PROFILE" -d -e SPRING_PROFILES_ACTIVE=$IDLE_PROFILE -p $IDLE_PORT:$IDLE_PORT cart || exit 1 #컨테이너 실행(모듈별)
