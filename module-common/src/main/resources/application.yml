@@ -6,4 +6,4 @@ spring:
 
 jwt:
   secret:
-    key:
+    key: ${JWT_SECRET_KEY}
