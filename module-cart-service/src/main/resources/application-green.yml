@@ -20,10 +20,6 @@ spring:
     username: test
     password: 1q2w3e4r!@
 
-jwt:
-  secret:
-    key: ${JWT_SECRET_KEY}
-
 eureka:
   client:
     register-with-eureka: true
