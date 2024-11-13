@@ -40,9 +40,10 @@ public class WebSecurityConfig {
 
         http.sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
-            .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-            .requestMatchers("/api/cart/**").permitAll()
-            .anyRequest().authenticated()
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                .requestMatchers("/api/cart/**").permitAll()
+                .requestMatchers("/cart/profile/**").permitAll()
+                .anyRequest().authenticated()
         );
 
         http.addFilterBefore(new JwtAuthorizationFilter(jwtUtil, redisUtil), UsernamePasswordAuthenticationFilter.class);
