@@ -44,11 +44,8 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: secret Key insert
-        env:
-          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-        run:
-          echo ${JWT_SECRET_KEY}
+      - name: Set up environment variable
+        run: echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> $GITHUB_ENV
 
       - name: Build project with Gradle
         env:
