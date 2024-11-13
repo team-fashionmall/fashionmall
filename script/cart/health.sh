@@ -9,12 +9,12 @@ IDLE_PORT=8080
 
 echo "> Health Check Start!"
 echo "> IDLE_PORT: $IDLE_PORT"
-echo "> curl -s http://43.203.244.137:$IDLE_PORT/profile"
+echo "> curl -s http://43.203.244.137:$IDLE_PORT/cart/profile"
 sleep 10
 
 for RETRY_COUNT in {1..10}
 do
-  RESPONSE=$(curl -s http://43.203.244.137:${IDLE_PORT}/profile)
+  RESPONSE=$(curl -s http://43.203.244.137:${IDLE_PORT}/cart/profile)
   UP_COUNT=$(echo ${RESPONSE} | grep -E -o 'green|blue' | wc -l)
 
   if [ ${UP_COUNT} -ge 1 ]
