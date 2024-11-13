@@ -28,6 +28,6 @@ IDLE_PROFILE=green #임시 변경해야함
 echo "> $JAR_NAME 를 profile=cart-$IDLE_PROFILE 로 실행합니다."
 
 cd $REPOSITORY
-echo $JWT_SECRET_KEY
+
 sudo docker build -t cart -f $REPOSITORY/zip/Dockerfile . || exit 1 # 이미지 생성(모듈별)
 sudo docker run -it --name "cart-$IDLE_PROFILE" -d -e SPRING_PROFILES_ACTIVE=$IDLE_PROFILE -e JWT_SECRET_KEY="$JWT_SECRET_KEY" -p $IDLE_PORT:$IDLE_PORT cart || exit 1 #컨테이너 실행(모듈별)
