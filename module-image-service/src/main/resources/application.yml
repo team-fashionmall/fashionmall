@@ -22,8 +22,8 @@ eureka:
 cloud:
   aws:
     credentials:
-      accessKey:
-      secretKey:
+      accessKey: ${AWS_IAM_ACCESSKEY}
+      secretKey: ${AWS_IAM_SECRET_ACCESSKEY}
     region:
       static: ap-northeast-2
     s3:

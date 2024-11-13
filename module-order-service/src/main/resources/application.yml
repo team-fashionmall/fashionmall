@@ -21,5 +21,5 @@ eureka:
 
 portOne:
   api:
-    key:
-    secret:
+    key: ${PORTONE_API_KEY}
+    secret: ${PORTONE_API_SECRET}
