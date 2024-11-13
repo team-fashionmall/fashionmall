@@ -74,6 +74,8 @@ jobs:
         env:
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
         run: |
+          export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
+          echo "JWT_SECRET_KEY : $JWT_SECRET_KEY"
           aws deploy create-deployment \
             --application-name fashion-mall \
             --deployment-group-name fashion-mall-module-cart-service \
