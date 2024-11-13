@@ -43,6 +43,7 @@ public class WebSecurityConfig {
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .requestMatchers("/api/cart/**").permitAll()
                 .requestMatchers("/cart/profile").permitAll()
+                .requestMatchers("/").permitAll()
                 .anyRequest().authenticated()
         );
 
