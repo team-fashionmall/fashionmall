@@ -8,4 +8,4 @@ ENV JWT_SECRET_KEY=${JWT_SECRET_KEY}
 
 COPY *SNAPSHOT.jar .
 
-CMD java -jar -Dspring.profiles.active=${SPRING_PROFILES_ACTIVE} *SNAPSHOT.jar
+CMD java -jar -Dspring.profiles.active=${SPRING_PROFILES_ACTIVE} -Djwt.secret.key=${JWT_SECRET_KEY} *SNAPSHOT.jar
