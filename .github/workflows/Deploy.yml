@@ -27,8 +27,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: detect-changes
     if: contains(needs.detect-changes.outputs.module_changed, 'cart')
-    env:
-      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -50,12 +48,6 @@ jobs:
         env:
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
         run: ./gradlew :module-cart-service:clean :module-cart-service:build
-
-      - name: Docker build with JWT_SECRET_KEY
-        run: |
-          docker build -t cart \
-            --build-arg JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} \
-            -f module-cart-service/Dockerfile .
 
       - name: Check if JAR file exists
         run: |
