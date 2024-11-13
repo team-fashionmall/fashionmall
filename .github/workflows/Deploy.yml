@@ -49,6 +49,12 @@ jobs:
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
         run: ./gradlew :module-cart-service:clean :module-cart-service:build
 
+      - name: Docker build with JWT_SECRET_KEY
+        run: |
+          docker build -t cart \
+            --build-arg JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} \
+            -f module-cart-service/Dockerfile .
+
       - name: Check if JAR file exists
         run: |
           if [ ! -f module-cart-service/build/libs/*.jar ]; then
