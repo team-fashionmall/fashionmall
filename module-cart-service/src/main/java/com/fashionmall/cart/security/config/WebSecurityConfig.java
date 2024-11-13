@@ -42,7 +42,7 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .requestMatchers("/api/cart/**").permitAll()
-                .requestMatchers("/cart/profile/**").permitAll()
+                .requestMatchers("/cart/profile").permitAll()
                 .anyRequest().authenticated()
         );
 
