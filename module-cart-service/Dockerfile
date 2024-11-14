@@ -1,7 +1,9 @@
 FROM openjdk:17-jdk-slim
 
-WORKDIR /fashion-mall/module-cart-service
+WORKDIR /fashion-mall
 
-COPY *SNAPSHOT.jar .
+COPY ../../.. .
 
-CMD java -jar -Dspring.profiles.active=${SPRING_PROFILES_ACTIVE} *SNAPSHOT.jar
+RUN ./gradlew claen build
+
+CMD java -jar -Dspring.profiles.active=${SPRING_PROFILES_ACTIVE} module-cart-service-0.0.1-SNAPSHOT.jar
