@@ -21,5 +21,5 @@ eureka:
 
 portOne:
   api:
-    key: ${PORTONE_API_KEY}
-    secret: ${PORTONE_API_SECRET}
+    key: 5482317358863162
+    secret: pu6XCV2hmrXm1Wt5SK5E8AE5TVuZjspOzkVLvuVFNBQcLmFJdscdfe0lrTISeAg3M1mwXftJhiwCuR71

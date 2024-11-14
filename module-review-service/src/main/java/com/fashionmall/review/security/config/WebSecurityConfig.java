@@ -41,9 +41,10 @@ public class WebSecurityConfig {
 
         http.sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
-            .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-            .requestMatchers(HttpMethod.GET, "/review/item/**").permitAll()
-            .anyRequest().authenticated()
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                .requestMatchers(HttpMethod.GET, "/review/item/**").permitAll()
+                .requestMatchers("/review/profile").permitAll()
+                .anyRequest().authenticated()
         );
 
         http.addFilterBefore(new JwtAuthorizationFilter(jwtUtil, redisUtil), UsernamePasswordAuthenticationFilter.class);

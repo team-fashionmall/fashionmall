@@ -40,12 +40,13 @@ public class WebSecurityConfig {
 
         http.sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
-            .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-            .requestMatchers("/user/signUp").permitAll()
-            .requestMatchers("/user/login").permitAll()
-            .requestMatchers("/user/auth/refresh").permitAll()
-            .requestMatchers("/api/user/**").permitAll()
-            .anyRequest().authenticated()
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                .requestMatchers("/user/signUp").permitAll()
+                .requestMatchers("/user/login").permitAll()
+                .requestMatchers("/user/auth/refresh").permitAll()
+                .requestMatchers("/api/user/**").permitAll()
+                .requestMatchers("/user/profile").permitAll()
+                .anyRequest().authenticated()
         );
 
         http.addFilterBefore(new JwtAuthorizationFilter(jwtUtil, redisUtil), UsernamePasswordAuthenticationFilter.class);

@@ -9,13 +9,13 @@ IDLE_PORT=$(find_idle_port)
 
 echo "> Health Check Start!"
 echo "> IDLE_PORT: $IDLE_PORT"
-echo "> curl -s http://43.203.244.137:$IDLE_PORT/"
+echo "> curl -s http://43.203.244.137:$IDLE_PORT/review/profile"
 sleep 10
 
 for RETRY_COUNT in {1..10}
 do
-  RESPONSE=$(curl -s http://43.203.244.137:${IDLE_PORT})
-  UP_COUNT=$(echo ${RESPONSE} | grep 'review' | wc -l)
+  RESPONSE=$(curl -s http://43.203.244.137:${IDLE_PORT}/review/profile)
+  UP_COUNT=$(echo ${RESPONSE} | grep -E -o 'green|blue' | wc -l)
 
   if [ ${UP_COUNT} -ge 1 ]
   then # $up_count >= 1 ("review" 문자열이 있는지 검증)
