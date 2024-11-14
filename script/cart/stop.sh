@@ -3,9 +3,9 @@
 ABSPATH=$(readlink -f $0)
 ABSDIR=$(dirname $ABSPATH)
 source ${ABSDIR}/profile.sh
-echo "1"
+
 IDLE_PROFILE=$(find_idle_profile)
-echo "2"
+
 CONTAINER_ID=$(docker container ls -a -f "name=cart-${IDLE_PROFILE}" -q)
 
 echo "> 컨테이너 ID는 무엇?? ${CONTAINER_ID}"

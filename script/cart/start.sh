@@ -4,7 +4,7 @@ ABSPATH=$(readlink -f $0)
 ABSDIR=$(dirname $ABSPATH)
 source ${ABSDIR}/profile.sh
 
-IDLE_PORT=8080 #임시 변경해야함
+IDLE_PORT=$(find_idle_port)
 REPOSITORY=/home/ec2-user/app/demo/module-cart-service # 서비스 모듈 경로(각 모듈 마다 다름)
 
 echo "> Build 파일 복사"
@@ -23,7 +23,7 @@ sudo chmod +x $JAR_NAME
 
 echo "> $JAR_NAME 실행"
 
-IDLE_PROFILE=green #임시 변경해야함
+IDLE_PROFILE=$(find_idle_profile)
 
 echo "> $JAR_NAME 를 profile=cart-$IDLE_PROFILE 로 실행합니다."
 
