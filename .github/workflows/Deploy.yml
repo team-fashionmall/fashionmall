@@ -56,6 +56,7 @@ jobs:
 
       - name: Add .env file
         run: |
+          mkdir -p before-deploy
           echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
 
       - name: Prepare deployment package
@@ -113,6 +114,7 @@ jobs:
 
       - name: Add .env file
         run: |
+          mkdir -p before-deploy
           echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
 
       - name: Prepare deployment package
@@ -276,6 +278,7 @@ jobs:
 
       - name: Add .env file
         run: |
+          mkdir -p before-deploy
           echo "AWS_IAM_ACCESSKEY=${{ secrets.AWS_IAM_ACCESSKEY }}" >> before-deploy/.env      
           echo "AWS_IAM_SECRET_ACCESSKEY=${{ secrets.AWS_IAM_SECRET_ACCESSKEY }}" >> before-deploy/.env      
 
@@ -334,6 +337,7 @@ jobs:
 
       - name: Add .env file
         run: |
+          mkdir -p before-deploy
           echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
 
       - name: Prepare deployment package
@@ -391,10 +395,10 @@ jobs:
 
       - name: Add .env file
         run: |
+          mkdir -p before-deploy
           echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
           echo "PORTONE_API_KEY=${{ secrets.PORTONE_API_KEY }}" >> before-deploy/.env
           echo "PORTONE_API_SECRET=${{ secrets.PORTONE_API_SECRET }}" >> before-deploy/.env
-
 
       - name: Prepare deployment package
         run: |
@@ -451,6 +455,7 @@ jobs:
 
       - name: Add .env file
         run: |
+          mkdir -p before-deploy
           echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
 
       - name: Prepare deployment package
@@ -508,6 +513,7 @@ jobs:
 
       - name: Add .env file
         run: |
+          mkdir -p before-deploy
           echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
 
       - name: Prepare deployment package
