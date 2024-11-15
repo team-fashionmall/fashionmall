@@ -67,7 +67,7 @@ jobs:
           cp module-cart-service/Dockerfile before-deploy/
           cp module-cart-service/build/libs/*.jar before-deploy/
           cd before-deploy
-          zip -r CartService_CI-CD.zip .*
+          zip -r CartService_CI-CD.zip ./*
 
       - name: Upload to S3
         run: |
@@ -125,7 +125,7 @@ jobs:
           cp module-coupon-service/Dockerfile before-deploy/
           cp module-coupon-service/build/libs/*.jar before-deploy/
           cd before-deploy
-          zip -r CouponService_CI-CD.zip .*
+          zip -r CouponService_CI-CD.zip ./*
 
       - name: Upload to S3
         run: |
@@ -178,7 +178,7 @@ jobs:
           cp module-eureka-server/Dockerfile before-deploy/
           cp module-eureka-server/build/libs/*.jar before-deploy/
           cd before-deploy
-          zip -r EurekaServer_CI-CD.zip *
+          zip -r EurekaServer_CI-CD.zip ./*
 
       - name: Upload to S3
         run: |
@@ -231,7 +231,7 @@ jobs:
           cp module-gateway-service/Dockerfile before-deploy/
           cp module-gateway-service/build/libs/*.jar before-deploy/
           cd before-deploy
-          zip -r GatewayService_CI-CD.zip *
+          zip -r GatewayService_CI-CD.zip ./*
 
       - name: Upload to S3
         run: |
@@ -290,7 +290,7 @@ jobs:
           cp module-image-service/Dockerfile before-deploy/
           cp module-image-service/build/libs/*.jar before-deploy/
           cd before-deploy
-          zip -r ImageService_CI-CD.zip .*
+          zip -r ImageService_CI-CD.zip ./*
 
       - name: Upload to S3
         run: |
@@ -348,7 +348,7 @@ jobs:
           cp module-item-service/Dockerfile before-deploy/
           cp module-item-service/build/libs/*.jar before-deploy/
           cd before-deploy
-          zip -r ItemService_CI-CD.zip .*
+          zip -r ItemService_CI-CD.zip ./*
 
       - name: Upload to S3
         run: |
@@ -408,7 +408,7 @@ jobs:
           cp module-order-service/Dockerfile before-deploy/
           cp module-order-service/build/libs/*.jar before-deploy/
           cd before-deploy
-          zip -r OrderService_CI-CD.zip .*
+          zip -r OrderService_CI-CD.zip ./*
 
       - name: Upload to S3
         run: |
@@ -466,7 +466,7 @@ jobs:
           cp module-review-service/Dockerfile before-deploy/
           cp module-review-service/build/libs/*.jar before-deploy/
           cd before-deploy
-          zip -r ReviewService_CI-CD.zip .*
+          zip -r ReviewService_CI-CD.zip ./*
 
       - name: Upload to S3
         run: |
@@ -524,7 +524,7 @@ jobs:
           cp module-user-service/Dockerfile before-deploy/
           cp module-user-service/build/libs/*.jar before-deploy/
           cd before-deploy
-          zip -r UserService_CI-CD.zip .*
+          zip -r UserService_CI-CD.zip ./*
 
       - name: Upload to S3
         run: |
