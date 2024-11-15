@@ -64,6 +64,10 @@ jobs:
           cd before-deploy
           zip -r CartService_CI-CD.zip *
 
+      - name: Add .env file
+        run: |
+          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
+
       - name: Upload to S3
         run: |
           aws s3 cp before-deploy/CartService_CI-CD.zip s3://my-fashionmall-github-actions-s3-bucket/CartService_CI-CD.zip
@@ -116,6 +120,10 @@ jobs:
           cp module-coupon-service/build/libs/*.jar before-deploy/
           cd before-deploy
           zip -r CouponService_CI-CD.zip *
+
+      - name: Add .env file
+        run: |
+          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
 
       - name: Upload to S3
         run: |
@@ -276,6 +284,11 @@ jobs:
           cd before-deploy
           zip -r ImageService_CI-CD.zip *
 
+      - name: Add .env file
+        run: |
+          echo "AWS_IAM_ACCESSKEY=${{ secrets.AWS_IAM_ACCESSKEY }}" >> before-deploy/.env      
+          echo "AWS_IAM_SECRET_ACCESSKEY=${{ secrets.AWS_IAM_SECRET_ACCESSKEY }}" >> before-deploy/.env      
+
       - name: Upload to S3
         run: |
           aws s3 cp before-deploy/ImageService_CI-CD.zip s3://my-fashionmall-github-actions-s3-bucket/ImageService_CI-CD.zip
@@ -328,6 +341,10 @@ jobs:
           cp module-item-service/build/libs/*.jar before-deploy/
           cd before-deploy
           zip -r ItemService_CI-CD.zip *
+
+      - name: Add .env file
+        run: |
+          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
 
       - name: Upload to S3
         run: |
@@ -382,6 +399,13 @@ jobs:
           cd before-deploy
           zip -r OrderService_CI-CD.zip *
 
+      - name: Add .env file
+        run: |
+          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
+          echo "PORTONE_API_KEY=${{ secrets.PORTONE_API_KEY }}" >> before-deploy/.env
+          echo "PORTONE_API_SECRET=${{ secrets.PORTONE_API_SECRET }}" >> before-deploy/.env
+
+
       - name: Upload to S3
         run: |
           aws s3 cp before-deploy/OrderService_CI-CD.zip s3://my-fashionmall-github-actions-s3-bucket/OrderService_CI-CD.zip
@@ -435,6 +459,10 @@ jobs:
           cd before-deploy
           zip -r ReviewService_CI-CD.zip *
 
+      - name: Add .env file
+        run: |
+          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
+
       - name: Upload to S3
         run: |
           aws s3 cp before-deploy/ReviewService_CI-CD.zip s3://my-fashionmall-github-actions-s3-bucket/ReviewService_CI-CD.zip
@@ -487,6 +515,10 @@ jobs:
           cp module-user-service/build/libs/*.jar before-deploy/
           cd before-deploy
           zip -r UserService_CI-CD.zip *
+
+      - name: Add .env file
+        run: |
+          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
 
       - name: Upload to S3
         run: |
