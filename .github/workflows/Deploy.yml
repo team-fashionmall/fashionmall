@@ -54,6 +54,10 @@ jobs:
             exit 1
           fi
 
+      - name: Add .env file
+        run: |
+          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
+
       - name: Prepare deployment package
         run: |
           mkdir -p before-deploy
@@ -63,10 +67,6 @@ jobs:
           cp module-cart-service/build/libs/*.jar before-deploy/
           cd before-deploy
           zip -r CartService_CI-CD.zip *
-
-      - name: Add .env file
-        run: |
-          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
 
       - name: Upload to S3
         run: |
@@ -111,6 +111,10 @@ jobs:
             exit 1
           fi
 
+      - name: Add .env file
+        run: |
+          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
+
       - name: Prepare deployment package
         run: |
           mkdir -p before-deploy
@@ -120,10 +124,6 @@ jobs:
           cp module-coupon-service/build/libs/*.jar before-deploy/
           cd before-deploy
           zip -r CouponService_CI-CD.zip *
-
-      - name: Add .env file
-        run: |
-          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
 
       - name: Upload to S3
         run: |
@@ -274,6 +274,11 @@ jobs:
             exit 1
           fi
 
+      - name: Add .env file
+        run: |
+          echo "AWS_IAM_ACCESSKEY=${{ secrets.AWS_IAM_ACCESSKEY }}" >> before-deploy/.env      
+          echo "AWS_IAM_SECRET_ACCESSKEY=${{ secrets.AWS_IAM_SECRET_ACCESSKEY }}" >> before-deploy/.env      
+
       - name: Prepare deployment package
         run: |
           mkdir -p before-deploy
@@ -283,11 +288,6 @@ jobs:
           cp module-image-service/build/libs/*.jar before-deploy/
           cd before-deploy
           zip -r ImageService_CI-CD.zip *
-
-      - name: Add .env file
-        run: |
-          echo "AWS_IAM_ACCESSKEY=${{ secrets.AWS_IAM_ACCESSKEY }}" >> before-deploy/.env      
-          echo "AWS_IAM_SECRET_ACCESSKEY=${{ secrets.AWS_IAM_SECRET_ACCESSKEY }}" >> before-deploy/.env      
 
       - name: Upload to S3
         run: |
@@ -332,6 +332,10 @@ jobs:
             exit 1
           fi
 
+      - name: Add .env file
+        run: |
+          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
+
       - name: Prepare deployment package
         run: |
           mkdir -p before-deploy
@@ -341,10 +345,6 @@ jobs:
           cp module-item-service/build/libs/*.jar before-deploy/
           cd before-deploy
           zip -r ItemService_CI-CD.zip *
-
-      - name: Add .env file
-        run: |
-          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
 
       - name: Upload to S3
         run: |
@@ -389,6 +389,13 @@ jobs:
             exit 1
           fi
 
+      - name: Add .env file
+        run: |
+          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
+          echo "PORTONE_API_KEY=${{ secrets.PORTONE_API_KEY }}" >> before-deploy/.env
+          echo "PORTONE_API_SECRET=${{ secrets.PORTONE_API_SECRET }}" >> before-deploy/.env
+
+
       - name: Prepare deployment package
         run: |
           mkdir -p before-deploy
@@ -398,13 +405,6 @@ jobs:
           cp module-order-service/build/libs/*.jar before-deploy/
           cd before-deploy
           zip -r OrderService_CI-CD.zip *
-
-      - name: Add .env file
-        run: |
-          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
-          echo "PORTONE_API_KEY=${{ secrets.PORTONE_API_KEY }}" >> before-deploy/.env
-          echo "PORTONE_API_SECRET=${{ secrets.PORTONE_API_SECRET }}" >> before-deploy/.env
-
 
       - name: Upload to S3
         run: |
@@ -449,6 +449,10 @@ jobs:
             exit 1
           fi
 
+      - name: Add .env file
+        run: |
+          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
+
       - name: Prepare deployment package
         run: |
           mkdir -p before-deploy
@@ -458,10 +462,6 @@ jobs:
           cp module-review-service/build/libs/*.jar before-deploy/
           cd before-deploy
           zip -r ReviewService_CI-CD.zip *
-
-      - name: Add .env file
-        run: |
-          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
 
       - name: Upload to S3
         run: |
@@ -506,6 +506,10 @@ jobs:
             exit 1
           fi
 
+      - name: Add .env file
+        run: |
+          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
+
       - name: Prepare deployment package
         run: |
           mkdir -p before-deploy
@@ -515,10 +519,6 @@ jobs:
           cp module-user-service/build/libs/*.jar before-deploy/
           cd before-deploy
           zip -r UserService_CI-CD.zip *
-
-      - name: Add .env file
-        run: |
-          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
 
       - name: Upload to S3
         run: |
