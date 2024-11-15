@@ -30,4 +30,4 @@ echo "> $JAR_NAME 를 profile=gateway-$IDLE_PROFILE 로 실행합니다."
 cd $REPOSITORY
 
 sudo docker build -t gateway -f $REPOSITORY/zip/Dockerfile . || exit 1 # 이미지 생성(모듈별)
-sudo docker run -it --name "gateway-$IDLE_PROFILE" -d -e SPRING_PROFILES_ACTIVE=$IDLE_PROFILE -p $IDLE_PORT:$IDLE_PORT gateway || exit 1 #컨테이너 실행(모듈별)
+sudo docker run -it --name "gateway-$IDLE_PROFILE" -d --env-file $REPOSITORY/zip/.env -e SPRING_PROFILES_ACTIVE=$IDLE_PROFILE -p $IDLE_PORT:$IDLE_PORT gateway || exit 1 #컨테이너 실행(모듈별)

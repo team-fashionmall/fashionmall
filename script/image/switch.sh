@@ -13,4 +13,6 @@ function switch_proxy() {
 
     sudo docker exec -d nginx nginx -s reload
     echo "> docker exec -it nginx nginx -s reload"
+
+    sudo docker system prune -a -f
 }

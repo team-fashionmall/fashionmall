@@ -30,4 +30,4 @@ echo "> $JAR_NAME 를 profile=review-${IDLE_PROFILE} 로 실행합니다."
 cd $REPOSITORY
 
 sudo docker build -t review -f $REPOSITORY/zip/Dockerfile . || exit 1
-sudo docker run -it --name "review-${IDLE_PROFILE}" -d -e SPRING_PROFILES_ACTIVE=${IDLE_PROFILE} -p $IDLE_PORT:$IDLE_PORT review || exit 1
+sudo docker run -it --name "review-${IDLE_PROFILE}" -d --env-file $REPOSITORY/zip/.env -e SPRING_PROFILES_ACTIVE=${IDLE_PROFILE} -p $IDLE_PORT:$IDLE_PORT review || exit 1

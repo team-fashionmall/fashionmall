@@ -30,4 +30,4 @@ echo "> $JAR_NAME 를 profile=user-$IDLE_PROFILE 로 실행합니다."
 cd $REPOSITORY
 
 sudo docker build -t user -f $REPOSITORY/zip/Dockerfile . || exit 1
-sudo docker run -it --name "user-$IDLE_PROFILE" -d -e SPRING_PROFILES_ACTIVE=$IDLE_PROFILE -p $IDLE_PORT:$IDLE_PORT user || exit 1
+sudo docker run -it --name "user-$IDLE_PROFILE" -d --env-file $REPOSITORY/zip/.env -e SPRING_PROFILES_ACTIVE=$IDLE_PROFILE -p $IDLE_PORT:$IDLE_PORT user || exit 1
