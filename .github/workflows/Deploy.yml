@@ -67,7 +67,7 @@ jobs:
           cp module-cart-service/Dockerfile before-deploy/
           cp module-cart-service/build/libs/*.jar before-deploy/
           cd before-deploy
-          zip -r CartService_CI-CD.zip ./* .[^/]*
+          zip -r CartService_CI-CD.zip ./.
 
       - name: Upload to S3
         run: |
