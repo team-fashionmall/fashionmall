@@ -280,7 +280,8 @@ jobs:
         run: |
           mkdir -p before-deploy
           echo "CLOUD_AWS_CREDENTIALS_ACCESSKEY=${{ secrets.AWS_IAM_ACCESSKEY }}" >> before-deploy/.env      
-          echo "CLOUD_AWS_CREDENTIALS_SECRETKEY=${{ secrets.AWS_IAM_SECRET_ACCESSKEY }}" >> before-deploy/.env      
+          echo "CLOUD_AWS_CREDENTIALS_SECRETKEY=${{ secrets.AWS_IAM_SECRET_ACCESSKEY }}" >> before-deploy/.env   
+          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
 
       - name: Prepare deployment package
         run: |
