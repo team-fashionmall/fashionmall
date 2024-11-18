@@ -279,8 +279,8 @@ jobs:
       - name: Add .env file
         run: |
           mkdir -p before-deploy
-          echo "AWS_IAM_ACCESSKEY=${{ secrets.AWS_IAM_ACCESSKEY }}" >> before-deploy/.env      
-          echo "AWS_IAM_SECRET_ACCESSKEY=${{ secrets.AWS_IAM_SECRET_ACCESSKEY }}" >> before-deploy/.env      
+          echo "CLOUD_AWS_CREDENTIALS_ACCESSKEY=${{ secrets.AWS_IAM_ACCESSKEY }}" >> before-deploy/.env      
+          echo "CLOUD_AWS_CREDENTIALS_SECRETKEY=${{ secrets.AWS_IAM_SECRET_ACCESSKEY }}" >> before-deploy/.env      
 
       - name: Prepare deployment package
         run: |

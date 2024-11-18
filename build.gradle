@@ -41,8 +41,8 @@ subprojects {
     }
 
     dependencies {
-        compileOnly 'org.projectlombok:lombok:1.18.30' //shit problem
-        annotationProcessor 'org.projectlombok:lombok:1.18.30' //shit
+        compileOnly 'org.projectlombok:lombok:1.18.30'
+        annotationProcessor 'org.projectlombok:lombok:1.18.30'
         testImplementation 'org.junit.jupiter:junit-jupiter-api'
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
         implementation 'org.springframework.boot:spring-boot-starter-web'
