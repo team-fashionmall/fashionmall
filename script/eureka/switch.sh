@@ -15,4 +15,9 @@ function switch_proxy() {
     echo "> docker exec -it nginx nginx -s reload"
 
     sudo docker system prune -a -f
+
+    sudo docker ps -q | grep -v $(docker ps -qf "name=eureka-green") | grep -v $(docker ps -qf "name=nginx") | xargs docker stop # 유레카서버를 제외한 모듈 삭제
+    sudo docker start gateway-green
+    sleep 30
+    sudo docker start $(docker ps -a -q -f "status=exited")
 }
