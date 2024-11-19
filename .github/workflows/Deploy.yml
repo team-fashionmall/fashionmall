@@ -58,6 +58,9 @@ jobs:
         run: |
           mkdir -p before-deploy
           echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
+          echo "SPRING_DATASOURCE_URL=${{ secrets.DATASOURCE_URL }}" >> before-deploy/.env
+          echo "SPRING_DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }}" >> before-deploy/.env
+          echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }}" >> before-deploy/.env
 
       - name: Prepare deployment package
         run: |
@@ -116,6 +119,9 @@ jobs:
         run: |
           mkdir -p before-deploy
           echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
+          echo "SPRING_DATASOURCE_URL=${{ secrets.DATASOURCE_URL }}" >> before-deploy/.env
+          echo "SPRING_DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }}" >> before-deploy/.env
+          echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }}" >> before-deploy/.env
 
       - name: Prepare deployment package
         run: |
@@ -282,6 +288,9 @@ jobs:
           echo "CLOUD_AWS_CREDENTIALS_ACCESSKEY=${{ secrets.AWS_IAM_ACCESSKEY }}" >> before-deploy/.env      
           echo "CLOUD_AWS_CREDENTIALS_SECRETKEY=${{ secrets.AWS_IAM_SECRET_ACCESSKEY }}" >> before-deploy/.env   
           echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
+          echo "SPRING_DATASOURCE_URL=${{ secrets.DATASOURCE_URL }}" >> before-deploy/.env
+          echo "SPRING_DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }}" >> before-deploy/.env
+          echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }}" >> before-deploy/.env
 
       - name: Prepare deployment package
         run: |
@@ -340,6 +349,9 @@ jobs:
         run: |
           mkdir -p before-deploy
           echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
+          echo "SPRING_DATASOURCE_URL=${{ secrets.DATASOURCE_URL }}" >> before-deploy/.env
+          echo "SPRING_DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }}" >> before-deploy/.env
+          echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }}" >> before-deploy/.env
 
       - name: Prepare deployment package
         run: |
@@ -400,6 +412,9 @@ jobs:
           echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
           echo "PORTONE_API_KEY=${{ secrets.PORTONE_API_KEY }}" >> before-deploy/.env
           echo "PORTONE_API_SECRET=${{ secrets.PORTONE_API_SECRET }}" >> before-deploy/.env
+          echo "SPRING_DATASOURCE_URL=${{ secrets.DATASOURCE_URL }}" >> before-deploy/.env
+          echo "SPRING_DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }}" >> before-deploy/.env
+          echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }}" >> before-deploy/.env
 
       - name: Prepare deployment package
         run: |
@@ -458,6 +473,9 @@ jobs:
         run: |
           mkdir -p before-deploy
           echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
+          echo "SPRING_DATASOURCE_URL=${{ secrets.DATASOURCE_URL }}" >> before-deploy/.env
+          echo "SPRING_DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }}" >> before-deploy/.env
+          echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }}" >> before-deploy/.env
 
       - name: Prepare deployment package
         run: |
@@ -516,6 +534,9 @@ jobs:
         run: |
           mkdir -p before-deploy
           echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> before-deploy/.env
+          echo "SPRING_DATASOURCE_URL=${{ secrets.DATASOURCE_URL }}" >> before-deploy/.env
+          echo "SPRING_DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }}" >> before-deploy/.env
+          echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }}" >> before-deploy/.env
 
       - name: Prepare deployment package
         run: |

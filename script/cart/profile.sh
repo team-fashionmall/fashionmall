@@ -2,13 +2,13 @@
 
 function find_idle_profile()
 {
-    RESPONSE_CODE=$(sudo curl -s -o /dev/null -w "%{http_code}" http://43.203.244.137/cart/profile)
+    RESPONSE_CODE=$(sudo curl -s -o /dev/null -w "%{http_code}" http://13.125.10.163/cart/profile)
 
     if [ ${RESPONSE_CODE} -ge 400 ] # 400 보다 크면 (즉, 40x/50x 에러 모두 포함)
     then
         CURRENT_PROFILE=blue
     else
-        CURRENT_PROFILE=$(sudo curl -s http://43.203.244.137/cart/profile) # 여기서 green, blue의 값을 뽑아주는 api 필요
+        CURRENT_PROFILE=$(sudo curl -s http://13.125.10.163/cart/profile) # 여기서 green, blue의 값을 뽑아주는 api 필요
     fi
 
     if [ ${CURRENT_PROFILE} == green ]

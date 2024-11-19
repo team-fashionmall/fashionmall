@@ -24,7 +24,7 @@ eureka:
     fetch-registry: true
 
     service-url:
-      defaultZone: http://43.203.244.137:8761/eureka/
+      defaultZone: http://13.125.10.163:8761/eureka/
 
 ---
 
@@ -54,4 +54,4 @@ eureka:
     fetch-registry: true
 
     service-url:
-      defaultZone: http://43.203.244.137:8761/eureka/
+      defaultZone: http://13.125.10.163:8761/eureka/

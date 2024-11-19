@@ -9,12 +9,12 @@ IDLE_PORT=$(find_idle_port)
 
 echo "> Health Check Start!"
 echo "> IDLE_PORT: $IDLE_PORT"
-echo "> curl -s http://43.203.244.137:$IDLE_PORT/"
+echo "> curl -s http://13.125.10.163:$IDLE_PORT/"
 sleep 10
 
 for RETRY_COUNT in {1..10}
 do
-  RESPONSE=$(curl -s -w "%{http_code}" -o /dev/null http://43.203.244.137:${IDLE_PORT})
+  RESPONSE=$(curl -s -w "%{http_code}" -o /dev/null http://13.125.10.163:${IDLE_PORT})
 
 if [ ${RESPONSE} -eq 200 ]
   then # $up_count >= 1 ("gateway" 문자열이 있는지 검증)
