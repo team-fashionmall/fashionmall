@@ -1,4 +1,4 @@
-FROM openjdk:17-alpine
+FROM gcr.io/distroless/java17
 
 WORKDIR /fashion-mall/module-item-service
 
