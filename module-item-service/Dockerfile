@@ -7,7 +7,7 @@ COPY . .
 RUN ./gradlew :module-item-service:clean :module-item-service:build
 
 # Stage 2: Run the application with a lightweight JRE
-FROM openjdk:17-jre-slim
+FROM openjdk:17-jdk-slim AS runtime
 WORKDIR /fashion-mall/module-item-service
 
 # 빌드된 JAR 파일을 복사
