@@ -38,3 +38,7 @@ if [ ${RESPONSE} -eq 200 ]
   echo "> Health check 연결 실패. 재시도..."
   sleep 10
 done
+
+# 컨테이너 삭제 후 시스템에서 리소스 정리
+echo "> Docker system prune 실행"
+sudo docker system prune -a -f
