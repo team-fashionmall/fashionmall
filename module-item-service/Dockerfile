@@ -1,7 +1,7 @@
 # Build stage
 FROM openjdk:17-jdk-slim AS build
 
-WORKDIR /fashion-mall/module-item-service
+WORKDIR /fashion-mall
 
 COPY . .
 
