@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 gcr.io/distroless/java17
+FROM openjdk:17-jdk-slim
 
 WORKDIR /fashion-mall/module-item-service
 
