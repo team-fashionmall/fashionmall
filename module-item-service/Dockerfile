@@ -7,8 +7,8 @@ COPY . .
 
 RUN ./mvnw clean package -DskipTests
 
-# Run stage with distroless image
-FROM gcr.io/distroless/java:17
+# Run stage with openjdk:17-jre-slim
+FROM openjdk:17-jre-slim
 
 WORKDIR /fashion-mall/module-item-service
 
