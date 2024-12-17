@@ -29,5 +29,5 @@ echo "> $JAR_NAME 를 profile=item-$IDLE_PROFILE 로 실행합니다."
 
 cd $REPOSITORY
 
-sudo docker build --platform linux/amd64 -t item -f $REPOSITORY/zip/Dockerfile . || exit 1
+sudo docker build -t item -f $REPOSITORY/zip/Dockerfile . || exit 1
 sudo docker run -it --name "item-$IDLE_PROFILE" -d --env-file $REPOSITORY/zip/.env -e SPRING_PROFILES_ACTIVE=$IDLE_PROFILE -p $IDLE_PORT:$IDLE_PORT item || exit 1
