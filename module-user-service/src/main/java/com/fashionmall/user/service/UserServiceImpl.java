@@ -130,13 +130,8 @@ public class UserServiceImpl implements UserService {
         String newPassword = passwordEncoder.encode(updateUserInfoRequestDto.getNewPassword());
 
         if (oldPassword != null
-                && oldPassword.equals(user.getPassword())) {
+                && passwordEncoder.matches(updateUserInfoRequestDto.getOldPassword(), user.getPassword())) {
             user.updatePassword(newPassword);
-        }
-
-        if (updateUserInfoRequestDto.getOldPassword() != null
-                && updateUserInfoRequestDto.getOldPassword().equals(user.getPassword())) {
-            user.updatePassword(updateUserInfoRequestDto.getNewPassword());
         }
 
         if (updateUserInfoRequestDto.getNickName() != null) {
