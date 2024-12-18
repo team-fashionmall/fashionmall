@@ -26,7 +26,7 @@ jobs:
   deploy-cart:
     runs-on: ubuntu-latest
     needs: [ detect-changes ]
-    if: always() && contains(needs.detect-changes.outputs.module_changed, 'cart')
+    if: always() && (contains(needs.detect-changes.outputs.module_changed, 'cart') || contains(needs.detect-changes.outputs.module_changed, 'common'))
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -87,7 +87,7 @@ jobs:
   deploy-coupon:
     runs-on: ubuntu-latest
     needs: [ deploy-cart ]
-    if: always() && contains(needs.detect-changes.outputs.module_changed, 'coupon')
+    if: always() && (contains(needs.detect-changes.outputs.module_changed, 'coupon')|| contains(needs.detect-changes.outputs.module_changed, 'common'))
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -254,7 +254,7 @@ jobs:
   deploy-image:
     runs-on: ubuntu-latest
     needs: [ deploy-gateway ]
-    if: always() && contains(needs.detect-changes.outputs.module_changed, 'image')
+    if: always() && (contains(needs.detect-changes.outputs.module_changed, 'image')|| contains(needs.detect-changes.outputs.module_changed, 'common'))
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -317,7 +317,7 @@ jobs:
   deploy-item:
     runs-on: ubuntu-latest
     needs: [ deploy-image ]
-    if: always() && contains(needs.detect-changes.outputs.module_changed, 'item')
+    if: always() && (contains(needs.detect-changes.outputs.module_changed, 'item')|| contains(needs.detect-changes.outputs.module_changed, 'common'))
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -378,7 +378,7 @@ jobs:
   deploy-order:
     runs-on: ubuntu-latest
     needs: [ deploy-item ]
-    if: always() && contains(needs.detect-changes.outputs.module_changed, 'order')
+    if: always() && (contains(needs.detect-changes.outputs.module_changed, 'order')|| contains(needs.detect-changes.outputs.module_changed, 'common'))
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -441,7 +441,7 @@ jobs:
   deploy-review:
     runs-on: ubuntu-latest
     needs: [ deploy-order ]
-    if: always() && contains(needs.detect-changes.outputs.module_changed, 'review')
+    if: always() && (contains(needs.detect-changes.outputs.module_changed, 'review')|| contains(needs.detect-changes.outputs.module_changed, 'common'))
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -502,7 +502,7 @@ jobs:
   deploy-user:
     runs-on: ubuntu-latest
     needs: [ deploy-review ]
-    if: always() && contains(needs.detect-changes.outputs.module_changed, 'user')
+    if: always() && (contains(needs.detect-changes.outputs.module_changed, 'user')|| contains(needs.detect-changes.outputs.module_changed, 'common'))
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
