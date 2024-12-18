@@ -10,11 +10,7 @@ import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
 import com.fashionmall.common.redis.RedisUtil;
 import com.fashionmall.common.redis.RefreshToken;
 import com.fashionmall.common.response.PageInfoResponseDto;
-import com.fashionmall.user.dto.request.DeliveryAddressRequestDto;
-import com.fashionmall.user.dto.request.FavoriteRequestDto;
-import com.fashionmall.user.dto.request.LoginRequestDto;
-import com.fashionmall.user.dto.request.SignUpRequestDto;
-import com.fashionmall.user.dto.request.UpdateUserInfoRequestDto;
+import com.fashionmall.user.dto.request.*;
 import com.fashionmall.user.dto.response.FavoriteResponseDto;
 import com.fashionmall.user.dto.response.LoginResponseDto;
 import com.fashionmall.user.dto.response.UserInfoResponseDto;
@@ -26,9 +22,6 @@ import com.fashionmall.user.repository.FavoriteRepository;
 import com.fashionmall.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -39,6 +32,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Slf4j(topic = "favoriteService")
 @Service
@@ -69,13 +66,13 @@ public class UserServiceImpl implements UserService {
         UserRoleEnum role = signUpRequestDto.isAdmin() ? UserRoleEnum.ADMIN : UserRoleEnum.USER;
 
         User user = User.builder()
-            .email(email)
-            .password(encodePassword)
-            .userName(signUpRequestDto.getUserName())
-            .nickName(nickName)
-            .contact(signUpRequestDto.getContact())
-            .role(role)
-            .build();
+                .email(email)
+                .password(encodePassword)
+                .userName(signUpRequestDto.getUserName())
+                .nickName(nickName)
+                .contact(signUpRequestDto.getContact())
+                .role(role)
+                .build();
 
         userRepository.save(user);
 
@@ -85,13 +82,13 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public LoginResponseDto login(@RequestBody LoginRequestDto loginRequestDto,
-        HttpServletRequest request, HttpServletResponse response) {
+                                  HttpServletRequest request, HttpServletResponse response) {
 
         String emails = loginRequestDto.getEmail();
         String password = loginRequestDto.getPassword();
 
         User user = userRepository.findByEmail(emails)
-            .orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ID));
+                .orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ID));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new CustomException(ErrorResponseCode.WRONG_PASSWORD);
@@ -102,14 +99,14 @@ public class UserServiceImpl implements UserService {
         Long userId = user.getId();
 
         String accessToken = jwtUtil.createToken(email, role, userId,
-            jwtUtil.ACCESS_TOKEN_EXPIRATION_TIME);
+                jwtUtil.ACCESS_TOKEN_EXPIRATION_TIME);
         String refreshToken = jwtUtil.createToken(email, role, userId,
-            jwtUtil.REFRESH_TOKEN_EXPIRATION_TIME);
+                jwtUtil.REFRESH_TOKEN_EXPIRATION_TIME);
 
         jwtUtil.createTokenToCookie("access_token", accessToken,
-            jwtUtil.ACCESS_TOKEN_EXPIRATION_TIME);
+                jwtUtil.ACCESS_TOKEN_EXPIRATION_TIME);
         jwtUtil.createTokenToCookie("refresh_token", refreshToken,
-            jwtUtil.REFRESH_TOKEN_EXPIRATION_TIME);
+                jwtUtil.REFRESH_TOKEN_EXPIRATION_TIME);
 
         RefreshToken redisToken = new RefreshToken(userId, refreshToken);
         redisUtil.set("refreshToken:" + userId, String.valueOf(redisToken), 86400);
@@ -117,10 +114,10 @@ public class UserServiceImpl implements UserService {
         jwtUtil.addCookiesToResponse(response, accessToken, refreshToken);
 
         return LoginResponseDto.builder()
-            .userId(user.getId())
-            .accessToken(accessToken)
-            .refreshToken(refreshToken)
-            .build();
+                .userId(user.getId())
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 
     @Override
@@ -129,8 +126,16 @@ public class UserServiceImpl implements UserService {
 
         User user = findByUserId(userId);
 
+        String oldPassword = passwordEncoder.encode(updateUserInfoRequestDto.getOldPassword());
+        String newPassword = passwordEncoder.encode(updateUserInfoRequestDto.getNewPassword());
+
+        if (oldPassword != null
+                && oldPassword.equals(user.getPassword())) {
+            user.updatePassword(newPassword);
+        }
+
         if (updateUserInfoRequestDto.getOldPassword() != null
-            && updateUserInfoRequestDto.getOldPassword().equals(user.getPassword())) {
+                && updateUserInfoRequestDto.getOldPassword().equals(user.getPassword())) {
             user.updatePassword(updateUserInfoRequestDto.getNewPassword());
         }
 
@@ -153,12 +158,12 @@ public class UserServiceImpl implements UserService {
         UserRoleEnum role = user.getRole() == UserRoleEnum.ADMIN ? user.getRole() : null;
 
         return UserInfoResponseDto.builder()
-            .email(user.getEmail())
-            .userName(user.getUserName())
-            .nickName(user.getNickName())
-            .contact(user.getContact())
-            .role(role)
-            .build();
+                .email(user.getEmail())
+                .userName(user.getUserName())
+                .nickName(user.getNickName())
+                .contact(user.getContact())
+                .role(role)
+                .build();
     }
 
     @Override
@@ -172,7 +177,7 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         return jwtUtil.createToken(user.getEmail(), user.getRole(), user.getId(), jwtUtil.ACCESS_TOKEN_EXPIRATION_TIME);
     }
@@ -224,7 +229,7 @@ public class UserServiceImpl implements UserService {
 
     private User findByUserId(Long userId) {
         return userRepository.findById(userId)
-            .orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_USER_ID));
+                .orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_USER_ID));
     }
 
     // DeliveryAddress
@@ -235,10 +240,10 @@ public class UserServiceImpl implements UserService {
         findByUserId(userId);
 
         DeliveryAddress deliveryAddress = DeliveryAddress.builder()
-            .userId(userId)
-            .zipCode(deliveryAddressRequestDto.getZipcode())
-            .roadAddress(deliveryAddressRequestDto.getRoadAddress())
-            .build();
+                .userId(userId)
+                .zipCode(deliveryAddressRequestDto.getZipcode())
+                .roadAddress(deliveryAddressRequestDto.getRoadAddress())
+                .build();
         deliveryAddressRepository.save(deliveryAddress);
 
         return deliveryAddress.getId();
@@ -256,9 +261,9 @@ public class UserServiceImpl implements UserService {
 
         for (DeliveryAddress deliveryAddress : deliveryAddresses) {
             DeliveryAddressDto deliveryAddressDto = new DeliveryAddressDto(
-                deliveryAddress.getId(),
-                deliveryAddress.getZipCode(),
-                deliveryAddress.getRoadAddress()
+                    deliveryAddress.getId(),
+                    deliveryAddress.getZipCode(),
+                    deliveryAddress.getRoadAddress()
             );
             deliveryAddressDtos.add(deliveryAddressDto);
         }
@@ -275,9 +280,9 @@ public class UserServiceImpl implements UserService {
 
         List<LikeItemListResponseDto> itemInfos = moduleApiUtil.getItemInfoApi(itemId, userId);
         LikeItemListResponseDto itemInfo = itemInfos.stream()
-            .filter(info -> info.getItemInfo().getId() == itemId)
-            .findFirst()
-            .orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
+                .filter(info -> info.getItemInfo().getId() == itemId)
+                .findFirst()
+                .orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
 
         Favorite existingFavorite = favoriteRepository.findByItemId(itemId);
 
@@ -316,9 +321,9 @@ public class UserServiceImpl implements UserService {
 
     private Favorite buildFavorite(Long itemId, boolean isSelected, Long userId) {
         return Favorite.builder()
-            .itemId(itemId)
-            .isSelected(isSelected)
-            .userId(userId)
-            .build();
+                .itemId(itemId)
+                .isSelected(isSelected)
+                .userId(userId)
+                .build();
     }
 }
