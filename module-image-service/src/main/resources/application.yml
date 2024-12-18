@@ -6,7 +6,7 @@ spring:
     name: module-image-service
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
 
   profiles:
     active: local
