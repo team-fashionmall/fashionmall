@@ -90,7 +90,7 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
     public PageInfoResponseDto <ItemListResponseDto> itemListPageNation (Pageable pageable, String itemName, Long category1, Long category2) {
 
         List<ItemListResponseDto> itemList = queryFactory
-                .select(Projections.constructor(ItemListResponseDto.class,
+                .selectDistinct(Projections.constructor(ItemListResponseDto.class,
                         Projections.constructor(ItemListResponseDto.ItemInfo.class,
                                 item.id,
                                 item.name,
@@ -114,8 +114,10 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
                 .fetch();
 
         Long fetchOne = queryFactory
-                .select(item.count())
+                .selectDistinct(item.count())
                 .from(item)
+                .leftJoin(item.itemCategoryMappings, itemCategoryMapping)
+                .where(getFilter(itemName, category1, category2))
                 .fetchOne();
 
         int totalCount = fetchOne.intValue();
