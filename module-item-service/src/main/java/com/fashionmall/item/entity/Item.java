@@ -22,7 +22,7 @@ public class Item extends BaseEntity {
     @Id @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column (name = "worker_userId", nullable = false)
+    @Column (name = "worker_user_id", nullable = false)
     private Long workerId; // msa 에서 받아오는 사용자 Id
 
     @Column (name = "image_main_id", nullable = false)
