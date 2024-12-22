@@ -108,7 +108,6 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
                 .leftJoin(item.itemCategoryMappings, itemCategoryMapping)
                 .leftJoin(item.itemDiscounts, itemDiscount)
                 .where(getFilter(itemName, category1, category2))
-                .groupBy(item.id)
                 .orderBy(item.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -117,7 +116,6 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
         Long fetchOne = queryFactory
                 .select(item.count())
                 .from(item)
-                .where(getFilter(itemName, category1, category2))
                 .fetchOne();
 
         int totalCount = fetchOne.intValue();
