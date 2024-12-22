@@ -23,11 +23,11 @@ public class ModuleApiUtil {
     private final HttpServletRequest request;
     private final JwtUtil jwtUtil;
 
-    private final String cartApi = "http://localhost:8000/api/cart";
-    private final String userApi = "http://localhost:8000/api/user";
-    private final String couponApi = "http://localhost:8000/api/coupon";
-    private final String itemApi = "http://localhost:8000/api/item";
-    private final String imageApi = "http://localhost:8000/api/image";
+    private final String cartApi = "http://api.myfashionmall.shop/api/cart";
+    private final String userApi = "http://api.myfashionmall.shop/api/user";
+    private final String couponApi = "http://api.myfashionmall.shop/api/coupon";
+    private final String itemApi = "http://api.myfashionmall.shop/api/item";
+    private final String imageApi = "http://api.myfashionmall.shop/api/image";
 
     public List<LikeItemListResponseDto> getItemInfoApi(Long itemId, Long userId) {
 
@@ -57,7 +57,7 @@ public class ModuleApiUtil {
 
     }
 
-    public List<CouponDto> getUserCouponApi (Long userId){
+    public List<CouponDto> getUserCouponApi(Long userId) {
 
         CommonResponse<List<CouponDto>> listCommonResponse = webClientUtil.get(
                 couponApi + "/getCoupon", new ParameterizedTypeReference<CommonResponse<List<CouponDto>>>() {
@@ -111,7 +111,7 @@ public class ModuleApiUtil {
 
         CommonResponse<List<ItemDetailInfoDto>> commonResponse = webClientUtil.get(
                 itemApi + "/getItemDetail/" + itemDetailId,
-                new ParameterizedTypeReference<CommonResponse<List<ItemDetailInfoDto>>>(){
+                new ParameterizedTypeReference<CommonResponse<List<ItemDetailInfoDto>>>() {
                 },
                 headers(getAccessToken(request)),
                 ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE
@@ -229,7 +229,7 @@ public class ModuleApiUtil {
         return deleteImageApi.getData();
     }
 
-    private String getAccessToken (HttpServletRequest request){
+    private String getAccessToken(HttpServletRequest request) {
         return jwtUtil.getJwtFromHeader(request);
     }
 
