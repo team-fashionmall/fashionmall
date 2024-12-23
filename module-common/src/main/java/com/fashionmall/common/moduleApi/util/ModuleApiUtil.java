@@ -23,11 +23,11 @@ public class ModuleApiUtil {
     private final HttpServletRequest request;
     private final JwtUtil jwtUtil;
 
-    private final String cartApi = "http://api.myfashionmall.shop/api/cart";
-    private final String userApi = "http://api.myfashionmall.shop/api/user";
-    private final String couponApi = "http://api.myfashionmall.shop/api/coupon";
-    private final String itemApi = "http://api.myfashionmall.shop/api/item";
-    private final String imageApi = "http://api.myfashionmall.shop/api/image";
+    private final String cartApi = "http://api.myfashionmall.shop:8000/api/cart";
+    private final String userApi = "http://api.myfashionmall.shop:8000/api/user";
+    private final String couponApi = "http://api.myfashionmall.shop:8000/api/coupon";
+    private final String itemApi = "http://api.myfashionmall.shop:8000/api/item";
+    private final String imageApi = "http://api.myfashionmall.shop:8000/api/image";
 
     public List<LikeItemListResponseDto> getItemInfoApi(Long itemId, Long userId) {
 
