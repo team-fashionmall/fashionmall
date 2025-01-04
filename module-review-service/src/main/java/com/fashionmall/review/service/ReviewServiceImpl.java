@@ -21,6 +21,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final ModuleApiUtil moduleApiUtil;
 
     @Override
+    @Transactional
     public Long createReview(ReviewRequestDto reviewRequestDto) {
 
         Long itemId = reviewRequestDto.getItemId();
@@ -45,6 +46,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public void deleteReview(Long userId, Long reviewId) {
         reviewRepository.deleteReviewByUserIdAndId(userId, reviewId);
     }
