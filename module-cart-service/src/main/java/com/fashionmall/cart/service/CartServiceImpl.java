@@ -109,6 +109,10 @@ public class CartServiceImpl implements CartService{
         List<Cart> carts = cartRepository.findByUserId(userId)
                 .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_USER_ID));
 
+        if (carts.isEmpty()) {
+            return cartResponseDtoList;
+        }
+        
         List<Long> itemDetailIds = carts.stream()
                 .map(Cart::getItemDetailId)
                 .collect(Collectors.toList());
