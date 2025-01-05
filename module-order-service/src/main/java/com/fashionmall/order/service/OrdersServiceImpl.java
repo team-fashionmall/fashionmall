@@ -62,7 +62,7 @@ public class OrdersServiceImpl implements OrdersService {
         List<CouponDto> userCouponApi = moduleApiUtil.getUserCouponApi(userId);
         List<DeliveryAddressDto> userDeliveryAddressApi = moduleApiUtil.getUserDeliveryAddressApi(userId);
         List<BillingKey> billingKeys = billingKeyRepository.findByUserId(userId);
-        List<CartItemDto> isSelectedItemApi = moduleApiUtil.getIsSelectedItemApi();
+        List<CartItemDto> isSelectedItemApi = moduleApiUtil.getIsSelectedItemApi(userId);
         List<Long> itemIds = isSelectedItemApi.stream()
                 .map(CartItemDto::getId)
                 .toList();
@@ -231,7 +231,7 @@ public class OrdersServiceImpl implements OrdersService {
                 .toList();
 
         List<Long> imageList = new ArrayList<>();
-        
+
         ordersDetails.getOrderItemsDto().forEach(orderItemDetail -> {
             Long itemDetailId = orderItemDetail.getItemDetailId();
             ItemDetailResponseDto itemDetailApi = moduleApiUtil.getItemDetailApi(itemDetailId);

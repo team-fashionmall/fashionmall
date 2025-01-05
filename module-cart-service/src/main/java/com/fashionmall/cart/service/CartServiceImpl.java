@@ -3,35 +3,37 @@ package com.fashionmall.cart.service;
 import com.fashionmall.cart.dto.request.CartCalculateRequestDto;
 import com.fashionmall.cart.dto.request.CartRequestDto;
 import com.fashionmall.cart.dto.request.CartUpdateRequestDto;
-import com.fashionmall.cart.dto.response.CartUpdateResponseDto;
 import com.fashionmall.cart.dto.response.CartCalculateResponseDto;
 import com.fashionmall.cart.dto.response.CartResponseDto;
+import com.fashionmall.cart.dto.response.CartUpdateResponseDto;
 import com.fashionmall.cart.entity.Cart;
 import com.fashionmall.cart.repository.CartRepository;
-import com.fashionmall.common.moduleApi.dto.*;
 import com.fashionmall.common.exception.CustomException;
 import com.fashionmall.common.exception.ErrorResponseCode;
+import com.fashionmall.common.moduleApi.dto.*;
 import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j(topic = "cartService")
 @Transactional(readOnly = true)
-public class CartServiceImpl implements CartService{
+public class CartServiceImpl implements CartService {
 
     private final CartRepository cartRepository;
     private final ModuleApiUtil moduleApiUtil;
 
     @Override
     @Transactional
-    public List<Long> createCart (CartRequestDto cartRequestDto, Long userId) {
+    public List<Long> createCart(CartRequestDto cartRequestDto, Long userId) {
 
         moduleApiUtil.confirmUserInfoApi(userId);
 
@@ -58,7 +60,7 @@ public class CartServiceImpl implements CartService{
 
     @Override
     @Transactional
-    public CartUpdateResponseDto updateCart (Long cartId, CartUpdateRequestDto cartUpdateRequestDto, Long userId) {
+    public CartUpdateResponseDto updateCart(Long cartId, CartUpdateRequestDto cartUpdateRequestDto, Long userId) {
 
         moduleApiUtil.confirmUserInfoApi(userId);
 
@@ -88,13 +90,13 @@ public class CartServiceImpl implements CartService{
 
     }
 
-    public Cart findByIdAndUserId (Long cartId, Long userId) {
-        return cartRepository.findByIdAndUserId(cartId, userId).orElseThrow(()-> new CustomException (ErrorResponseCode.WRONG_CART_ID));
+    public Cart findByIdAndUserId(Long cartId, Long userId) {
+        return cartRepository.findByIdAndUserId(cartId, userId).orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_CART_ID));
     }
 
     @Override
     @Transactional
-    public List <ItemDetailDto> getItemDetailFromCartApi (Long userId) {
+    public List<ItemDetailDto> getItemDetailFromCartApi(Long userId) {
         return cartRepository.getItemDetailFromCartApi(userId);
     }
 
@@ -107,12 +109,12 @@ public class CartServiceImpl implements CartService{
         List<CartResponseDto> cartResponseDtoList = new ArrayList<>();
 
         List<Cart> carts = cartRepository.findByUserId(userId)
-                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_USER_ID));
+                .orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_USER_ID));
 
         if (carts.isEmpty()) {
             return cartResponseDtoList;
         }
-        
+
         List<Long> itemDetailIds = carts.stream()
                 .map(Cart::getItemDetailId)
                 .collect(Collectors.toList());
@@ -192,10 +194,10 @@ public class CartServiceImpl implements CartService{
 
     @Override
     @Transactional
-    public List<CartItemDto> getIsSelectedItemApi (Long userId) {
+    public List<CartItemDto> getIsSelectedItemApi(Long userId, boolean selected) {
 
-        List<Cart> carts = cartRepository.findByUserId(userId)
-                .orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_USER_ID));
+        List<Cart> carts = cartRepository.findByUserIdAndSelected(userId, true)
+                .orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_USER_ID));
 
         List<CartItemDto> cartItemDtoList = new ArrayList<>();
 

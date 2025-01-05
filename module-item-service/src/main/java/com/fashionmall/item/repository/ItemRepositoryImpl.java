@@ -1,14 +1,13 @@
 package com.fashionmall.item.repository;
 
-import com.fashionmall.common.moduleApi.dto.LikeItemListResponseDto;
 import com.fashionmall.common.moduleApi.dto.ItemPriceNameDto;
+import com.fashionmall.common.moduleApi.dto.LikeItemListResponseDto;
+import com.fashionmall.common.moduleApi.enums.ItemDiscountTypeEnum;
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.item.dto.response.AdminItemDetailResponseDto;
 import com.fashionmall.item.dto.response.AdminItemResponseDto;
-import com.fashionmall.item.dto.response.ItemDetailListResponseDto;
+import com.fashionmall.item.dto.response.CategoryResponseDto;
 import com.fashionmall.item.dto.response.ItemListResponseDto;
-import com.fashionmall.common.moduleApi.enums.ItemDiscountTypeEnum;
-import com.fashionmall.item.dto.response.*;
 import com.fashionmall.item.enums.StatusEnum;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
@@ -23,12 +22,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-
 import static com.fashionmall.item.entity.QCategory1.category1;
 import static com.fashionmall.item.entity.QCategory2.category2;
 import static com.fashionmall.item.entity.QItem.item;
 import static com.fashionmall.item.entity.QItemCategoryMapping.itemCategoryMapping;
-
 import static com.fashionmall.item.entity.QItemDetail.itemDetail;
 import static com.fashionmall.item.entity.QItemDiscount.itemDiscount;
 
@@ -61,7 +58,7 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
     }
 
     @Override
-    public List<LikeItemListResponseDto> getItemInfo (Long itemId, Long userId) {
+    public List<LikeItemListResponseDto> getItemInfo(Long itemId, Long userId) {
 
         return queryFactory
                 .select(Projections.constructor(LikeItemListResponseDto.class,
@@ -87,7 +84,7 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
     }
 
     @Override
-    public PageInfoResponseDto <ItemListResponseDto> itemListPageNation (Pageable pageable, String itemName, Long category1, Long category2) {
+    public PageInfoResponseDto<ItemListResponseDto> itemListPageNation(Pageable pageable, String itemName, Long category1, Long category2) {
 
         List<ItemListResponseDto> itemList = queryFactory
                 .selectDistinct(Projections.constructor(ItemListResponseDto.class,
@@ -127,7 +124,7 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
     }
 
     @Override
-    public PageInfoResponseDto <AdminItemResponseDto> adminItemListPageNation (Pageable pageable, String itemName, Long category1, Long category2) {
+    public PageInfoResponseDto<AdminItemResponseDto> adminItemListPageNation(Pageable pageable, String itemName, Long category1, Long category2) {
 
         int offset = (int) pageable.getOffset();
         int size = pageable.getPageSize();
@@ -169,7 +166,7 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
     }
 
     @Override
-    public PageInfoResponseDto <AdminItemDetailResponseDto> adminItemDetailListPageNation (Long itemId, Pageable pageable) {
+    public PageInfoResponseDto<AdminItemDetailResponseDto> adminItemDetailListPageNation(Long itemId, Pageable pageable) {
 
         List<AdminItemDetailResponseDto> adminItemDetailList = queryFactory
                 .select(Projections.constructor(AdminItemDetailResponseDto.class,
@@ -222,7 +219,7 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
         return PageInfoResponseDto.of(pageable, adminItemDetailList, totalCount);
     }
 
-    private BooleanExpression getFilter (String itemName, Long category1, Long category2) {
+    private BooleanExpression getFilter(String itemName, Long category1, Long category2) {
 
         BooleanExpression filters = item.isNotNull();
 
@@ -241,14 +238,14 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
         return filters;
     }
 
-    public ItemPriceNameDto getDiscountPrice (Long itemDetailId, Long itemDiscountId) {
+    public ItemPriceNameDto getDiscountPrice(Long itemDetailId, Long itemDiscountId) {
 
         return queryFactory
                 .select(Projections.fields(ItemPriceNameDto.class,
-                        itemDetail.id.as("itemDetailId"),
-                        ExpressionUtils.as(calculateDiscount(itemDetail.price, itemDiscount.status, itemDiscount.type, itemDiscount.value),
-                                "price"),
-                        item.name
+                                itemDetail.id.as("itemDetailId"),
+                                ExpressionUtils.as(calculateDiscount(itemDetail.price, itemDiscount.status, itemDiscount.type, itemDiscount.value),
+                                        "price"),
+                                item.name
                         )
                 )
                 .from(item)
@@ -260,7 +257,7 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
                 .fetchOne();
     }
 
-    private NumberExpression<Integer> calculateDiscount (NumberExpression<Integer> price, EnumPath<StatusEnum> status, EnumPath<ItemDiscountTypeEnum> type, NumberExpression<Integer> value) {
+    private NumberExpression<Integer> calculateDiscount(NumberExpression<Integer> price, EnumPath<StatusEnum> status, EnumPath<ItemDiscountTypeEnum> type, NumberExpression<Integer> value) {
         return new CaseBuilder()
                 .when(status.eq(StatusEnum.ACTIVATED).and(type.eq(ItemDiscountTypeEnum.RATE)))
                 .then(price.subtract(price.multiply(value).divide(100)))

@@ -69,10 +69,10 @@ public class ModuleApiUtil {
         return listCommonResponse.getData();
     }
 
-    public List<CartItemDto> getIsSelectedItemApi() {
+    public List<CartItemDto> getIsSelectedItemApi(Long userId) {
 
         CommonResponse<List<CartItemDto>> commonResponse = webClientUtil.get(
-                cartApi + "/getIsSelectedItem",
+                cartApi + "/getIsSelectedItem/" + userId,
                 new ParameterizedTypeReference<CommonResponse<List<CartItemDto>>>() {
                 },
                 headers(getAccessToken(request)),
@@ -109,8 +109,14 @@ public class ModuleApiUtil {
 
     public List<ItemDetailInfoDto> getItemDetailInfoApi(List<Long> itemDetailId) {
 
+        String itemDetailIdsParam = itemDetailId.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
+
+        String url = itemApi + "getItemDetail?itemDetailId" + itemDetailIdsParam;
+
         CommonResponse<List<ItemDetailInfoDto>> commonResponse = webClientUtil.get(
-                itemApi + "/getItemDetail/" + itemDetailId,
+                url,
                 new ParameterizedTypeReference<CommonResponse<List<ItemDetailInfoDto>>>() {
                 },
                 headers(getAccessToken(request)),

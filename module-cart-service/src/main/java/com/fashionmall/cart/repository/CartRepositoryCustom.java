@@ -9,5 +9,7 @@ public interface CartRepositoryCustom {
 
     List<ItemDetailDto> getItemDetailFromCartApi(Long userId);
 
-    List<CartResponseDto> getCartList (Long userId, int discountPrice, String itemName, boolean isSelected, String imageUrl);
+    List<CartResponseDto> getCartList(Long userId, int discountPrice, String itemName, boolean isSelected, String imageUrl);
+
+    
 }

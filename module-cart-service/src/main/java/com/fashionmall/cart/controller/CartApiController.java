@@ -25,9 +25,8 @@ public class CartApiController {
         return ApiResponseUtil.success(cartService.getItemDetailFromCartApi(userId));
     }
 
-    @GetMapping("/getIsSelectedItem")
-    public CommonResponse<List<CartItemDto>> getIsSelectedItemApi() {
-        Long userId = 1L;
+    @GetMapping("/getIsSelectedItem/{userId}")
+    public CommonResponse<List<CartItemDto>> getIsSelectedItemApi(@PathVariable Long userId) {
         return ApiResponseUtil.success(cartService.getIsSelectedItemApi(userId));
     }
 }
