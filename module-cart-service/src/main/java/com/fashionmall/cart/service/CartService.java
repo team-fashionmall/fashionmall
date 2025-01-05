@@ -24,5 +24,5 @@ public interface CartService {
 
     List<CartCalculateResponseDto> calculateCart(CartCalculateRequestDto cartCalculateRequestDto, Long userId);
 
-    List<CartItemDto> getIsSelectedItemApi(Long userId, boolean selected);
+    List<CartItemDto> getIsSelectedItemApi(Long userId);
 }
