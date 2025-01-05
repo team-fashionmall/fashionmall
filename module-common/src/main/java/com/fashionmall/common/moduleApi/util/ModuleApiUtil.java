@@ -60,7 +60,7 @@ public class ModuleApiUtil {
     public List<CouponDto> getUserCouponApi(Long userId) {
 
         CommonResponse<List<CouponDto>> listCommonResponse = webClientUtil.get(
-                couponApi + "/getCoupon", new ParameterizedTypeReference<CommonResponse<List<CouponDto>>>() {
+                couponApi + "/getCoupon/" + userId, new ParameterizedTypeReference<CommonResponse<List<CouponDto>>>() {
                 },
                 headers(getAccessToken(request)),
                 ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE
