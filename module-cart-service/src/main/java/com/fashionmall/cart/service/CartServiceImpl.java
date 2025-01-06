@@ -196,7 +196,7 @@ public class CartServiceImpl implements CartService {
     @Transactional
     public List<CartItemDto> getIsSelectedItemApi(Long userId) {
 
-        List<Cart> carts = cartRepository.findByUserIdAndSelected(userId, true)
+        List<Cart> carts = cartRepository.findByUserIdAndIsSelected(userId, true)
                 .orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_USER_ID));
 
         List<CartItemDto> cartItemDtoList = new ArrayList<>();

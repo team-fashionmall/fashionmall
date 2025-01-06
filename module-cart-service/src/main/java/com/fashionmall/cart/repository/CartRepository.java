@@ -13,6 +13,6 @@ public interface CartRepository extends JpaRepository<Cart, Long>, CartRepositor
 
     Optional<List<Cart>> findByUserId(Long userId);
 
-    Optional<List<Cart>> findByUserIdAndSelected(Long userId, boolean selected);
+    Optional<List<Cart>> findByUserIdAndIsSelected(Long userId, boolean selected);
 
 }
