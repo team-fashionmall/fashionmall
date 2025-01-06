@@ -1,23 +1,14 @@
 package com.fashionmall.item.controller;
 
-import com.fashionmall.common.moduleApi.dto.ItemDetailInfoDto;
-import com.fashionmall.common.moduleApi.dto.ItemDetailResponseDto;
-import com.fashionmall.common.moduleApi.dto.ItemPriceNameDto;
-import com.fashionmall.common.moduleApi.dto.LikeItemListResponseDto;
-import com.fashionmall.common.moduleApi.dto.OrderItemDto;
+import com.fashionmall.common.moduleApi.dto.*;
 import com.fashionmall.common.response.CommonResponse;
 import com.fashionmall.common.util.ApiResponseUtil;
 import com.fashionmall.item.service.ItemService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Map;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,14 +34,14 @@ public class ItemApiController {
         return ApiResponseUtil.success(itemService.getItemNameApi(itemId));
     }
 
-    @GetMapping("/getItemDetail/{itemDetailId}")
-    public CommonResponse<List<ItemDetailInfoDto>> getItemDetailInfoApi(@PathVariable List<Long> itemDetailId) {
-        return ApiResponseUtil.success(itemService.getItemDetailInfoApi(itemDetailId));
+    @GetMapping("/getItemDetail")
+    public CommonResponse<List<ItemDetailInfoDto>> getItemDetailInfoApi(@RequestParam(name = "itemDetailIds") List<Long> itemDetailIds) {
+        return ApiResponseUtil.success(itemService.getItemDetailInfoApi(itemDetailIds));
     }
 
     @GetMapping("/itemInfo/{itemId}/{userId}")
     public CommonResponse<List<LikeItemListResponseDto>> getItemInfoApi(@PathVariable Long itemId,
-        @PathVariable Long userId) {
+                                                                        @PathVariable Long userId) {
         return ApiResponseUtil.success(itemService.getItemInfoApi(itemId, userId));
     }
 
