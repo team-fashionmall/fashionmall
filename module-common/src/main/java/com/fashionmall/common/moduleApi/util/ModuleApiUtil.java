@@ -113,7 +113,7 @@ public class ModuleApiUtil {
                 .map(String::valueOf)
                 .collect(Collectors.joining(","));
 
-        String url = itemApi + "getItemDetail?itemDetailId" + itemDetailIdsParam;
+        String url = itemApi + "/getItemDetail?itemDetailId" + itemDetailIdsParam;
 
         CommonResponse<List<ItemDetailInfoDto>> commonResponse = webClientUtil.get(
                 url,
