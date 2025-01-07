@@ -44,17 +44,7 @@ public class OrderPaymentRequestDto {
     private int cardQuota;
 
     public Orders toOrders() {
-        List<OrderItem> orderItems = orderItemsDto.stream()
-                .map(orderitems -> new OrderItem(
-                        orderitems.getItemDetailId(),
-                        orderitems.getOriginalPrice(),
-                        orderitems.getQuantity(),
-                        orderitems.getItemDiscountPrice()
-
-                ))
-                .toList();
-
-        return Orders
+        Orders order = Orders
                 .builder()
                 .userId(userId)
                 .couponId(couponId)
@@ -64,8 +54,24 @@ public class OrderPaymentRequestDto {
                 .couponDiscountPrice(couponDiscountPrice)
                 .totalItemDiscountPrice(totalItemDiscountPrice)
                 .paymentPrice(paymentPrice)
-                .orderItems(orderItems)
                 .build();
+
+        List<OrderItem> orderItems = orderItemsDto.stream()
+                .map(orderItemRequest -> {
+                    OrderItem orderItem = new OrderItem(
+                            orderItemRequest.getItemDetailId(),
+                            orderItemRequest.getOriginalPrice(),
+                            orderItemRequest.getQuantity(),
+                            orderItemRequest.getItemDiscountPrice()
+                    );
+                    orderItem.setOrders(order);
+                    return orderItem;
+                })
+                .toList();
+
+        order.setOrderItems(orderItems);
+        
+        return order;
     }
 
     public Payment toPayment(Orders orders, BillingKey billingKey, String impUid, LocalDateTime paidAt) {

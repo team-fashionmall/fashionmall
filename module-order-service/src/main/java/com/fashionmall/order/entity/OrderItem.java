@@ -41,4 +41,8 @@ public class OrderItem extends BaseEntity {
         this.quantity = quantity;
         this.itemDiscountPrice = itemDiscountPrice;
     }
+
+    public void setOrders(Orders orders) {
+        this.orders = orders;
+    }
 }

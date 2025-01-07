@@ -78,4 +78,8 @@ public class Orders extends BaseEntity {
     public void setStatus(OrderStatus status) {
         this.status = status;
     }
+
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
+    }
 }
