@@ -50,8 +50,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public PageInfoResponseDto<ItemListResponseDto> getItemList(int pageNo, int size, String itemName, Long category1, Long category2) {
-        PageRequest pageRequest = PageRequest.of(pageNo -1, size);
-        return itemRepository.itemListPageNation (pageRequest, itemName, category1, category2);
+        PageRequest pageRequest = PageRequest.of(pageNo - 1, size);
+        return itemRepository.itemListPageNation(pageRequest, itemName, category1, category2);
     }
 
     @Override
@@ -118,10 +118,10 @@ public class ItemServiceImpl implements ItemService {
         return discountPrice; // 계산된 할인 가격 반환
     }
 
-    public int discountPrice (int price, StatusEnum status, ItemDiscountTypeEnum type, int value) {
+    public int discountPrice(int price, StatusEnum status, ItemDiscountTypeEnum type, int value) {
         int discountPrice = 0;
         if (status == StatusEnum.ACTIVATED && type == ItemDiscountTypeEnum.RATE) {
-            discountPrice = price - (price/value);
+            discountPrice = price - (price / value);
         } else if (status == StatusEnum.ACTIVATED && type == ItemDiscountTypeEnum.AMOUNT) {
             discountPrice = price - value;
         } else {
@@ -206,27 +206,27 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public PageInfoResponseDto<AdminItemResponseDto> getAdminItemList(int pageNo, int size, String itemName, Long category1, Long category2, Long workerId) {
         moduleApiUtil.confirmUserInfoApi(workerId);
-        PageRequest pageRequest = PageRequest.of(pageNo -1, size);
-        return itemRepository.adminItemListPageNation (pageRequest, itemName, category1, category2);
+        PageRequest pageRequest = PageRequest.of(pageNo - 1, size);
+        return itemRepository.adminItemListPageNation(pageRequest, itemName, category1, category2);
     }
 
     @Override
     public PageInfoResponseDto<AdminItemDetailResponseDto> getAdminItemDetailList(Long itemId, int pageNo, int size, Long workerId) {
         moduleApiUtil.confirmUserInfoApi(workerId);
-        PageRequest pageRequest = PageRequest.of(pageNo -1, size);
-        return itemRepository.adminItemDetailListPageNation (itemId, pageRequest);
+        PageRequest pageRequest = PageRequest.of(pageNo - 1, size);
+        return itemRepository.adminItemDetailListPageNation(itemId, pageRequest);
     }
 
     private ItemColor findColorId(Long colorId) {
-        return itemColorRepository.findById(colorId).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
+        return itemColorRepository.findById(colorId).orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
     }
 
     private ItemSize findSizeId(Long sizeId) {
-        return itemSizeRepository.findById(sizeId).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
+        return itemSizeRepository.findById(sizeId).orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
     }
 
     private Category1 findCategory1(Long category1) {
-        return category1Repository.findById (category1).orElseThrow(()-> new CustomException(ErrorResponseCode.WRONG_CATEGORY_ID));
+        return category1Repository.findById(category1).orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_CATEGORY_ID));
     }
 
     private Category2 findCategory2(Long category2, Long category1) {
@@ -451,12 +451,17 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public Map<Long, Integer> getItemStockApi(Long itemDetailId, Long workerId) {
+    public Map<Long, Integer> getItemStockApi(List<Long> itemDetailIds, Long workerId) {
 
-        ItemDetail itemDetail = findByItemDetailIdAndWorkerId(itemDetailId, workerId);
-
+        List<ItemDetail> itemDetails = new ArrayList<>();
         Map<Long, Integer> itemStock = new HashMap<>();
-        itemStock.put(itemDetail.getId(), itemDetail.getQuantity());
+
+        for (Long itemDetailId : itemDetailIds) {
+            ItemDetail itemDetail = findByItemDetailIdAndWorkerId(itemDetailId, workerId);
+            itemDetails.add(itemDetail);
+
+            itemStock.put(itemDetail.getId(), itemDetail.getQuantity());
+        }
 
         return itemStock;
     }
@@ -525,7 +530,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public void restoreItemStockApi(List<OrderItemDto> orderItemDto, Long workerId){
+    public void restoreItemStockApi(List<OrderItemDto> orderItemDto, Long workerId) {
 
         for (OrderItemDto orderItemDtoList : orderItemDto) {
 

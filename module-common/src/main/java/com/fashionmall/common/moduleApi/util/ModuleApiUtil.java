@@ -128,8 +128,14 @@ public class ModuleApiUtil {
 
     public Map<Long, Integer> getItemStockApi(List<Long> itemDetailId) {
 
+        String itemDetailIdsParam = itemDetailId.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
+
+        String url = itemApi + "/getStock?itemDetailIds=" + itemDetailIdsParam;
+
         CommonResponse<Map<Long, Integer>> integerCommonResponse = webClientUtil.get(
-                itemApi + "/getStock/" + itemDetailId,
+                url,
                 new ParameterizedTypeReference<CommonResponse<Map<Long, Integer>>>() {
                 },
                 headers(getAccessToken(request)),
