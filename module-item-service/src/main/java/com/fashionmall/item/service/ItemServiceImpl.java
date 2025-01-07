@@ -493,7 +493,7 @@ public class ItemServiceImpl implements ItemService {
 
             if (itemDiscounts.isEmpty()) {
                 String discountType = "none";
-                int itemDiscountValue = price;
+                int itemDiscountValue = 0;
                 ItemDetailInfoDto itemDetailInfoDto = new ItemDetailInfoDto(itemDetail.getId(), itemDetailName, price, itemDiscountValue, discountType, imageUrl);
                 itemDetailInfoDtoList.add(itemDetailInfoDto);
             } else {

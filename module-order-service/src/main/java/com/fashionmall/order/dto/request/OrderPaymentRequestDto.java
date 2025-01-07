@@ -70,7 +70,7 @@ public class OrderPaymentRequestDto {
                 .toList();
 
         order.setOrderItems(orderItems);
-        
+
         return order;
     }
 
