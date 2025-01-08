@@ -165,7 +165,7 @@ public class ModuleApiUtil {
                 orderItemDto,
                 new ParameterizedTypeReference<Void>() {
                 },
-                headers(getAccessToken(request)),
+                null,
                 ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE);
     }
 
@@ -176,7 +176,7 @@ public class ModuleApiUtil {
                 orderItemDto,
                 new ParameterizedTypeReference<Void>() {
                 },
-                headers(getAccessToken(request)),
+                null,
                 ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE);
     }
 

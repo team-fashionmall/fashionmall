@@ -210,8 +210,10 @@ public class OrdersServiceImpl implements OrdersService {
 
         order.setPayment(payment);
 
+        List<OrderItemDto> orderItemDto = ordersRepository.findOrderItemsByOrderId(order.getId());
+
         //재고차감
-        eventPublisher.publishEvent(new StockDeductEvent(order.getId()));
+        eventPublisher.publishEvent(new StockDeductEvent(order.getId(), orderItemDto));
 
         return order.getId();
     }
@@ -259,9 +261,10 @@ public class OrdersServiceImpl implements OrdersService {
     public Long cancelOrder(Long userId, Long orderId) {
 
         Long cancelOrder = ordersRepository.cancelOrderById(userId, orderId);
+        List<OrderItemDto> orderItemDto = ordersRepository.findOrderItemsByOrderId(orderId);
 
         if (cancelOrder != null) {
-            eventPublisher.publishEvent(new StockRestoreEvent(orderId));
+            eventPublisher.publishEvent(new StockRestoreEvent(orderId, orderItemDto));
         } else {
             throw new CustomException(ErrorResponseCode.NOT_FOUND);
         }
