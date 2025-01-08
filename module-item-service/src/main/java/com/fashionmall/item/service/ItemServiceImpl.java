@@ -499,8 +499,6 @@ public class ItemServiceImpl implements ItemService {
             } else {
                 for (ItemDiscount itemDiscount : itemDiscounts) {
 
-                    //ItemPriceNameDto itemPriceNameDto = itemRepository.getDiscountPrice(itemDetail.getId(), itemDiscount.getId());
-
                     int itemDiscountValue = itemDiscount.getValue();
                     String discountType = itemDiscount.getType().name();
 
