@@ -245,7 +245,7 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
                                 itemDetail.id.as("itemDetailId"),
                                 ExpressionUtils.as(calculateDiscount(itemDetail.price, itemDiscount.status, itemDiscount.type, itemDiscount.value),
                                         "price"),
-                                item.name
+                                item.name.as("name")
                         )
                 )
                 .from(item)
