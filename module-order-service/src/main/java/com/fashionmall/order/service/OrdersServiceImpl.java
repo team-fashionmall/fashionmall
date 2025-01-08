@@ -63,10 +63,10 @@ public class OrdersServiceImpl implements OrdersService {
         List<DeliveryAddressDto> userDeliveryAddressApi = moduleApiUtil.getUserDeliveryAddressApi(userId);
         List<BillingKey> billingKeys = billingKeyRepository.findByUserId(userId);
         List<CartItemDto> isSelectedItemApi = moduleApiUtil.getIsSelectedItemApi(userId);
-        List<Long> itemIds = isSelectedItemApi.stream()
+        List<Long> itemDetailIdList = isSelectedItemApi.stream()
                 .map(CartItemDto::getId)
                 .toList();
-        List<ItemDetailInfoDto> itemDetailInfoApi = moduleApiUtil.getItemDetailInfoApi(itemIds);
+        List<ItemDetailInfoDto> itemDetailInfoApi = moduleApiUtil.getItemDetailInfoApi(itemDetailIdList);
 
         List<ItemDetailDto> list = itemDetailInfoApi.stream()
                 .map(itemInfo -> new ItemDetailDto(

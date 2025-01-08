@@ -203,7 +203,7 @@ public class CartServiceImpl implements CartService {
 
         for (Cart cart : carts) {
 
-            Long id = cart.getId();
+            Long id = cart.getItemDetailId();
             int quantity = cart.getQuantity();
 
             CartItemDto cartItemDto = new CartItemDto(id, quantity);
