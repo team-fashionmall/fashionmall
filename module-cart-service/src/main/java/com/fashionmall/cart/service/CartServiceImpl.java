@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -124,30 +125,38 @@ public class CartServiceImpl implements CartService {
                 .collect(Collectors.toList());
 
         List<ItemPriceNameDto> discountPrices = moduleApiUtil.getItemPriceAndNameApi(itemDetailIds);
-        List<ImageDataDto> imageUrls = moduleApiUtil.getImageApi(imageIds);
+        Map<Long, ItemDetailInfoDto> itemDetailInfoDtoMap = moduleApiUtil.getItemDetailInfoApi(itemDetailIds)
+                .stream()
+                .collect(Collectors.toMap(ItemDetailInfoDto::getId, op -> op));
+
+        Map<Long, ImageDataDto> imageMap = moduleApiUtil.getImageApi(imageIds)
+                .stream()
+                .collect(Collectors.toMap(ImageDataDto::getId, op -> op, (t, t2) -> t2));
 
 
         for (Cart cart : carts) {
-
+            ItemDetailInfoDto detailInfo = itemDetailInfoDtoMap.get(cart.getItemDetailId());
             int discountPrice = 0;
-            String itemName = "";
 
             for (ItemPriceNameDto response : discountPrices) {
                 if (response.getItemDetailId() == cart.getItemDetailId()) {
                     discountPrice = response.getPrice();
-                    itemName = response.getName();
                 }
             }
 
-            String imageUrl = "";
-            for (ImageDataDto response : imageUrls) {
-                if (response.getId().equals(cart.getImageId())) {
-                    imageUrl = response.getUrl();
-                }
-            }
-
-            List<CartResponseDto> cartList = cartRepository.getCartList(userId, discountPrice, itemName, cart.isSelected(), imageUrl);
-            cartResponseDtoList.addAll(cartList);
+            cartResponseDtoList.add(
+                    CartResponseDto.builder()
+                            .id(cart.getId())
+                            .itemId(detailInfo.getItemId())
+                            .itemDetailId(cart.getItemDetailId())
+                            .itemName(detailInfo.getItemDetailName())
+                            .imageUrl(imageMap.get(cart.getImageId()).getUrl())
+                            .quantity(cart.getQuantity())
+                            .price(cart.getPrice())
+                            .discountPrice(discountPrice)
+                            .isSelected(cart.isSelected())
+                            .build()
+            );
         }
 
         return cartResponseDtoList;

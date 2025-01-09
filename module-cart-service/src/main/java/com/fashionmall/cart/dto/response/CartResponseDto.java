@@ -1,6 +1,5 @@
 package com.fashionmall.cart.dto.response;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class CartResponseDto {
 
     private Long id;
+    private Long itemId;
     private Long itemDetailId;
     private String itemName;
 

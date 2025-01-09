@@ -494,7 +494,7 @@ public class ItemServiceImpl implements ItemService {
             if (itemDiscounts.isEmpty()) {
                 String discountType = "none";
                 int itemDiscountValue = 0;
-                ItemDetailInfoDto itemDetailInfoDto = new ItemDetailInfoDto(itemDetail.getId(), itemDetailName, price, itemDiscountValue, discountType, imageUrl);
+                ItemDetailInfoDto itemDetailInfoDto = new ItemDetailInfoDto(itemDetail.getId(), item.getId(), itemDetailName, price, itemDiscountValue, discountType, imageUrl);
                 itemDetailInfoDtoList.add(itemDetailInfoDto);
             } else {
                 for (ItemDiscount itemDiscount : itemDiscounts) {
@@ -502,7 +502,7 @@ public class ItemServiceImpl implements ItemService {
                     int itemDiscountValue = itemDiscount.getValue();
                     String discountType = itemDiscount.getType().name();
 
-                    ItemDetailInfoDto itemDetailInfoDto = new ItemDetailInfoDto(itemDetail.getId(), itemDetailName, price, itemDiscountValue, discountType, imageUrl);
+                    ItemDetailInfoDto itemDetailInfoDto = new ItemDetailInfoDto(itemDetail.getId(), item.getId(), itemDetailName, price, itemDiscountValue, discountType, imageUrl);
                     itemDetailInfoDtoList.add(itemDetailInfoDto);
                 }
             }
