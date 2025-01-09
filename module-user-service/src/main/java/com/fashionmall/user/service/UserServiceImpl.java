@@ -10,7 +10,10 @@ import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
 import com.fashionmall.common.redis.RedisUtil;
 import com.fashionmall.common.redis.RefreshToken;
 import com.fashionmall.common.response.PageInfoResponseDto;
-import com.fashionmall.user.dto.request.*;
+import com.fashionmall.user.dto.request.DeliveryAddressRequestDto;
+import com.fashionmall.user.dto.request.LoginRequestDto;
+import com.fashionmall.user.dto.request.SignUpRequestDto;
+import com.fashionmall.user.dto.request.UpdateUserInfoRequestDto;
 import com.fashionmall.user.dto.response.FavoriteResponseDto;
 import com.fashionmall.user.dto.response.LoginResponseDto;
 import com.fashionmall.user.dto.response.UserInfoResponseDto;
@@ -269,55 +272,60 @@ public class UserServiceImpl implements UserService {
     // Favorite
     @Override
     @Transactional
-    public FavoriteResponseDto updateFavorite(Long itemId, FavoriteRequestDto favoriteRequestDto, Long userId) {
+    public FavoriteResponseDto createFavorite(Long itemId, Long userId) {
 
-        findByUserId(userId);
+        moduleApiUtil.confirmUserInfoApi(userId);
 
-        List<LikeItemListResponseDto> itemInfos = moduleApiUtil.getItemInfoApi(itemId, userId);
-        LikeItemListResponseDto itemInfo = itemInfos.stream()
-                .filter(info -> info.getItemInfo().getId() == itemId)
-                .findFirst()
-                .orElseThrow(() -> new CustomException(ErrorResponseCode.WRONG_ITEM_ID));
-
-        Favorite existingFavorite = favoriteRepository.findByItemId(itemId);
-
-        if (existingFavorite != null) {
-            if (favoriteRequestDto.isSelected()) {
-                throw new CustomException(ErrorResponseCode.DUPLICATE_TRUE);
-            } else {
-                favoriteRepository.delete(existingFavorite);
-                return FavoriteResponseDto.from(buildFavorite(itemInfo.getItemInfo().getId(), favoriteRequestDto.isSelected(), userId));
-            }
-        } else {
-            if (favoriteRequestDto.isSelected()) {
-                Favorite newFavorite = buildFavorite(itemInfo.getItemInfo().getId(), favoriteRequestDto.isSelected(), userId);
-                favoriteRepository.save(newFavorite);
-                return FavoriteResponseDto.from(newFavorite);
-            } else {
-                throw new CustomException(ErrorResponseCode.DUPLICATE_FALSE);
-            }
+        if (favoriteRepository.findByItemId(itemId) != null) {
+            throw new CustomException(ErrorResponseCode.DUPLICATE_TRUE);
         }
+
+        Favorite favorite = Favorite.builder()
+                .userId(userId)
+                .itemId(itemId)
+                .build();
+
+        Favorite save = favoriteRepository.save(favorite);
+
+        return FavoriteResponseDto.from(save);
     }
 
     @Override
     @Transactional
-    public PageInfoResponseDto<LikeItemListResponseDto> favoriteList(int pageNo, int size, Long itemId, Long userId) {
+    public PageInfoResponseDto<LikeItemListResponseDto> favoriteList(int pageNo, int size, Long userId) {
 
-        findByUserId(userId);
+        moduleApiUtil.confirmUserInfoApi(userId);
 
         PageRequest pageRequest = PageRequest.of(pageNo - 1, size);
         int totalCount = favoriteRepository.countByUserId(userId);
 
-        List<LikeItemListResponseDto> itemInfo = moduleApiUtil.getItemInfoApi(itemId, userId);
+        List<Favorite> favorites = favoriteRepository.findByUserId(userId);
+        List<Long> itemIds = favorites.stream().map(Favorite::getItemId).toList();
+
+        List<LikeItemListResponseDto> itemInfo = moduleApiUtil.getItemInfoApi(itemIds);
 
         return PageInfoResponseDto.of(pageRequest, itemInfo, totalCount);
 
     }
 
+    @Override
+    @Transactional
+    public void deleteFavorite(Long itemId, Long userid) {
+
+        moduleApiUtil.confirmUserInfoApi(userid);
+
+        Favorite byItemId = favoriteRepository.findByItemId(itemId);
+
+        if (byItemId == null) {
+            throw new CustomException(ErrorResponseCode.DUPLICATE_FALSE);
+        }
+
+        favoriteRepository.delete(byItemId);
+    }
+
     private Favorite buildFavorite(Long itemId, boolean isSelected, Long userId) {
         return Favorite.builder()
                 .itemId(itemId)
-                .isSelected(isSelected)
                 .userId(userId)
                 .build();
     }

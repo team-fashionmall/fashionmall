@@ -12,7 +12,6 @@ import com.fashionmall.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,12 +37,11 @@ public class UserQueryController {
     }
 
     // Favorite
-    @GetMapping("/favorite/{itemId}")
+    @GetMapping("/favorite")
     public CommonResponse<PageInfoResponseDto<LikeItemListResponseDto>> favoriteList(@RequestParam(defaultValue = "1") int pageNo,
                                                                                      @RequestParam(defaultValue = "8") int size,
-                                                                                     @PathVariable Long itemId,
                                                                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return ApiResponseUtil.success(userService.favoriteList(pageNo, size, itemId, userDetails.getUserid()));
+        return ApiResponseUtil.success(userService.favoriteList(pageNo, size, userDetails.getUserid()));
     }
 
     @GetMapping("/user/profile")
