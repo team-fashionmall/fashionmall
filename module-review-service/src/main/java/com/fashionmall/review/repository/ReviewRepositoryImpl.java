@@ -83,6 +83,7 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
     public void deleteReviewByUserIdAndId(Long userId, Long id) {
         queryFactory
                 .delete(review)
-                .where(review.userId.eq(userId).and(review.id.eq(id)));
+                .where(review.userId.eq(userId).and(review.id.eq(id)))
+                .execute();
     }
 }
