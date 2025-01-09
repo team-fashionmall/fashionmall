@@ -227,6 +227,8 @@ public class OrdersServiceImpl implements OrdersService {
     @Override
     public OrdersDetailResponseDto getOrderDetail(Long userId, Long orderId) {
         OrdersDetailResponseDto ordersDetails = ordersRepository.findOrdersDetailsByUserIdAndOrderId(userId, orderId);
+        List<OrderItemDetailResponseDto> orderItemDetailsByOrderId = ordersRepository.findOrderItemDetailsByOrderId(orderId);
+        ordersDetails.setOrderItemsDto(orderItemDetailsByOrderId);
 
         List<Long> itemDetailIds = ordersDetails.getOrderItemsDto().stream()
                 .map(OrderItemDetailResponseDto::getItemDetailId)

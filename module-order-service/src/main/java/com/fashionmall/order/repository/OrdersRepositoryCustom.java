@@ -2,6 +2,7 @@ package com.fashionmall.order.repository;
 
 import com.fashionmall.common.moduleApi.dto.OrderItemDto;
 import com.fashionmall.common.response.PageInfoResponseDto;
+import com.fashionmall.order.dto.response.OrderItemDetailResponseDto;
 import com.fashionmall.order.dto.response.OrdersDetailResponseDto;
 import com.fashionmall.order.dto.response.OrdersResponseDto;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,8 @@ public interface OrdersRepositoryCustom {
     PageInfoResponseDto<OrdersResponseDto> findOrdersByUserId(Long userId, Pageable pageable);
 
     OrdersDetailResponseDto findOrdersDetailsByUserIdAndOrderId(Long userId, Long orderId);
+
+    List<OrderItemDetailResponseDto> findOrderItemDetailsByOrderId(Long orderId);
 
     Long cancelOrderById(Long userId, Long orderId);
 }

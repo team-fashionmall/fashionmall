@@ -7,7 +7,6 @@ import com.fashionmall.order.dto.response.OrdersDetailResponseDto;
 import com.fashionmall.order.dto.response.OrdersResponseDto;
 import com.fashionmall.order.enums.OrderStatus;
 import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -45,13 +44,7 @@ public class OrdersRepositoryImpl implements OrdersRepositoryCustom {
                         orders.id,
                         orders.status,
                         orders.paymentPrice,
-                        orders.createdAt,
-                        JPAExpressions
-                                .select(orderItem.itemDetailId)
-                                .from(orderItem)
-                                .where(orderItem.orders.eq(orders))
-                                .orderBy(orderItem.orders.id.asc())
-                                .limit(1)))
+                        orders.createdAt))
                 .from(orders)
                 .where(orders.userId.eq(userId))
                 .offset(offset)
@@ -71,32 +64,36 @@ public class OrdersRepositoryImpl implements OrdersRepositoryCustom {
 
     @Override
     public OrdersDetailResponseDto findOrdersDetailsByUserIdAndOrderId(Long userId, Long orderId) {
-        return queryFactory
-                .select(Projections.constructor(OrdersDetailResponseDto.class,
+
+        return queryFactory.select(Projections.constructor(OrdersDetailResponseDto.class,
                         orders.id,
                         orders.totalPrice,
                         orders.couponDiscountPrice,
                         orders.totalItemDiscountPrice,
                         orders.paymentPrice,
                         orders.zipcode,
-                        orders.roadAddress,
-                        JPAExpressions
-                                .select(Projections.constructor(OrderItemDetailResponseDto.class,
-                                        orderItem.itemDetailId,
-                                        orderItem.price,
-                                        orderItem.quantity,
-                                        orderItem.itemDiscountPrice,
-                                        orderItem.price.multiply(orderItem.quantity).as("totalPrice"),
-                                        orderItem.price.multiply(orderItem.quantity)
-                                                .subtract(orderItem.itemDiscountPrice.multiply(orderItem.quantity))
-                                                .as("totalDiscountPrice"))
-                                )
-                                .from(orderItem)
-                                .where(orderItem.orders.id.eq(orderId))
-                ))
+                        orders.roadAddress))
                 .from(orders)
                 .where(orders.id.eq(orderId))
                 .fetchOne();
+    }
+
+    @Override
+    public List<OrderItemDetailResponseDto> findOrderItemDetailsByOrderId(Long orderId) {
+
+        return queryFactory.select(Projections.constructor(OrderItemDetailResponseDto.class,
+                        orderItem.itemDetailId,
+                        orderItem.price,
+                        orderItem.quantity,
+                        orderItem.itemDiscountPrice,
+                        orderItem.price.multiply(orderItem.quantity).as("totalPrice"),
+                        orderItem.price.multiply(orderItem.quantity)
+                                .subtract(orderItem.itemDiscountPrice.multiply(orderItem.quantity))
+                                .as("totalDiscountPrice"))
+                )
+                .from(orderItem)
+                .where(orderItem.orders.id.eq(orderId))
+                .fetch();
     }
 
     @Override
