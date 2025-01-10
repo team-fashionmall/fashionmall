@@ -1,5 +1,6 @@
 package com.fashionmall.order.dto.response;
 
+import com.fashionmall.order.enums.OrderStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class OrdersDetailResponseDto {
     private Long id;
+    private OrderStatus status;
     private int totalPrice;
     private int couponDiscountPrice;
     private int totalItemDiscountPrice;
@@ -19,8 +21,9 @@ public class OrdersDetailResponseDto {
     private String roadAddress;
     private List<OrderItemDetailResponseDto> orderItemsDto;
 
-    public OrdersDetailResponseDto(Long id, int totalPrice, int couponDiscountPrice, int totalItemDiscountPrice, int paymentPrice, String zipcode, String roadAddress) {
+    public OrdersDetailResponseDto(Long id, OrderStatus status, int totalPrice, int couponDiscountPrice, int totalItemDiscountPrice, int paymentPrice, String zipcode, String roadAddress) {
         this.id = id;
+        this.status = status;
         this.totalPrice = totalPrice;
         this.couponDiscountPrice = couponDiscountPrice;
         this.totalItemDiscountPrice = totalItemDiscountPrice;

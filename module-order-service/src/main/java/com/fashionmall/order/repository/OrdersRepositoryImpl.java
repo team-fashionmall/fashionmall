@@ -67,6 +67,7 @@ public class OrdersRepositoryImpl implements OrdersRepositoryCustom {
 
         return queryFactory.select(Projections.constructor(OrdersDetailResponseDto.class,
                         orders.id,
+                        orders.status,
                         orders.totalPrice,
                         orders.couponDiscountPrice,
                         orders.totalItemDiscountPrice,

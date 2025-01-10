@@ -23,17 +23,23 @@ public class ModuleApiUtil {
     private final HttpServletRequest request;
     private final JwtUtil jwtUtil;
 
-    private final String cartApi = "http://13.125.10.163:8000/api/cart";
+    private final String cartApi = "http://13.125.10.163/:8000/api/cart";
     private final String userApi = "http://13.125.10.163:8000/api/user";
     private final String couponApi = "http://13.125.10.163:8000/api/coupon";
     private final String itemApi = "http://13.125.10.163:8000/api/item";
     private final String imageApi = "http://13.125.10.163:8000/api/image";
 
-    public List<LikeItemListResponseDto> getItemInfoApi(Long itemId, Long userId) {
+    public List<ItemInfoResponseDto> getItemInfoApi(List<Long> itemIds) {
 
-        CommonResponse<List<LikeItemListResponseDto>> commonResponse = webClientUtil.get(
-                itemApi + "/itemInfo/" + itemId + "/" + userId,
-                new ParameterizedTypeReference<CommonResponse<List<LikeItemListResponseDto>>>() {
+        String itemIdsParam = itemIds.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
+
+        String url = itemApi + "/itemInfo?itemIds=" + itemIdsParam;
+
+        CommonResponse<List<ItemInfoResponseDto>> commonResponse = webClientUtil.get(
+                url,
+                new ParameterizedTypeReference<CommonResponse<List<ItemInfoResponseDto>>>() {
                 },
                 headers(getAccessToken(request)),
                 ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE

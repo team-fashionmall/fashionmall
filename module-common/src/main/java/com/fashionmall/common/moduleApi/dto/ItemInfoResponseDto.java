@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LikeItemListResponseDto {
+public class ItemInfoResponseDto {
 
     private ItemInfo itemInfo;
     private ItemDetailInfo itemDetailInfo;

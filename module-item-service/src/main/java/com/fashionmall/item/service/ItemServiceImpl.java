@@ -56,8 +56,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public List<LikeItemListResponseDto> getItemInfoApi(Long itemId, Long userId) {
-        return itemRepository.getItemInfo(itemId, userId);
+    public List<ItemInfoResponseDto> getItemInfoApi(List<Long> itemIds) {
+        return itemRepository.getItemInfo(itemIds);
     }
 
     @Override

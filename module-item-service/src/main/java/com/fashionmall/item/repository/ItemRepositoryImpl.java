@@ -1,7 +1,7 @@
 package com.fashionmall.item.repository;
 
+import com.fashionmall.common.moduleApi.dto.ItemInfoResponseDto;
 import com.fashionmall.common.moduleApi.dto.ItemPriceNameDto;
-import com.fashionmall.common.moduleApi.dto.LikeItemListResponseDto;
 import com.fashionmall.common.moduleApi.enums.ItemDiscountTypeEnum;
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.item.dto.response.AdminItemDetailResponseDto;
@@ -58,27 +58,26 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
     }
 
     @Override
-    public List<LikeItemListResponseDto> getItemInfo(Long itemId, Long userId) {
+    public List<ItemInfoResponseDto> getItemInfo(List<Long> itemIds) {
 
         return queryFactory
-                .select(Projections.constructor(LikeItemListResponseDto.class,
-                        Projections.constructor(LikeItemListResponseDto.ItemInfo.class,
+                .select(Projections.constructor(ItemInfoResponseDto.class,
+                        Projections.constructor(ItemInfoResponseDto.ItemInfo.class,
                                 item.id,
                                 item.name,
                                 item.imageId,
                                 item.imageUrl
                         ),
-                        Projections.constructor(LikeItemListResponseDto.ItemDetailInfo.class,
+                        Projections.constructor(ItemInfoResponseDto.ItemDetailInfo.class,
                                 itemDetail.price,
                                 ExpressionUtils.as(calculateDiscount(itemDetail.price, itemDiscount.status, itemDiscount.type, itemDiscount.value),
                                         "discountPrice")
                         )
                 ))
                 .from(item)
-                .innerJoin(item.itemDetails, itemDetail)
-                .innerJoin(item.itemCategoryMappings, itemCategoryMapping)
-                .innerJoin(item.itemDiscounts, itemDiscount)
-                .where(item.id.eq(itemId).and(item.workerId.eq(userId)))
+                .leftJoin(item.itemDetails, itemDetail)
+                .leftJoin(item.itemDiscounts, itemDiscount)
+                .where(item.id.in(itemIds))
                 .orderBy(item.id.desc())
                 .fetch();
     }
