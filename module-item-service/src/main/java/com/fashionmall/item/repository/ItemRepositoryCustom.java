@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface ItemRepositoryCustom {
 
-    ItemInfoResponseDto getItemInfo(Long itemId);
+    List<ItemInfoResponseDto> getItemInfo(List<Long> itemIds);
 
     PageInfoResponseDto<ItemListResponseDto> itemListPageNation(Pageable pageable, String itemName, Long category1, Long category2);
 

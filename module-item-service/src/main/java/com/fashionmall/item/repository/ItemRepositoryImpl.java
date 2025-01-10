@@ -58,7 +58,7 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
     }
 
     @Override
-    public ItemInfoResponseDto getItemInfo(Long itemId) {
+    public List<ItemInfoResponseDto> getItemInfo(List<Long> itemIds) {
 
         return queryFactory
                 .select(Projections.constructor(ItemInfoResponseDto.class,
@@ -77,9 +77,9 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
                 .from(item)
                 .leftJoin(item.itemDetails, itemDetail)
                 .leftJoin(item.itemDiscounts, itemDiscount)
-                .where(item.id.eq(itemId))
+                .where(item.id.in(itemIds))
                 .orderBy(item.id.desc())
-                .fetchOne();
+                .fetch();
     }
 
     @Override
