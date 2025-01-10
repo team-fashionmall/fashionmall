@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class OrdersDetailResponseDto {
     private Long id;
-    private OrderStatus status;
+    private OrderStatus orderStatus;
     private int totalPrice;
     private int couponDiscountPrice;
     private int totalItemDiscountPrice;
@@ -21,9 +21,9 @@ public class OrdersDetailResponseDto {
     private String roadAddress;
     private List<OrderItemDetailResponseDto> orderItemsDto;
 
-    public OrdersDetailResponseDto(Long id, OrderStatus status, int totalPrice, int couponDiscountPrice, int totalItemDiscountPrice, int paymentPrice, String zipcode, String roadAddress) {
+    public OrdersDetailResponseDto(Long id, OrderStatus orderStatus, int totalPrice, int couponDiscountPrice, int totalItemDiscountPrice, int paymentPrice, String zipcode, String roadAddress) {
         this.id = id;
-        this.status = status;
+        this.orderStatus = orderStatus;
         this.totalPrice = totalPrice;
         this.couponDiscountPrice = couponDiscountPrice;
         this.totalItemDiscountPrice = totalItemDiscountPrice;
