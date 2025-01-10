@@ -1,7 +1,7 @@
 package com.fashionmall.user.controller;
 
 import com.fashionmall.common.moduleApi.dto.DeliveryAddressDto;
-import com.fashionmall.common.moduleApi.dto.LikeItemListResponseDto;
+import com.fashionmall.common.moduleApi.dto.ItemInfoResponseDto;
 import com.fashionmall.common.response.CommonResponse;
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.common.util.ApiResponseUtil;
@@ -38,9 +38,9 @@ public class UserQueryController {
 
     // Favorite
     @GetMapping("/favorite")
-    public CommonResponse<PageInfoResponseDto<LikeItemListResponseDto>> favoriteList(@RequestParam(defaultValue = "1") int pageNo,
-                                                                                     @RequestParam(defaultValue = "8") int size,
-                                                                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public CommonResponse<PageInfoResponseDto<ItemInfoResponseDto>> favoriteList(@RequestParam(defaultValue = "1") int pageNo,
+                                                                                 @RequestParam(defaultValue = "8") int size,
+                                                                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ApiResponseUtil.success(userService.favoriteList(pageNo, size, userDetails.getUserid()));
     }
 

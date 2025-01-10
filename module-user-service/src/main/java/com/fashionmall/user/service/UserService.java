@@ -1,7 +1,7 @@
 package com.fashionmall.user.service;
 
 import com.fashionmall.common.moduleApi.dto.DeliveryAddressDto;
-import com.fashionmall.common.moduleApi.dto.LikeItemListResponseDto;
+import com.fashionmall.common.moduleApi.dto.ItemInfoResponseDto;
 import com.fashionmall.common.response.PageInfoResponseDto;
 import com.fashionmall.user.dto.request.DeliveryAddressRequestDto;
 import com.fashionmall.user.dto.request.LoginRequestDto;
@@ -40,7 +40,7 @@ public interface UserService {
     // Favorite
     FavoriteResponseDto createFavorite(Long itemId, Long userId);
 
-    PageInfoResponseDto<LikeItemListResponseDto> favoriteList(int pageNo, int size, Long userId);
+    PageInfoResponseDto<ItemInfoResponseDto> favoriteList(int pageNo, int size, Long userId);
 
     void deleteFavorite(Long itemId, Long userid);
 }

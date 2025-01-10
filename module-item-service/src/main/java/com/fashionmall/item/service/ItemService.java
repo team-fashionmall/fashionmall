@@ -34,7 +34,7 @@ public interface ItemService {
 
     List<ItemPriceNameDto> getItemPriceAndNameApi(List<Long> itemDetailId, Long workerId);
 
-    List<LikeItemListResponseDto> getItemInfoApi(List<Long> itemDetailId);
+    List<ItemInfoResponseDto> getItemInfoApi(List<Long> itemDetailId);
 
     // 조회
     PageInfoResponseDto<ItemListResponseDto> getItemList(int pageNo, int size, String itemName, Long category1, Long category2);

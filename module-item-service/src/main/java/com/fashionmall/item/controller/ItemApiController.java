@@ -40,7 +40,7 @@ public class ItemApiController {
     }
 
     @GetMapping("/itemInfo")
-    public CommonResponse<List<LikeItemListResponseDto>> getItemInfoApi(@RequestParam List<Long> itemIds) {
+    public CommonResponse<List<ItemInfoResponseDto>> getItemInfoApi(@RequestParam List<Long> itemIds) {
         return ApiResponseUtil.success(itemService.getItemInfoApi(itemIds));
     }
 

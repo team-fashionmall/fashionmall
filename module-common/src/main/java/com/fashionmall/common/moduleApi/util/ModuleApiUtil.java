@@ -29,7 +29,7 @@ public class ModuleApiUtil {
     private final String itemApi = "http://13.125.10.163:8000/api/item";
     private final String imageApi = "http://13.125.10.163:8000/api/image";
 
-    public List<LikeItemListResponseDto> getItemInfoApi(List<Long> itemIds) {
+    public List<ItemInfoResponseDto> getItemInfoApi(List<Long> itemIds) {
 
         String itemIdsParam = itemIds.stream()
                 .map(String::valueOf)
@@ -37,9 +37,9 @@ public class ModuleApiUtil {
 
         String url = itemApi + "/itemInfo?itemIds=" + itemIdsParam;
 
-        CommonResponse<List<LikeItemListResponseDto>> commonResponse = webClientUtil.get(
+        CommonResponse<List<ItemInfoResponseDto>> commonResponse = webClientUtil.get(
                 url,
-                new ParameterizedTypeReference<CommonResponse<List<LikeItemListResponseDto>>>() {
+                new ParameterizedTypeReference<CommonResponse<List<ItemInfoResponseDto>>>() {
                 },
                 headers(getAccessToken(request)),
                 ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE

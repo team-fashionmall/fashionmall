@@ -5,7 +5,7 @@ import com.fashionmall.common.exception.ErrorResponseCode;
 import com.fashionmall.common.jwt.JwtUtil;
 import com.fashionmall.common.jwt.UserRoleEnum;
 import com.fashionmall.common.moduleApi.dto.DeliveryAddressDto;
-import com.fashionmall.common.moduleApi.dto.LikeItemListResponseDto;
+import com.fashionmall.common.moduleApi.dto.ItemInfoResponseDto;
 import com.fashionmall.common.moduleApi.util.ModuleApiUtil;
 import com.fashionmall.common.redis.RedisUtil;
 import com.fashionmall.common.redis.RefreshToken;
@@ -292,7 +292,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public PageInfoResponseDto<LikeItemListResponseDto> favoriteList(int pageNo, int size, Long userId) {
+    public PageInfoResponseDto<ItemInfoResponseDto> favoriteList(int pageNo, int size, Long userId) {
 
         moduleApiUtil.confirmUserInfoApi(userId);
 
@@ -302,7 +302,7 @@ public class UserServiceImpl implements UserService {
         List<Favorite> favorites = favoriteRepository.findByUserId(userId);
         List<Long> itemIds = favorites.stream().map(Favorite::getItemId).toList();
 
-        List<LikeItemListResponseDto> itemInfo = moduleApiUtil.getItemInfoApi(itemIds);
+        List<ItemInfoResponseDto> itemInfo = moduleApiUtil.getItemInfoApi(itemIds);
 
         return PageInfoResponseDto.of(pageRequest, itemInfo, totalCount);
 
