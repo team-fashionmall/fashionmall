@@ -15,6 +15,8 @@ import com.fashionmall.order.entity.BillingKey;
 import com.fashionmall.order.entity.Orders;
 import com.fashionmall.order.entity.Payment;
 import com.fashionmall.order.enums.OrderStatus;
+import com.fashionmall.order.event.CouponCancelEvent;
+import com.fashionmall.order.event.CouponUseEvent;
 import com.fashionmall.order.event.StockDeductEvent;
 import com.fashionmall.order.event.StockRestoreEvent;
 import com.fashionmall.order.infra.iamPort.dto.IamPortResponseDto;
@@ -198,6 +200,7 @@ public class OrdersServiceImpl implements OrdersService {
 
         //비인증 일회성 결제
         //IamPortResponseDto<PaymentResponseDto> post = iamPortClient.onetimePayment(paymentRequestDto);
+
         IamPortResponseDto<PaymentResponseDto> post = iamPortClient.billingKeyPayment(orderPaymentRequestDto);
 
         String impUid = post.getResponse().getImpUid();
@@ -214,6 +217,9 @@ public class OrdersServiceImpl implements OrdersService {
 
         //재고차감
         eventPublisher.publishEvent(new StockDeductEvent(order.getId(), orderItemDto));
+        if (couponId != null) {
+            eventPublisher.publishEvent(new CouponUseEvent(couponId, userId));
+        }
 
         return order.getId();
     }
@@ -273,6 +279,10 @@ public class OrdersServiceImpl implements OrdersService {
 
         Orders orders = ordersRepository.findById(orderId).orElseThrow(() -> new CustomException(ErrorResponseCode.NOT_FOUND));
         orders.setStatus(OrderStatus.CANCELED);
+
+        if (orders.getCouponId() != null) {
+            eventPublisher.publishEvent(new CouponCancelEvent(orders.getCouponId(), userId));
+        }
 
         return orderId;
     }

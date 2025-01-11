@@ -42,4 +42,9 @@ public class UserCoupon extends BaseEntity {
         isUsed = true;
         usedAt = LocalDateTime.now();
     }
+
+    public void cancelCoupon() {
+        isUsed = false;
+        usedAt = null;
+    }
 }

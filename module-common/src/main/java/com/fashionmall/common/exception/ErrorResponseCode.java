@@ -49,6 +49,10 @@ public enum ErrorResponseCode {
     DUPLICATE_CART_DETAIL_ID(HttpStatus.BAD_REQUEST, "이미 존재하는 itemDetail Id 입니다."),
     WRONG_CART_ID(HttpStatus.BAD_REQUEST, "올바르지 않는 CartId 입니다."),
 
+    // coupon
+    COUPON_ALREADY_USED(HttpStatus.BAD_REQUEST, "이미 사용된 쿠폰입니다."),
+    COUPON_NOT_USED(HttpStatus.BAD_REQUEST, "아직 사용되지 않은 쿠폰입니다."),
+
     // favorite
     DUPLICATE_TRUE(HttpStatus.CONFLICT, "이미 좋아요가 되어있습니다."),
     DUPLICATE_FALSE(HttpStatus.CONFLICT, "이미 좋아요가 취소 되어있습니다."),

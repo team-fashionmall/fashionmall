@@ -247,6 +247,30 @@ public class ModuleApiUtil {
         return deleteImageApi.getData();
     }
 
+    public void useCoupon(Long couponId, Long userId) {
+
+        webClientUtil.patch(
+                couponApi + "/useCoupon/" + couponId + "/" + userId,
+                Map.of(),
+                new ParameterizedTypeReference<Void>() {
+                },
+                null,
+                ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE
+        );
+    }
+
+    public void cancelCoupon(Long couponId, Long userId) {
+
+        webClientUtil.patch(
+                couponApi + "/cancelCoupon/" + couponId + "/" + userId,
+                Map.of(),
+                new ParameterizedTypeReference<Void>() {
+                },
+                null,
+                ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE
+        );
+    }
+
     private String getAccessToken(HttpServletRequest request) {
         return jwtUtil.getJwtFromHeader(request);
     }

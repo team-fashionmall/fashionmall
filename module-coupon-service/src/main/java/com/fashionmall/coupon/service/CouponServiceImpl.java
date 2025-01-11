@@ -140,6 +140,28 @@ public class CouponServiceImpl implements CouponService {
         return couponRepository.findUserCouponByUserIdToApi(userId);
     }
 
+    @Override
+    @Transactional
+    public void useCoupon(Long couponId, Long userId) {
+        UserCoupon userCoupon = userCouponRepository.findByUserIdAndCouponId(userId, couponId);
+        if (userCoupon.isUsed() == false) {
+            userCoupon.useCoupon();
+        } else {
+            throw new CustomException(ErrorResponseCode.COUPON_ALREADY_USED);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void cancelCoupon(Long couponId, Long userId) {
+        UserCoupon userCoupon = userCouponRepository.findByUserIdAndCouponId(userId, couponId);
+        if (userCoupon.isUsed() == true) {
+            userCoupon.cancelCoupon();
+        } else {
+            throw new CustomException(ErrorResponseCode.COUPON_NOT_USED);
+        }
+    }
+
     private void validateMaxDiscountPrice(Coupon coupon) {
         if (coupon.getDiscountType() == DiscountType.RATE && (coupon.getMaxDiscountPrice() == null || coupon.getMaxDiscountPrice() <= 0)) {
             throw new CustomException(ErrorResponseCode.BAD_REQUEST);

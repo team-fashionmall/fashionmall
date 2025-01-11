@@ -26,4 +26,8 @@ public interface CouponService {
     Long downloadCoupon(Long userId, Long couponId);
 
     List<CouponDto> getUserCouponsToApi(Long userId);
+
+    void useCoupon(Long couponId, Long userId);
+
+    void cancelCoupon(Long couponId, Long userId);
 }

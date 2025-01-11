@@ -5,10 +5,7 @@ import com.fashionmall.common.response.CommonResponse;
 import com.fashionmall.common.util.ApiResponseUtil;
 import com.fashionmall.coupon.service.CouponService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,8 +21,13 @@ public class ApiCouponController {
         return ApiResponseUtil.success(couponService.getUserCouponsToApi(userId));
     }
 
-    @GetMapping("/test")
-    public CommonResponse<String> test() {
-        return ApiResponseUtil.success("test");
+    @PatchMapping("/useCoupon/{couponId}/{userId}")
+    public void useCoupon(@PathVariable Long couponId, @PathVariable Long userId) {
+        couponService.useCoupon(couponId, userId);
+    }
+
+    @PatchMapping("/cancelCoupon/{couponId}/{userId}")
+    public void cancelCoupon(@PathVariable Long couponId, @PathVariable Long userId) {
+        couponService.cancelCoupon(couponId, userId);
     }
 }
