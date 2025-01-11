@@ -47,6 +47,7 @@ public class OrdersRepositoryImpl implements OrdersRepositoryCustom {
                         orders.createdAt))
                 .from(orders)
                 .where(orders.userId.eq(userId))
+                .orderBy(orders.id.desc())
                 .offset(offset)
                 .limit(size)
                 .fetch();
