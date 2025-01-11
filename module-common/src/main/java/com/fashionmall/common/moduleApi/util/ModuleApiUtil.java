@@ -23,7 +23,7 @@ public class ModuleApiUtil {
     private final HttpServletRequest request;
     private final JwtUtil jwtUtil;
 
-    private final String cartApi = "http://13.125.10.163/:8000/api/cart";
+    private final String cartApi = "http://13.125.10.163:8000/api/cart";
     private final String userApi = "http://13.125.10.163:8000/api/user";
     private final String couponApi = "http://13.125.10.163:8000/api/coupon";
     private final String itemApi = "http://13.125.10.163:8000/api/item";
