@@ -221,4 +221,13 @@ public class CartServiceImpl implements CartService {
 
         return cartItemDtoList;
     }
+
+    @Override
+    @Transactional
+    public void deleteOrderedItemApi(Long userId, List<Long> itemDetailIds) {
+        for (Long id : itemDetailIds) {
+            Cart cart = cartRepository.findByItemDetailIdAndUserId(id, userId);
+            cartRepository.delete(cart);
+        }
+    }
 }

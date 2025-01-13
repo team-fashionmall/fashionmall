@@ -6,10 +6,7 @@ import com.fashionmall.common.moduleApi.dto.ItemDetailDto;
 import com.fashionmall.common.response.CommonResponse;
 import com.fashionmall.common.util.ApiResponseUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,5 +25,10 @@ public class CartApiController {
     @GetMapping("/getIsSelectedItem/{userId}")
     public CommonResponse<List<CartItemDto>> getIsSelectedItemApi(@PathVariable Long userId) {
         return ApiResponseUtil.success(cartService.getIsSelectedItemApi(userId));
+    }
+
+    @DeleteMapping("/deleteIsSelectedItem/{userId}")
+    public void deleteIsSelectedItem(@PathVariable Long userId, @RequestParam(name = "itemDetailIds") List<Long> itemDetailIds) {
+        cartService.deleteOrderedItemApi(userId, itemDetailIds);
     }
 }

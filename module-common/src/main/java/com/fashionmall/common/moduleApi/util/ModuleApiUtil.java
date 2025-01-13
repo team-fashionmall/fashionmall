@@ -271,6 +271,22 @@ public class ModuleApiUtil {
         );
     }
 
+    public void deleteCartItem(List<Long> itemDetailIds, Long userId) {
+
+        String itemDetailIdsParam = itemDetailIds.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
+
+        String url = cartApi + "/deleteIsSelectedItem/" + userId + "?itemDetailIds=" + itemDetailIdsParam;
+
+        webClientUtil.delete(
+                url,
+                new ParameterizedTypeReference<Void>() {
+                },
+                null,
+                ErrorResponseCode.CLIENT_ERROR, ErrorResponseCode.SERVER_ERROR_FROM_SERVICE);
+    }
+
     private String getAccessToken(HttpServletRequest request) {
         return jwtUtil.getJwtFromHeader(request);
     }

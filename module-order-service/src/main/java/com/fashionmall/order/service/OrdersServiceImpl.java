@@ -15,10 +15,7 @@ import com.fashionmall.order.entity.BillingKey;
 import com.fashionmall.order.entity.Orders;
 import com.fashionmall.order.entity.Payment;
 import com.fashionmall.order.enums.OrderStatus;
-import com.fashionmall.order.event.CouponCancelEvent;
-import com.fashionmall.order.event.CouponUseEvent;
-import com.fashionmall.order.event.StockDeductEvent;
-import com.fashionmall.order.event.StockRestoreEvent;
+import com.fashionmall.order.event.*;
 import com.fashionmall.order.infra.iamPort.dto.IamPortResponseDto;
 import com.fashionmall.order.infra.iamPort.util.IamPortClient;
 import com.fashionmall.order.repository.BillingKeyRepository;
@@ -215,11 +212,14 @@ public class OrdersServiceImpl implements OrdersService {
 
         List<OrderItemDto> orderItemDto = ordersRepository.findOrderItemsByOrderId(order.getId());
 
-        //재고차감
+        // 재고차감
         eventPublisher.publishEvent(new StockDeductEvent(order.getId(), orderItemDto));
+        // 쿠폰 사용 처리
         if (couponId != null) {
             eventPublisher.publishEvent(new CouponUseEvent(couponId, userId));
         }
+        // 주문 상품 장바구니 삭제
+        eventPublisher.publishEvent(new DeleteCartItemEvent(itemDetailIdList, userId));
 
         return order.getId();
     }

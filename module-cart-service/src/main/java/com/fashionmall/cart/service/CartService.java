@@ -25,4 +25,6 @@ public interface CartService {
     List<CartCalculateResponseDto> calculateCart(CartCalculateRequestDto cartCalculateRequestDto, Long userId);
 
     List<CartItemDto> getIsSelectedItemApi(Long userId);
+
+    void deleteOrderedItemApi(Long userId, List<Long> itemDetailIds);
 }
