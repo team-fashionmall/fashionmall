@@ -52,6 +52,7 @@ public enum ErrorResponseCode {
     // coupon
     COUPON_ALREADY_USED(HttpStatus.BAD_REQUEST, "이미 사용된 쿠폰입니다."),
     COUPON_NOT_USED(HttpStatus.BAD_REQUEST, "아직 사용되지 않은 쿠폰입니다."),
+    COUPON_MIN_PURCHASE_PRICE_ERROR(HttpStatus.BAD_REQUEST, "최소 주문 금액 조건에 충족하지 않습니다."),
 
     // favorite
     DUPLICATE_TRUE(HttpStatus.CONFLICT, "이미 좋아요가 되어있습니다."),

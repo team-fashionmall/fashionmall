@@ -156,11 +156,18 @@ public class OrdersServiceImpl implements OrdersService {
                     .findFirst()
                     .orElseThrow(() -> new CustomException(ErrorResponseCode.NOT_FOUND));
 
+            // 최소 주문 금액 검증 로직
+            if (totalPrice < couponDto.getMinPurchasePrice()) {
+                throw new CustomException(ErrorResponseCode.OUT_OF_STOCK);
+            }
+
             String discountType = couponDto.getDiscountType();
             int discountValue = couponDto.getDiscountValue();
 
             if (discountType.equals("RATE")) {
                 couponDiscountPrice = (int) (totalPrice * (discountValue / 100.0));
+
+                // 최대 할인 금액 처리 로직
                 if (couponDiscountPrice > couponDto.getMaxDiscountPrice()) {
                     couponDiscountPrice = couponDto.getMaxDiscountPrice();
                 }
