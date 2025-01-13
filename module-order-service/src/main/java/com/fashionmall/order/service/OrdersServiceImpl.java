@@ -161,6 +161,9 @@ public class OrdersServiceImpl implements OrdersService {
 
             if (discountType.equals("RATE")) {
                 couponDiscountPrice = (int) (totalPrice * (discountValue / 100.0));
+                if (couponDiscountPrice > couponDto.getMaxDiscountPrice()) {
+                    couponDiscountPrice = couponDto.getMaxDiscountPrice();
+                }
             } else {
                 couponDiscountPrice = discountValue;
             }
