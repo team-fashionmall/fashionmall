@@ -121,7 +121,7 @@ public class ItemServiceImpl implements ItemService {
     public int discountPrice(int price, StatusEnum status, ItemDiscountTypeEnum type, int value) {
         int discountPrice = 0;
         if (status == StatusEnum.ACTIVATED && type == ItemDiscountTypeEnum.RATE) {
-            discountPrice = price - (price * (value / 100));
+            discountPrice = price - (int) (price * ((double) value / 100));
         } else if (status == StatusEnum.ACTIVATED && type == ItemDiscountTypeEnum.AMOUNT) {
             discountPrice = price - value;
         } else {
